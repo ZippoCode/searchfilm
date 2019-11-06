@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ object.full_name }}</title>
+</head>
+<body>
+<section>
+    <p>Nome : {{ object.first_name }}</p>
+    <p>Cognome: {{ object.second_name }}</p>
+</section>
+<section>
+    <p>Data di nascita: {{ object.birth_date }}</p>
+    <p>Genere: {{ object.gender }}</p>
+</section>
+{% if object.type == 'director' %}
+<p>Lista film girati</p>
+{% for film in object.Directors.all %}
+<p>{{ film }}</p>
+{% endfor %}
+{% else %}
+<p>Lista film interpretati</p>
+{% for film in object.Cast.all %}
+<p>{{ film }}</p>
+{% endfor %}
+{% endif %}
+
+</body>
+</html>

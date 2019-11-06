@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<p lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dettagli Film</title>
+    </head>
+
+<p> Name: {{ object.title}}</p>
+<p> Director:
+    {% for director in object.directors.all %}
+    <a href="{% url 'person:detail' director.id_person %}">{{ director }}</a>
+    {% endfor %}
+</p>
+<p>Cast
+    {% for actor in object.cast.all %}
+<ul>
+    <li><a href="{% url 'person:detail' actor.id_person %}">{{ actor }}</a></li>
+</ul>
+{% endfor %}
+</p>
+<p>Writers:
+    {% for writer in object.writers.all %}
+<p><a href="{% url 'person:detail' writer.id_person %}">{{ writer }}</a></p>
+{% endfor %}
+<section>
+    </p>
+    <p>Ranking: {{ object.vote_average }}</p>
+    <p>Description: {{ object.description }}</p>
+    <p>Release Date: {{ object.release_date }}</p>
+    <p>
+        {% for genre in object.genres.all %}
+        {{genre }} -
+        {% endfor %}
+    </p>
+</section>
+<section>
+    <form method="post">
+        {% csrf_token %}
+
+        {% if is_preferite %}
+        <input type="submit" name='remove_to_preferite' value="Rimuovi dai preferiti">
+        {% else %}
+        <input type="submit" name='add_to_preferite' value="Aggiungi ai preferiti">
+        {% endif %}
+    </form>
+    <a href="/">Ritorna alla home</a>
+</section>
+</body>
+</html>

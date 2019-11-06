@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% extends "homepage/homepage_base.html" %}
+<html lang="en">
+{% block head %}
+<meta charset="UTF-8">
+<title>Benvenuto</title>
+{% endblock %}
+{% block body %}
+<header><h1>Ricerca Film</h1></header>
+<section>
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.text }}
+        <input type="submit" name='ricerca' value="Ricerca">
+        <p></p>
+        {{ form.genres }}
+        <input type="submit" name='ricerca-genre' value="Scegli tipologia di film">
+    </form>
+</section>
+
+<section>
+    <p></p>
+    <a href="{% url 'film:index' %}">Lista Film</a>
+    <p></p>
+    <a href="{% url 'person:index_directors' %}">Lista Registi</a>
+    <p></p>
+    <a href="{% url 'person:index_actors' %}">Lista Attori</a>
+</section>
+<section>
+    <p></p>
+    {% if user.is_authenticated %}
+    <p> Benvenuto {{ user.username }} <a href="{% url 'account:viewDetailsAccount' user.pk %}">Visualizza il tuo
+        profilo</a>
+    </p>
+    <a href="{% url 'account:logoutAccount' %}">Logout</a>
+    {% else %}
+    <a href="{% url 'account:loginAccount' %}">Accedi o Registrati</a>
+    {% endif %}
+</section>
+{% endblock %}
+</html>

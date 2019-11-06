@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli del tuo profilo</title>
+</head>
+<body>
+<h2>Il tuo profilo</h2>
+<p><label>Nome: </label> {{ user.first_name }}</p>
+<p><label>Cognome: </label>{{ user.last_name }}</p>
+</body>
+<p>I tuoi film preferiti:</p>
+{% if not user.favorite_films.all %}
+<p>Non hai film.</p>
+{% else %}
+<ul>
+    {% for film in user.favorite_films.all %}
+    <li>{{ film }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+</html>
