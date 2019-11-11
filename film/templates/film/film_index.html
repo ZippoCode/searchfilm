@@ -11,7 +11,7 @@
     {% else %}
     <ul>
         {% for film in object_list %}
-        <li><a href="{% url 'film:detail' film.id_film %}">{{ film }}</a></li>
+        <li><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></li>
         {% endfor %}
     </ul>
     {% endif %}

@@ -10,19 +10,18 @@
 </header>
 <body>
 <section>
-    {% if form.error %}
-    <p>Username o password errate. Riprovare</p>
+    {% if invalid %}
+    Username o password errate
     {% endif %}
     <form method="post">
         {% csrf_token %}
 
-        {{ form.as_p }}
-
+        {{ form.first_name }} {{form.password }}
         <input type="submit" value="Accedi">
-        <input type="hidden" name = "next" value="{{ next }}">
+        <input type="hidden" name="next" value="{{ next }}">
     </form>
     <p>
-        <a href="{% url 'account:registerAccount' %}">Registrati</a>
+        <a href="{% url 'account:register-account' %}">Registrati</a>
     </p>
 
 </section>

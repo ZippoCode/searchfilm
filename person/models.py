@@ -15,10 +15,14 @@ class Person(models.Model):
     id_person = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30, null=False)
     second_name = models.CharField(max_length=30, null=False)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     gender = models.CharField(max_length=10, choices=(('man', 'Man'), ('woman', 'Woman')))
     birth_date = models.DateField(null=True)
     death_date = models.DateField(null=True)
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    nationality = models.CharField(max_length=10, null=True)
+    place_of_birth = models.CharField(max_length=200, null=True)
+    imdb_id = models.CharField(max_length=200, null=True)
+    biography = models.TextField(null=True)
 
     @property
     def full_name(self):

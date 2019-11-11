@@ -1,1 +1,2 @@
-from django import Forms
+from django.forms import Form
+

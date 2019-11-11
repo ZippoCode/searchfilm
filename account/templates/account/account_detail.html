@@ -5,18 +5,23 @@
     <title>Dettagli del tuo profilo</title>
 </head>
 <body>
-<h2>Il tuo profilo</h2>
-<p><label>Nome: </label> {{ user.first_name }}</p>
-<p><label>Cognome: </label>{{ user.last_name }}</p>
+<section>
+    <h2>Il tuo profilo</h2>
+    <p>Nome: {{ user.first_name }} - Cognome: {{ user.last_name }}</p>
+    <p>Email: {{user.email }}</p>
+    <p>Membro dal: {{ user.date_joined }}</p>
+</section>
+<dir>
+    <p>I tuoi film preferiti:</p>
+    {% if not user.favorites.all %}
+    <p>Non hai film.</p>
+    {% else %}
+    <ul>
+        {% for film in user.favorites.all %}
+        <li>{{ film }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</dir>
 </body>
-<p>I tuoi film preferiti:</p>
-{% if not user.favorite_films.all %}
-<p>Non hai film.</p>
-{% else %}
-<ul>
-    {% for film in user.favorite_films.all %}
-    <li>{{ film }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
 </html>

@@ -10,19 +10,33 @@
     <p>Cognome: {{ object.second_name }}</p>
 </section>
 <section>
-    <p>Data di nascita: {{ object.birth_date }}</p>
     <p>Genere: {{ object.gender }}</p>
+    <p>Data di nascita: {{ object.birth_date }}</p>
+    {% if object.death_date %}
+    <p>Data di morte: {{ object.death_date }}</p>
+    {% endif %}
+    <p>Biografia: {{ object.biography }}</p>
+    <p>Luogo di nascita: {{object.place_of_birth }}</p>
+    <p>Nazionalità: {{ object.nationality }}</p>
+    {% if object.imdb_id %}
+    <p><a href="https://www.imdb.com/name/{{ object.imdb_id}}">Link IMDb</a></p>
+    {% endif %}
 </section>
+
 {% if object.type == 'director' %}
-<p>Lista film girati</p>
-{% for film in object.Directors.all %}
-<p>{{ film }}</p>
-{% endfor %}
+<section>
+    <p>Lista film girati</p>
+    {% for film in object.Directors.all %}
+    <p><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></p>
+    {% endfor %}
+</section>
 {% else %}
-<p>Lista film interpretati</p>
-{% for film in object.Cast.all %}
-<p>{{ film }}</p>
-{% endfor %}
+<section>
+    <p>Lista film interpretati</p>
+    {% for film in object.Cast.all %}
+    <p><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></p>
+    {% endfor %}
+</section>
 {% endif %}
 
 </body>

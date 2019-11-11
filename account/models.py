@@ -5,11 +5,29 @@ from film.models import Film
 
 
 class Account(AbstractUser):
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=100)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
-    favorite_films = models.ManyToManyField(Film)
+    # Custom Fields
+    favorites = models.ManyToManyField(Film, related_name='FavoriteFilm', through='FavoriteFilm')
+    votes = models.ManyToManyField(Film, related_name='VoteFilm', through='VoteFilm')
 
     def __str__(self):
         return str(self.email)
+
+
+class FavoriteFilm(models.Model):
+    person = models.ForeignKey(Account, on_delete=models.CASCADE)
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    date_add = models.DateField()
+
+
+class VoteFilm(models.Model):
+    """
+        Questa classe memorizza i voti degli utenti
+    """
+    person = models.ForeignKey(Account, on_delete=models.CASCADE)
+    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    date_vote = models.DateField()
+    vote = models.IntegerField()

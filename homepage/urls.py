@@ -5,6 +5,8 @@ from . import views
 app_name = 'homepage'
 
 urlpatterns = [
+    # £X: 'searchfilm'
     path('', views.home, name='home'),
-    path('search/<str:name>', views.search, name = 'search_film')
+    # EX: 'searchfilm'
+    path('contacts/', views.contacts, name = 'homepage-contacts')
 ]

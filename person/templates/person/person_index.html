@@ -7,7 +7,7 @@
 <body>
 <ul>
     {% for person in object_list %}
-    <li><a href="{% url 'person:detail' person.id_person %}">{{ person }}</a></li>
+    <li><a href="{% url 'person:detail-person' person.id_person %}">{{ person }}</a></li>
     {% endfor %}
 </ul>
 </body>

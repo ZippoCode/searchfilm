@@ -20,23 +20,28 @@
 </section>
 
 <section>
+    <p>
+        <a href="{% url 'film:index-film' %}">Lista Film</a>
+        <a href="{% url 'film:show-film-ranking' %}">Film più votati</a>
+    </p>
     <p></p>
-    <a href="{% url 'film:index' %}">Lista Film</a>
+    <a href="{% url 'person:index-director' %}">Lista Registi</a>
     <p></p>
-    <a href="{% url 'person:index_directors' %}">Lista Registi</a>
-    <p></p>
-    <a href="{% url 'person:index_actors' %}">Lista Attori</a>
+    <a href="{% url 'person:index-actor' %}">Lista Attori</a>
 </section>
 <section>
     <p></p>
     {% if user.is_authenticated %}
-    <p> Benvenuto {{ user.username }} <a href="{% url 'account:viewDetailsAccount' user.pk %}">Visualizza il tuo
+    <p> Benvenuto {{ user.username }} <a href="{% url 'account:view-detail-account' user.pk %}">Visualizza il tuo
         profilo</a>
     </p>
-    <a href="{% url 'account:logoutAccount' %}">Logout</a>
+    <a href="{% url 'account:logout-account' %}">Logout</a>
     {% else %}
-    <a href="{% url 'account:loginAccount' %}">Accedi o Registrati</a>
+    <a href="{% url 'account:login-account' %}">Accedi o Registrati</a>
     {% endif %}
 </section>
+<div>
+    <a href="contacts/">Contact Us</a>
+</div>
 {% endblock %}
 </html>
