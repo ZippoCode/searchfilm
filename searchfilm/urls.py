@@ -20,6 +20,7 @@ urlpatterns = [
     path('', include('homepage.urls', namespace="homepage")),
     path('film/', include('film.urls', namespace="film")),
     path('person/', include('person.urls', namespace="person")),
-    path('account/', include('account.urls', namespace = 'account')),
+    path('account/', include('account.urls', namespace='account')),
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')), # RESTFUL URLS
 ]

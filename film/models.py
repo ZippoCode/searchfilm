@@ -12,7 +12,7 @@ class Keyword(models.Model):
 
 class Genre(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
@@ -28,7 +28,6 @@ class Film(models.Model):
     release_date = models.DateField(null=True)
     vote_average = models.FloatField(default=0.0)
     vote_counter = models.IntegerField(default=0)
-
 
     # Relantion
     directors = models.ManyToManyField(Person, related_name='Directors')
@@ -54,7 +53,7 @@ class Cast(models.Model):
     """
     film = models.ForeignKey(Film, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    name_character = models.CharField(max_length=100, null=True)
+    name_character = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.name_character

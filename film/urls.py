@@ -1,5 +1,9 @@
+from django.conf.urls import include, url
 from django.urls import path
+from rest_framework import routers
+
 from . import views
+from . import apis
 
 app_name = 'film'
 
@@ -18,4 +22,11 @@ urlpatterns = [
     path('<int:id_film>/remove_to_preferite', views.remove_to_preferite, name='remove-film-preferite'),
     # EX /film/vote
     path('vote/<int:id_film>', views.vote, name='vote-film'),
+]
+
+# Custom Api's URL
+
+urlpatterns += [
+    path('api/getFilm/<str:Title>/', apis.GetFilm.as_view()),
+    path('api/search/<str:query>/', apis.SearchFilmAPI.as_view())
 ]

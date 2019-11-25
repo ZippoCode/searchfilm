@@ -28,12 +28,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # PERSONAL APP
-    'homepage.apps.HomepageConfig',
-    'film.apps.FilmConfig',
-    'person.apps.DirectorConfig',
-    'account.apps.AccountConfig',
-
     # DEFAULT APP
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,9 +35,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # PERSONAL APP
+    'homepage.apps.HomepageConfig',
+    'film.apps.FilmConfig',
+    'person.apps.PersonConfig',
+    'account.apps.AccountConfig',
+
+    'rest_framework',  # Used for APIs
+    'corsheaders',
+    'django.contrib.postgres',  # User per Trigram similarity and Unaccent into the filter
 ]
 
 MIDDLEWARE = [
+    # Personal middleware
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +59,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# List of origins that are authorized to make cross-site HTTP requests
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#    "https://127.0.0.1:3000"
+# ]
+
 
 ROOT_URLCONF = 'searchfilm.urls'
 
@@ -78,8 +92,12 @@ WSGI_APPLICATION = 'searchfilm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'searchfilm_db',
+        'USER': 'zippo',
+        'PASSWORD': 'oppiz',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -125,6 +143,10 @@ AUTHENTICATION_BACKENDS = (
     # Personalizzati
     "account.backend.CustomBackend",
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

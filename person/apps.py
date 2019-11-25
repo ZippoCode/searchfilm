@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class DirectorConfig(AppConfig):
+class PersonConfig(AppConfig):
     name = 'person'
