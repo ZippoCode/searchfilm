@@ -27,6 +27,7 @@ urlpatterns = [
 # Custom Api's URL
 
 urlpatterns += [
-    path('api/getFilm/<str:Title>/', apis.GetFilm.as_view()),
-    path('api/search/<str:query>/', apis.SearchFilmAPI.as_view())
+    path('api/getFilm/<int:film_id>/', apis.GetFilm.as_view()),
+    path('api/search/<str:query>/', apis.SearchFilmAPI.as_view()),
+    path('api/getPopularMovies/', apis.GetPopularMovies.as_view())
 ]

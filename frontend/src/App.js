@@ -1,12 +1,42 @@
 import React from 'react';
-import HomePage from './components/Homepage/Homepage'
+import {
+  BrowserRouter as Router,
+  Switch
+} from 'react-router-dom'
+
+import "bootstrap/dist/css/bootstrap.css";
+
+
+import {
+  NavBar,
+  HomePage,
+  About,
+  Login,
+  MoviesList
+} from './components';
+
 import './App.css';
+
 
 function App() {
   return (
-    <div className="App">
-        <HomePage nome = 'home'/>
-    </div>
+    <Router>
+      < NavBar />
+      <Switch>
+        <Router exact path='/'>
+          < HomePage />
+        </Router>
+        <Router exact path='/about'>
+          < About />
+        </Router>
+        <Router exact path='/login'>
+          <Login />
+        </Router>
+        <Router exact path='/popularMovies'>
+          < MoviesList />
+        </Router>
+      </Switch>
+    </Router>
   );
 }
 
