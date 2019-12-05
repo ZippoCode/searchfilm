@@ -1,5 +1,7 @@
 from django.urls import path
+
 from . import views
+from . import apis
 
 app_name = 'person'
 
@@ -10,5 +12,9 @@ urlpatterns = [
     path('directors', views.DirectorIndexView.as_view(), name='index-director'),
     # EX /person/actors
     path('actors', views.ActorIndexView.as_view(), name='index-actor'),
+]
 
+# API URL
+urlpatterns += [
+    path('api/get/<int:person_id>/', apis.GetPerson.as_view()),
 ]

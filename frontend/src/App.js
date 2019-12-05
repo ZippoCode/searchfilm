@@ -1,43 +1,42 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch
+  Switch,
+  Route
 } from 'react-router-dom'
 
 import "bootstrap/dist/css/bootstrap.css";
-
+import "./App.css";
 
 import {
   NavBar,
   HomePage,
-  About,
   Login,
-  MoviesList
+  MoviesList,
+  MovieDetails,
+  PeopleDetails
 } from './components';
 
-import './App.css';
 
-
-function App() {
-  return (
-    <Router>
-      < NavBar />
-      <Switch>
-        <Router exact path='/'>
-          < HomePage />
-        </Router>
-        <Router exact path='/about'>
-          < About />
-        </Router>
-        <Router exact path='/login'>
-          <Login />
-        </Router>
-        <Router exact path='/popularMovies'>
-          < MoviesList />
-        </Router>
-      </Switch>
-    </Router>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <Router>
+        <NavBar />
+        <div>
+          <Switch>
+            <Route exact path='/'>
+              < HomePage />
+            </Route>
+            <Route path='/login' component={Login} />
+            <Route path='/movies/popular' component={MoviesList} />
+            <Route path='/movie/:id' component={MovieDetails} />
+            <Route path='/person/:id' component={PeopleDetails} />
+          </Switch>
+        </div>
+      </Router >
+    );
+  }
 }
 
 export default App;

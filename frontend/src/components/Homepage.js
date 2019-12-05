@@ -2,6 +2,20 @@ import React from 'react';
 
 import axios from 'axios';
 
+import {
+    Link,
+} from 'react-router-dom'
+
+// Style
+import './Homepage.css'
+import {
+    FormControl,
+    Select,
+} from '@material-ui/core'
+
+
+
+
 
 class HomePage extends React.Component {
 
@@ -11,18 +25,17 @@ class HomePage extends React.Component {
             inputValue: '',
             data: [],
             isLoading: false,
-
+            type_choise: 'Scegli una tipologia',
+            genres: []
         };
-        this.click = this.click.bind(this);
+        this.click = this.handleClick.bind(this);
     }
 
-    click() {
-        this.setState({ isLoading: true });
+    componentDidMount() {
         axios
-            .get(`http://127.0.0.1:8000/film/api/search/${this.state.inputValue}/`)
+            .get(`http://127.0.0.1:8000/movie/api/genres`)
             .then((response) => {
-                this.setState({ data: response.data, isLoading: false });
-                console.log(response);
+                this.setState({ genres: response.data });
             })
             .catch((err) => {
                 this.setState({ data: err, isLoading: false });
@@ -30,6 +43,25 @@ class HomePage extends React.Component {
             });
     }
 
+
+    handleClick() {
+        this.setState({ isLoading: true });
+        axios
+            .get(`http://127.0.0.1:8000/movie/api/search/${this.state.inputValue}/`)
+            .then((response) => {
+                this.setState({ data: response.data, isLoading: false });
+            })
+            .catch((err) => {
+                this.setState({ data: err, isLoading: false });
+                console.log(err);
+            });
+    }
+
+    handleChange = (event) => {
+        this.setState({
+            type_choise: event.target.value
+        })
+    }
 
     updateInputValue = (event) => {
         this.setState({
@@ -39,7 +71,7 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <div className='container'>
                 <div>
                     <form onSubmit={this.handleSubmit}>
                         <h1> Ricerca Film </h1>
@@ -52,20 +84,34 @@ class HomePage extends React.Component {
                                 placeholder="Titolo"
                             />
                         </label>
-                        <button onClick={this.click} disabled={this.state.isLoading}> Invia </button>
+                        <button onClick={this.handleClick} disabled={this.state.isLoading}> Invia </button>
                         <ul>
                             {this.state.data.map(film => {
                                 return <li key={film.title}> {film.title} con {film.imdb_id} </li>;
                             })}
                         </ul>
                     </form>
+                    <Link to='/movies/popular'>I 10 film più popolari</Link>
+                    <div>
+                        <FormControl>
+                            <Select
+                                labelId='type-of-movie-label'
+                                id='type-of-movie'
+                            >
+                                {this.state.genres.map((genre) => (
+                                    <option key={genre.id} value={genre.name}>{genre.name}</option>
+                                ))}
+
+                            </Select>
+                        </FormControl>
+                        <button>Ricerca</button>
+                    </div>
+
                 </div>
-            </React.Fragment>
+            </div>
         );
     }
 
 }
-
-
 
 export default HomePage

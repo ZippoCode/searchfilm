@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Film, Keyword, Genre
+from .models import Movie, Keyword, Genre
 
-admin.site.register(Film)
+admin.site.register(Movie)
 admin.site.register(Keyword)
 admin.site.register(Genre)

@@ -27,14 +27,14 @@
 <section>
     <p>Lista film girati</p>
     {% for film in object.Directors.all %}
-    <p><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></p>
+    <p><a href="{% url 'movie:detail-movie' film.id %}">{{ film }}</a></p>
     {% endfor %}
 </section>
 {% else %}
 <section>
     <p>Lista film interpretati</p>
     {% for film in object.Cast.all %}
-    <p><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></p>
+    <p><a href="{% url 'movie:detail-movie' film.id %}">{{ film }}</a></p>
     {% endfor %}
 </section>
 {% endif %}

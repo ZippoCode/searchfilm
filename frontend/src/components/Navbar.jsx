@@ -13,13 +13,6 @@ class NavBar extends Component {
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand href="/">
-                    <img
-                        src='./logo.png'
-                        width='30'
-                        height='30'
-                        className='d-inline-block aligh top'
-                        alt='Ricerca film'
-                    />
                     Ricerca Film
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -29,7 +22,7 @@ class NavBar extends Component {
                         <Nav.Link href="/about">About</Nav.Link>
                         <NavDropdown title="Top" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">Top film più votati</NavDropdown.Item>
-                            <NavDropdown.Item href="/popularMovies">Top film più popolari</NavDropdown.Item>
+                            <NavDropdown.Item href="/movies/popular">Top film più popolari</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="#action/3.3">Top Registi</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.4">Top Attori</NavDropdown.Item>

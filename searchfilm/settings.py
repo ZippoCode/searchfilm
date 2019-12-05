@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 
     # PERSONAL APP
     'homepage.apps.HomepageConfig',
-    'film.apps.FilmConfig',
+    'movie.apps.FilmConfig',
     'person.apps.PersonConfig',
     'account.apps.AccountConfig',
 

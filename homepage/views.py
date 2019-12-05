@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
 from .forms import HomePageForm, HomePageContacts
-from film.models import Film, Genre
+from movie.models import Movie, Genre
 
 
 def home(request):
@@ -13,12 +13,12 @@ def home(request):
         form = HomePageForm(request.POST)
         if form.is_valid():
             if request.POST.get('ricerca-genre'):
-                return HttpResponseRedirect('/film/show/genre/' + request.POST.get('genres'))
+                return HttpResponseRedirect('/movie/show/genre/' + request.POST.get('genres'))
             else:
                 text = form.cleaned_data['text']
                 try:
-                    film = Film.objects.get(title=text)
-                    return HttpResponseRedirect('film/' + str(film.id_film))
+                    film = Movie.objects.get(title=text)
+                    return HttpResponseRedirect('movie/' + str(film.id_film))
                 except:
                     return HttpResponseRedirect('/')
 

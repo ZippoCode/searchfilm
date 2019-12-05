@@ -6,7 +6,7 @@ import django, time
 
 django.setup()
 
-from film.models import Film, Keyword, Genre, Cast
+from movie.models import Movie, Keyword, Genre, Cast
 from person.models import Person
 import requests
 
@@ -22,7 +22,7 @@ PATH_PERSON = 'https://api.themoviedb.org/3/person/{}?api_key={}'
 
 def save_keywords(id_film, film):
     keywords_data = (requests.get(PATH_KEYWORDS.format(id_film, APIKEY_TMDB))).json()
-    if not 'keywords' is keywords_data:
+    if 'keywords' not in keywords_data:
         return
     keywords = keywords_data['keywords']
     for keyword in keywords:
@@ -66,7 +66,7 @@ def save_cast(id_film, film):
     for actor_data in data_credits['cast']:
         detail_actor_data = (requests.get(PATH_PERSON.format(actor_data['id'], APIKEY_TMDB))).json()
         actor = details_person(detail_actor_data, Person.TYPE_ACTOR)
-        cast = Cast(film=film, person=actor)
+        cast = Cast(movie=film, person=actor)
         if actor_data['character'] is not None:
             cast.name_character = actor_data['character']
         cast.save()
@@ -95,9 +95,9 @@ def save_film(id_film):
     original_title = film_data['original_title'] if film_data['original_title'] is not None else None
     print('Elaborazione ... ' + original_title)
     try:
-        film = Film.objects.get(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
+        film = Movie.objects.get(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
     except:
-        film = Film(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
+        film = Movie(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
     if film_data['release_date'] != '':
         film.release_date = datetime.datetime.strptime(film_data['release_date'], '%Y-%m-%d')
     film.save()
@@ -120,7 +120,7 @@ def save_film(id_film):
 
 if __name__ == '__main__':
     while True:
-        title_film = input('Inserisci il titolo di un film: ')
+        title_film = input('Inserisci il titolo di un movie: ')
         if title_film == '0':
             print('Exit ... ')
             break
@@ -128,7 +128,7 @@ if __name__ == '__main__':
         for film in request_json['results']:
             f = save_film(film['id'])
             # Similar Movies
-            print('Elaborazione film simili ... ')
+            print('Elaborazione movie simili ... ')
             request_json = (requests.get(PATH_SIMILAR_MOVIES.format(film['id'], APIKEY_TMDB))).json()
             for film in request_json['results']:
                 f = save_film(film['id'])

@@ -39,7 +39,7 @@
     </p>
     <section>
         Vota:
-        <form action="{% url 'film:vote-film' object.id_film %}" method="post">
+        <form action="{% url 'movie:vote-movie' object.id %}" method="post">
             {% csrf_token %}
             <select name="vote" id="vote">
                 <option value="1">1</option>

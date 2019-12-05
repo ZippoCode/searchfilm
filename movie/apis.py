@@ -5,12 +5,13 @@ from rest_framework import generics
 from django.http import Http404
 from django.contrib.postgres.search import TrigramSimilarity
 
-from .serializers import FilmSerializer
-from .models import Film
+from .serializers import MovieSerializer, GenreSerializers
+from .models import Movie, Genre
 
 
-class FilmListApi(APIView):
-    pass
+class GenreListAPI(generics.ListAPIView):
+    serializer_class = GenreSerializers
+    queryset = Genre.objects.all()
 
 
 class SearchFilmAPI(APIView):
@@ -18,25 +19,25 @@ class SearchFilmAPI(APIView):
     def get(self, request, query, format=None):
         try:
             ts = TrigramSimilarity('original_title', query)
-            films = Film.objects.annotate(similarity=ts).filter(
+            films = Movie.objects.annotate(similarity=ts).filter(
                 similarity__gt=0.3).order_by('-similarity')
         except:
             raise Http404
 
-        serializers = FilmSerializer(films, many=True)
+        serializers = MovieSerializer(films, many=True)
         return Response(serializers.data)
 
 
 class GetFilm(APIView):
     def get(self, request, film_id, format=None):
         try:
-            film = Film.objects.get(id_film=film_id)
-        except Film.DoesNotExist:
+            film = Movie.objects.get(id=film_id)
+        except Movie.DoesNotExist:
             raise Http404
-        serializer = FilmSerializer(film)
+        serializer = MovieSerializer(film)
         return Response(serializer.data)
 
 
 class GetPopularMovies(generics.ListCreateAPIView):
-    serializer_class = FilmSerializer
-    queryset = Film.objects.all().order_by('-vote_counter')[:10]
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all().order_by('-vote_counter')[:10]

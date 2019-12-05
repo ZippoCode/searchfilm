@@ -18,8 +18,8 @@ class Genre(models.Model):
         return self.name
 
 
-class Film(models.Model):
-    id_film = models.AutoField(primary_key=True)
+class Movie(models.Model):
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=80)
     original_title = models.CharField(max_length=80, null=True)
     imdb_id = models.CharField(max_length=10, unique=True, null=True)
@@ -32,7 +32,7 @@ class Film(models.Model):
     # Relantion
     directors = models.ManyToManyField(Person, related_name='Directors')
     writers = models.ManyToManyField(Person, related_name='Writers')
-    people = models.ManyToManyField(Person, related_name='Cast', through='Cast')
+    actors = models.ManyToManyField(Person, related_name='Cast', through='Cast')
     keywords = models.ManyToManyField(Keyword, related_name='Keywords')
     genres = models.ManyToManyField(Genre, related_name='Genres')
 
@@ -45,13 +45,13 @@ class Film(models.Model):
 
 class Cast(models.Model):
     """
-        Rappresenta il legame tra un film e un attore e memorizza
+        Rappresenta il legame tra un movie e un attore e memorizza
             - Il Film
             - L'attore
             - Il nome del personaggio interpretato
 
     """
-    film = models.ForeignKey(Film, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     name_character = models.CharField(max_length=255, null=True)
 

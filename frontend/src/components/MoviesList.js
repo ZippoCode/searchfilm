@@ -1,64 +1,56 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import {
-    BrowserRouter as Router,
-    Switch,
     Link,
 } from 'react-router-dom'
 
 
 import Axios from 'axios'
 
+// Style
+import './MovieList.css'
 
-import MovieDetails from './MovieDetail';
-
-export default class MoviesList extends React.Component {
+class MoviesList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             movies: [],
-            movie: ''
+            isLoading: true,
+            error: null
         }
     }
 
-
     componentDidMount() {
-        Axios.get('http://127.0.0.1:8000/film/api/getPopularMovies/')
-            .then(response => {
-                this.setState({ movies: response.data })
-            })
-            .catch(err => console.log(err))
+        Axios.get('http://127.0.0.1:8000/movie/api/getPopular/')
+            .then(response => this.setState({
+                movies: response.data
+            }))
+            .catch(err => this.setState({
+                error: err,
+                isLoading: false
+            }))
     }
 
 
     render() {
         return (
-            <Router>
-                <Fragment>
-                    <h2>I 10 film più popolari</h2>
-                    <ul>
-                        {this.state.movies.map((film, idx) => {
-
-                            return (
-                                <li key={idx}>
-                                    <Link to={{
-                                        pathname: '/movie',
-                                        state: { id: film.film_id}
-                                    }}>
-                                        {film.title}
-                                    </Link>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                </Fragment>
-                <Switch>
-                    <Router exact path='/movie'>
-                        <MovieDetails />
-                    </Router>
-                </Switch>
-
-            </Router>
-        )
+            <div class = 'container'>
+                <h2>I 10 film più popolari</h2>
+                <ul>
+                    {this.state.movies.map((movie, index) => (
+                        <li key={index}>
+                            <Link to={{
+                                pathname: `/movie/${movie.id}`,
+                            }}>
+                                {movie.title}
+                            </Link>
+                        </li>
+                    ))
+                    }
+                </ul>
+            </div >
+        );
     }
 }
+
+export default MoviesList;

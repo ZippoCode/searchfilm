@@ -10,8 +10,8 @@
     <p>Nessun film da visualizzare</p>
     {% else %}
     <ul>
-        {% for film in object_list %}
-        <li><a href="{% url 'film:detail-film' film.id_film %}">{{ film }}</a></li>
+        {% for movie in object_list %}
+        <li><a href="{% url 'movie:detail-movie' movie.id %}">{{ movie }}</a></li>
         {% endfor %}
     </ul>
     {% endif %}

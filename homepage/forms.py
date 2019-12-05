@@ -1,6 +1,6 @@
 from django import forms
 
-from film.models import Genre
+from movie.models import Genre
 
 
 class HomePageForm(forms.Form):
