@@ -49,9 +49,8 @@ class MovieDetails extends React.Component {
     }
 
     render() {
-        console.log(this.state.directors)
         return (
-            <div class='container'>
+            <div className='container'>
                 <h1>Dettagli Film </h1>
                 <h3>Titolo: {this.state.title}</h3>
                 <h3>Titolo originale: {this.state.original_title}</h3>

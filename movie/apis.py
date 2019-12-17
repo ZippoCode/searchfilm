@@ -9,11 +9,24 @@ from .serializers import MovieSerializer, GenreSerializers
 from .models import Movie, Genre
 
 
+# Genre APIs
 class GenreListAPI(generics.ListAPIView):
     serializer_class = GenreSerializers
     queryset = Genre.objects.all()
 
 
+class GenreMovieAPI(APIView):
+    def get(self, request, genre, format=None):
+        try:
+            movies = Movie.objects.filter(genres__name=genre)
+        except:
+            raise Http404
+
+        serializers = MovieSerializer(movies, many=True)
+        return Response(serializers.data)
+
+
+# Search movie APIs
 class SearchFilmAPI(APIView):
 
     def get(self, request, query, format=None):

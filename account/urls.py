@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import apis
 
 app_name = 'account'
 
@@ -15,4 +16,11 @@ urlpatterns = [
     path('logout/', views.logout, name='logout-account'),
     # EX 'account/edit
     path('edit/', views.editAccount, name='edit-account')
+]
+
+# URL's API
+urlpatterns += [
+    path('api/auth/user', apis.AccountAPI.as_view()),
+    path('api/auth/login', apis.LoginAccountAPI.as_view()),
+    path('api/auth/register', apis.RegisterAccountAPI.as_view())
 ]

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import {
     Link,
+    withRouter
 } from 'react-router-dom'
 
 // Style
@@ -11,6 +12,10 @@ import './Homepage.css'
 import {
     FormControl,
     Select,
+    FormHelperText,
+    Button,
+    InputLabel,
+    MenuItem
 } from '@material-ui/core'
 
 
@@ -25,7 +30,7 @@ class HomePage extends React.Component {
             inputValue: '',
             data: [],
             isLoading: false,
-            type_choise: 'Scegli una tipologia',
+            genre_choiced: '',
             genres: []
         };
         this.click = this.handleClick.bind(this);
@@ -43,7 +48,6 @@ class HomePage extends React.Component {
             });
     }
 
-
     handleClick() {
         this.setState({ isLoading: true });
         axios
@@ -59,7 +63,7 @@ class HomePage extends React.Component {
 
     handleChange = (event) => {
         this.setState({
-            type_choise: event.target.value
+            genre_choiced: event.target.value
         })
     }
 
@@ -84,7 +88,7 @@ class HomePage extends React.Component {
                                 placeholder="Titolo"
                             />
                         </label>
-                        <button onClick={this.handleClick} disabled={this.state.isLoading}> Invia </button>
+                        <Button onClick={this.handleClick} disabled={this.state.isLoading}> Invia </Button>
                         <ul>
                             {this.state.data.map(film => {
                                 return <li key={film.title}> {film.title} con {film.imdb_id} </li>;
@@ -94,24 +98,31 @@ class HomePage extends React.Component {
                     <Link to='/movies/popular'>I 10 film più popolari</Link>
                     <div>
                         <FormControl>
+                            <InputLabel id="genres-select-label">Genere</InputLabel>
                             <Select
-                                labelId='type-of-movie-label'
-                                id='type-of-movie'
+                                labelId='genres-choices-label'
+                                id='genres-of-movie'
+                                value={this.state.genre_choiced}
+                                onChange={this.handleChange}
                             >
                                 {this.state.genres.map((genre) => (
-                                    <option key={genre.id} value={genre.name}>{genre.name}</option>
+                                    <MenuItem key={genre.id} value={genre.name}>{genre.name}</MenuItem>
                                 ))}
-
                             </Select>
+                            <FormHelperText>Scegli una tipologia di film</FormHelperText>
                         </FormControl>
-                        <button>Ricerca</button>
+                        <Button variant='contained' onClick={(event) => (
+                            this.props.history.push(`/movies/popular/${this.state.genre_choiced}/`)
+                        )}
+                        >Ricerca
+                        </Button>
                     </div>
 
                 </div>
-            </div>
+            </div >
         );
     }
 
 }
 
-export default HomePage
+export default withRouter(HomePage)

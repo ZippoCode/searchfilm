@@ -1,40 +1,124 @@
 import React from 'react'
-import { Form, Button } from 'react-bootstrap';
+import {
+    Link,
+//    withRouter
+} from 'react-router-dom';
 
+import { connect } from 'react-redux'
+import { userActions } from '../_actions/user.action'
+
+
+
+// Style
+import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 
-export default function Login(props) {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+//Auth
+//import axios from 'axios';
 
-    function validateForm() {
-        return email.length > 0 && password.length > 0;
+
+class Login extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.props.logout(); // Reset Login State
+
+        this.state = {
+            email: '',
+            password: '',
+        }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    return (
-        <div className='Login'>
-            <Form onSubmit='handleSubmit'>
-                <Form.Group controlId='email' bsSize='large'>
-                    <Form.Label>E-mail</Form.Label>
-                    <Form.Control
-                        autoFocus
-                        type='email'
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group controlId='password' bsSize='large'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <Button block bsSize='large' disabled={!validateForm()} type='Submit'>
-                    Login
-                </Button>
-            </Form>
-        </div>
-    )
+    validateForm() {
+        return this.state.email.length > 0 && this.state.password.length > 0;
+    }
+
+    handleChange(event) {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    }
+
+
+    async handleSubmit(event) {
+        event.preventDefault();
+        /*
+        var bodyFormData = new FormData();
+        bodyFormData.append('username', this.state.email);
+        bodyFormData.append('password', this.state.password);
+
+        await axios.post('http://127.0.0.1:8000/account/api/auth/login', bodyFormData)
+            .then(response => {
+                console.log(response);
+                this.props.setAuthenticated(true, response.data.token);
+                this.props.history.push('/');
+            })
+            .catch(error => {
+                alert('Credenziali errate. Error: ' + error.status);
+            });
+        */
+        const { email, password } = this.state;
+        this.props.login(email, password);
+    }
+
+    render() {
+        const { email, password } = this.state;
+
+        return (
+            <div className='Login' >
+                <h3>Login</h3>
+                <Form onSubmit={(event) => { this.handleSubmit(event) }}>
+                    <Form.Group controlId='email' bssize='large'>
+                        <Form.Label>E-mail</Form.Label>
+                        <Form.Control
+                            autoFocus
+                            name='email'
+                            type='email'
+                            value={email}
+                            onChange={this.handleChange}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId='password' bssize='large'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            name='password'
+                            type='password'
+                            value={password}
+                            onChange={this.handleChange}
+                        />
+                    </Form.Group>
+                    <div className="form-group">
+                        <Button
+                            block bssize='large'
+                            disabled={!this.validateForm()}
+                            type='Submit'
+                        >
+                            Login
+                        </Button>
+                        <Link to='/register' className='btn btn-link'>Registrati</Link>
+                    </div>
+                </Form>
+            </div>
+        )
+    }
 }
+
+
+function mapState(state) {
+    const { loggingIn } = state.authentication;
+    return { loggingIn };
+}
+
+const actionsCreators = {
+    login: userActions.login,
+    logout: userActions.logout
+}
+
+const connectedLoginPage = connect(mapState, actionsCreators)(Login);
+
+
+//export default withRouter(Login);
+export { connectedLoginPage as Login };

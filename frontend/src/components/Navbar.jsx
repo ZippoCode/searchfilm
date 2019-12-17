@@ -28,13 +28,31 @@ class NavBar extends Component {
                             <NavDropdown.Item href="#action/3.4">Top Attori</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Form inline>
-                        <Button
-                            href='/login'
-                            variant="outline-success">
-                            Login
-                        </Button>
-                    </Form>
+                    {localStorage.getItem('user')
+                        ?
+                        <Form inline>
+                            <Button
+                                href='/details'
+                                variant='outline-success'>
+                                Visualizza Dettagli
+                            </Button>
+                            <Button
+                                href = '/login'
+                                onClick={this.props.handleLogout}
+                                variant='outline-success'>
+                                Logout
+                            </Button>
+                        </Form>
+                        : <>
+                            <Form inline>
+                                <Button
+                                    href='/login'
+                                    variant="outline-success">
+                                    Login
+                                </Button>
+                            </Form>
+                        </>
+                    }
                 </Navbar.Collapse>
             </Navbar>
         );
