@@ -7,7 +7,7 @@ import {
 import Axios from 'axios'
 
 // Style
-import './MovieList.css'
+import './MoviesList.css'
 
 class MoviesList extends React.Component {
 
@@ -48,11 +48,12 @@ class MoviesList extends React.Component {
 
 
     render() {
+        const  {movies} = this.state
         return (
             <div className='container'>
                 <h2>I 10 film più popolari {this.state.genre}</h2>
                 <ul>
-                    {this.state.movies.map((movie, index) => (
+                    {movies.map((movie, index) => (
                         <li key={index}>
                             <Link to={{
                                 pathname: `/movie/${movie.id}`,

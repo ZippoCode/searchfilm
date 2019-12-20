@@ -3,8 +3,10 @@ import React from 'react';
 import Axios from 'axios';
 
 // Style
-import './PeopleDetails.css';
-class MovieDetails extends React.Component {
+import './PeopleDetail.css';
+
+
+class PeopleDetail extends React.Component {
 
     constructor(props) {
         super(props);
@@ -38,4 +40,4 @@ class MovieDetails extends React.Component {
     }
 }
 
-export default MovieDetails;
+export default PeopleDetail;

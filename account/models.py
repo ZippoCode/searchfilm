@@ -1,6 +1,9 @@
+# Python importing
+import datetime
+# Django importing
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+# External importing
 from movie.models import Movie
 
 
@@ -10,24 +13,31 @@ class Account(AbstractUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     # Custom Fields
-    favorites = models.ManyToManyField(Movie, related_name='FavoriteFilm', through='FavoriteFilm')
-    votes = models.ManyToManyField(Movie, related_name='VoteFilm', through='VoteFilm')
+    favorites = models.ManyToManyField(Movie, related_name='FavoriteMovie', through='FavoriteMovie')
+    votes = models.ManyToManyField(Movie, related_name='VoteMovie', through='VoteMovie')
 
     def __str__(self):
         return str(self.email)
 
 
-class FavoriteFilm(models.Model):
+class FavoriteMovie(models.Model):
     person = models.ForeignKey(Account, on_delete=models.CASCADE)
-    film = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     date_add = models.DateField()
 
+    def save(self, *args, **kwargs):
+        self.date_add = datetime.date.today()
+        super().save(*args, **kwargs)
 
-class VoteFilm(models.Model):
+    def __str__(self):
+        return "" + self.person.email + " - " + str(self.movie.id);
+
+
+class VoteMovie(models.Model):
     """
-        Questa classe memorizza i voti degli utenti
+        Store the account's vote
     """
     person = models.ForeignKey(Account, on_delete=models.CASCADE)
-    film = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     date_vote = models.DateField()
-    vote = models.IntegerField()
+    value_vote = models.IntegerField()

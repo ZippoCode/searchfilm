@@ -6,7 +6,7 @@ from django.views import generic
 import datetime
 
 from .models import Movie
-from account.models import VoteFilm, FavoriteFilm
+from account.models import VoteMovie, FavoriteMovie
 
 
 class IndexView(generic.ListView):
@@ -33,9 +33,9 @@ class DetailView(View):
         film = Movie.objects.get(id=kwargs['pk'])
         value = dict()
         if request.user.is_active:
-            value['is_preferred'] = request.user.favorites.filter(id_film=kwargs['pk']).count() > 0
+            value['is_preferred'] = request.user.favorites.filter(id=kwargs['pk']).count() > 0
             try:
-                vf = VoteFilm.objects.get(person=request.user, film=film)
+                vf = VoteMovie.objects.get(person=request.user, film=film)
                 value['vote'] = vf.vote
             except:
                 pass
@@ -66,11 +66,11 @@ def vote(request, id_film):
     film = Movie.objects.get(id_film=id_film)
     value = request.POST.get('vote')
 
-    if VoteFilm.objects.filter(person=account, film=film):
-        vf = VoteFilm.objects.get(person=account, film=film)
+    if VoteMovie.objects.filter(person=account, film=film):
+        vf = VoteMovie.objects.get(person=account, film=film)
 
     else:
-        vf = VoteFilm(person=account, film=film)
+        vf = VoteMovie(person=account, film=film)
     vf.date_vote = datetime.date.today()
     vf.vote = value
     vf.save()
@@ -84,11 +84,8 @@ def vote(request, id_film):
 @login_required
 def add_to_preferite(request, id_film):
     account = request.user
-    film = Movie.objects.get(pk=id_film)
-    favorite = FavoriteFilm()
-    favorite.person = account
-    favorite.film = film
-    favorite.date_add = datetime.date.today()
+    movie = Movie.objects.get(id=id_film)
+    favorite = FavoriteMovie(person=account, movie=movie)
     favorite.save()
     return redirect('movie:detail-movie', pk=id_film)
 
@@ -96,5 +93,5 @@ def add_to_preferite(request, id_film):
 @login_required
 def remove_to_preferite(request, id_film):
     account = request.user
-    account.favorites.remove(Movie.objects.get(id_film=id_film))
+    account.favorites.remove(Movie.objects.get(id=id_film))
     return redirect('movie:detail-movie', pk=id_film)

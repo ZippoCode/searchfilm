@@ -22,5 +22,6 @@ urlpatterns = [
 urlpatterns += [
     path('api/auth/user', apis.AccountAPI.as_view()),
     path('api/auth/login', apis.LoginAccountAPI.as_view()),
-    path('api/auth/register', apis.RegisterAccountAPI.as_view())
+    path('api/auth/register', apis.RegisterAccountAPI.as_view()),
+    path('api/movies', apis.AccountMoviesApi.as_view())
 ]

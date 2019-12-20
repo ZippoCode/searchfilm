@@ -20,6 +20,7 @@ class CastSerializers(serializers.ModelSerializer):
         fields = ['person', 'person_id', 'name_character']
 
 
+# Movie Serializer with Actors and Directors
 class MovieSerializer(serializers.ModelSerializer):
     actors = CastSerializers(source='cast_set', many=True)
     directors = PersonSerializers(many=True)
@@ -37,3 +38,10 @@ class MovieSerializer(serializers.ModelSerializer):
         :return:
         """
         return Movie.objects.create(**validated_data)
+
+
+# Movie Serializer with Name and id
+class MovieNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ['id', 'title']

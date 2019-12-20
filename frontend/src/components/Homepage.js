@@ -19,9 +19,6 @@ import {
 } from '@material-ui/core'
 
 
-
-
-
 class HomePage extends React.Component {
 
     constructor(props) {
@@ -76,6 +73,7 @@ class HomePage extends React.Component {
     render() {
         return (
             <div className='container'>
+                
                 <div>
                     <form onSubmit={this.handleSubmit}>
                         <h1> Ricerca Film </h1>

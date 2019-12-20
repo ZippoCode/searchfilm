@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 
 import { connect } from 'react-redux'
-import { userActions } from '../_actions/user.action'
+import { userActions } from '../../_actions/user.action'
 
 
 
@@ -43,23 +43,9 @@ class Login extends React.Component {
     }
 
 
-    async handleSubmit(event) {
+    handleSubmit(event) {
         event.preventDefault();
-        /*
-        var bodyFormData = new FormData();
-        bodyFormData.append('username', this.state.email);
-        bodyFormData.append('password', this.state.password);
 
-        await axios.post('http://127.0.0.1:8000/account/api/auth/login', bodyFormData)
-            .then(response => {
-                console.log(response);
-                this.props.setAuthenticated(true, response.data.token);
-                this.props.history.push('/');
-            })
-            .catch(error => {
-                alert('Credenziali errate. Error: ' + error.status);
-            });
-        */
         const { email, password } = this.state;
         this.props.login(email, password);
     }
@@ -107,7 +93,7 @@ class Login extends React.Component {
 }
 
 
-function mapState(state) {
+function mapStateToProps(state) {
     const { loggingIn } = state.authentication;
     return { loggingIn };
 }
@@ -117,8 +103,5 @@ const actionsCreators = {
     logout: userActions.logout
 }
 
-const connectedLoginPage = connect(mapState, actionsCreators)(Login);
-
-
-//export default withRouter(Login);
+const connectedLoginPage = connect(mapStateToProps, actionsCreators)(Login);
 export { connectedLoginPage as Login };

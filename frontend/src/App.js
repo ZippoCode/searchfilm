@@ -3,8 +3,10 @@ import {
   Router,
   Switch,
   Route,
-  // withRouter
+  Redirect
 } from 'react-router-dom'
+
+import { connect } from 'react-redux';
 
 
 import { history } from './_helpers/history'
@@ -13,17 +15,13 @@ import { history } from './_helpers/history'
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 
-import { Login } from './components/Login';
-import { Register } from './components/Register';
+import { Login, AccountDetail, Register } from './components/Account';
+import { MoviesList, MovieDetails, PeopleDetail } from './components/Movie';
+
 
 import {
-  NavBar,
   HomePage,
-  MoviesList,
-  MovieDetails,
-  PeopleDetails,
-  //  PrivateRoute,
-  AccountDetails
+  NavBar
 } from './components';
 
 class App extends React.Component {
@@ -31,38 +29,45 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    history.listen((location, action) => {
-      //this.props.clearAlert();
-    })
+    this.state = {
+      loggedIn: '',
+    }
 
+    history.listen((location, action) => {
+      console.log(action, location.pathname, location.state);
+    });
+  }
+
+  componentDidMount() {
+    this.setState({ loggedIn: localStorage.getItem('loggedIn') })
   }
 
 
   render() {
     return (
-      <Router history={history}>
-        <div>
-          <NavBar />
+      <div>
+        <NavBar loggedIn={this.state.loggedIn} />
+        <Router history={history}>
           <Switch>
-            <Route exact path='/'>
-              < HomePage />
-            </Route>
+            <Route exact path='/' component={HomePage} />
 
             <Route path='/login' component={Login} />
             <Route path='/register' component={Register} />
-            <Route path='/details' component={AccountDetails} />
+            <Route path='/details' component={AccountDetail} />
 
 
             <Route exact path='/movies/popular' component={MoviesList} />
             <Route path='/movies/popular/:genre' component={MoviesList} />
             <Route path='/movie/:id' component={MovieDetails} />
-            <Route path='/person/:id' component={PeopleDetails} />
+            <Route path='/person/:id' component={PeopleDetail} />
 
+            <Redirect from='*' to='/' />
           </Switch>
-        </div>
-      </Router>
+        </Router>
+      </div>
     );
   }
 }
 
-export default App;
+const connectedApp = connect()(App);
+export { connectedApp as App };

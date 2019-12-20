@@ -9,7 +9,22 @@ import {
 } from 'react-bootstrap'
 
 class NavBar extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: null,
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            user: localStorage.getItem('user'),
+        })
+    }
+
     render() {
+        const { user } = this.state;
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand href="/">
@@ -28,7 +43,7 @@ class NavBar extends Component {
                             <NavDropdown.Item href="#action/3.4">Top Attori</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    {localStorage.getItem('user')
+                    {user
                         ?
                         <Form inline>
                             <Button
@@ -37,7 +52,7 @@ class NavBar extends Component {
                                 Visualizza Dettagli
                             </Button>
                             <Button
-                                href = '/login'
+                                href='/login'
                                 onClick={this.props.handleLogout}
                                 variant='outline-success'>
                                 Logout
