@@ -23,14 +23,16 @@ class FavoriteMoviesSerializer(serializers.ModelSerializer):
         model = FavoriteMovie
         fields = ['movie', 'title', 'date_add']
 
+
 # class favorite movies serializer
 class AccountWithMoviesSerializer(serializers.ModelSerializer):
     favorites = FavoriteMoviesSerializer(source='favoritemovie_set', many=True)
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'favorites']
+        fields = ['id', 'username', 'first_name', 'last_name', 'favorites']
         read_only_fields = ['id']
+
 
 # Register Account Serializer
 class RegisterAccountSerializer(serializers.ModelSerializer):

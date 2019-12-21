@@ -16,7 +16,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 
 import { Login, AccountDetail, Register } from './components/Account';
-import { MoviesList, MovieDetails, PeopleDetail } from './components/Movie';
+import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
 
 
 import {
@@ -58,7 +58,7 @@ class App extends React.Component {
 
             <Route exact path='/movies/popular' component={MoviesList} />
             <Route path='/movies/popular/:genre' component={MoviesList} />
-            <Route path='/movie/:id' component={MovieDetails} />
+            <Route path='/movie/:id' component={MovieDetail} />
             <Route path='/person/:id' component={PeopleDetail} />
 
             <Redirect from='*' to='/' />

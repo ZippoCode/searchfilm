@@ -12,7 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountWithMoviesSerializer)
+from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountWithMoviesSerializer,
+                          FavoriteMoviesSerializer)
 from .models import Account, FavoriteMovie
 
 # External importing
@@ -50,9 +51,14 @@ class AccountMoviesApi(views.APIView):
             favoriteMovie = FavoriteMovie(person=account, movie=movie)
             favoriteMovie.save()
             serializer = AccountWithMoviesSerializer(account)
+            token, _ = Token.objects.get_or_create(user=account)
+            response = {'token': token.key}
+            response.update(serializer.data)
         except Account.DoesNotExist:
             return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        except Movie.DoesNotExist:
+            return Response('Movie not found', status=status.HTTP_404_NOT_FOUND)
+        return Response(response, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request, *args, **kwargs):
         try:
@@ -60,9 +66,13 @@ class AccountMoviesApi(views.APIView):
             movie = Movie.objects.get(id=self.request.data.get('id'))
             account.favorites.remove(movie)
             serializer = AccountWithMoviesSerializer(account)
+            token, _ = (Token.objects.get_or_create(user=account))
+            token, _ = Token.objects.get_or_create(user=account)
+            response = {'token': token.key}
+            response.update(serializer.data)
         except Account.DoesNotExist:
             return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(response, status=status.HTTP_202_ACCEPTED)
 
 
 # Login Account API
@@ -73,11 +83,9 @@ class LoginAccountAPI(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         account = serializer.validated_data['user']
         token, _ = Token.objects.get_or_create(user=account)
-        return Response({
-            'token': token.key,
-            'user_id': account.pk,
-            'email': account.email
-        })
+        data = (AccountWithMoviesSerializer(account)).data
+        data['token'] = token.key
+        return Response(data, status=status.HTTP_202_ACCEPTED)
 
 
 # Register APIs

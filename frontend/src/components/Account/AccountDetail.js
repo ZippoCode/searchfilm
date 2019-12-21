@@ -1,46 +1,21 @@
 import React from 'react';
 
 import { Link } from 'react-router-dom';
-
-import axios from 'axios';
+import { connect } from 'react-redux';
 
 class AccountDetails extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: '',
-            movies: []
-        }
-    }
-
-    componentDidMount() {
-        const user = JSON.parse(localStorage.getItem('user'));
-
-        axios.get('http://127.0.0.1:8000/account/api/movies',
-            {
-                headers: {
-                    'Authorization': 'Token '.concat(user.token)
-                }
-            })
-            .then(response => {
-                this.setState({
-                    email: response.data.username,
-                    movies: response.data.favorites
-                })
-            });
-    }
-
-
     render() {
-        const { email, movies } = this.state;
+        const { email, first_name, last_name, favorites } = this.props;
         return (
             <div className='container' >
                 <h1>Dettagli Account: </h1>
                 <h3>Email: {email}</h3>
+                <h3>Name: {first_name}</h3>
+                <h3>Cognome: {last_name}</h3>
                 <h3>I tuoi film preferiti</h3>
                 <ul>
-                    {movies.map((movie, index) => (
+                    {favorites.map((movie, index) => (
                         <li key={index}>
                             <Link to={{
                                 pathname: `/movie/${movie.movie}`
@@ -48,8 +23,7 @@ class AccountDetails extends React.Component {
                                 {movie.title}
                             </Link>
                         </li>
-                    ))
-                    }
+                    ))}
                 </ul>
             </div>
         );
@@ -57,4 +31,15 @@ class AccountDetails extends React.Component {
 
 }
 
-export default AccountDetails;
+function mapStateToProps(state) {
+    const { user } = state.authentication;
+    const { email, first_name, last_name, favorites } = user;
+    return { email, first_name, last_name, favorites }
+}
+
+const actionCreators = {
+
+}
+
+const connectedAccountDetail = connect(mapStateToProps, actionCreators)(AccountDetails);
+export { connectedAccountDetail as AccountDetail };

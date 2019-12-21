@@ -49,7 +49,7 @@ function register(user) {
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    alert('Error: ' + error.status)
+                    alert('Error: '.concat(error.status));
                 }
             )
     }
@@ -60,8 +60,52 @@ function register(user) {
 }
 
 
+function add_to_favorites(user, id_movie) {
+    return dispatch => {
+
+        dispatch(request(user));
+
+        userService.put_favorite(user, id_movie)
+            .then(
+                user => {
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    alert('Error: '.concat(error.status));
+                });
+
+        function request(user) { return { type: userConstants.ADD_PREFERITE_REQUEST, user } }
+        function success(user) { return { type: userConstants.ADD_PREFERITE_SUCCESS, user } }
+        function failure(error) { return { type: userConstants.ADD_PREFERITE_FAILURE, error } }
+    }
+}
+
+function remove_to_favorites(user, id_movie) {
+    return dispatch => {
+
+        dispatch(request(user));
+
+        userService.remove_favorite(user, id_movie)
+            .then(
+                user => {
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    alert('Error: '.concat(error.status));
+                });
+
+        function request(user) { return { type: userConstants.ADD_PREFERITE_REQUEST, user } }
+        function success(user) { return { type: userConstants.ADD_PREFERITE_SUCCESS, user } }
+        function failure(error) { return { type: userConstants.ADD_PREFERITE_FAILURE, error } }
+    }
+}
+
 export const userActions = {
     login,
     logout,
-    register
+    register,
+    add_to_favorites,
+    remove_to_favorites
 }

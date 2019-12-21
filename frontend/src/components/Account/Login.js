@@ -1,7 +1,7 @@
 import React from 'react'
 import {
     Link,
-//    withRouter
+    //    withRouter
 } from 'react-router-dom';
 
 import { connect } from 'react-redux'
@@ -12,10 +12,6 @@ import { userActions } from '../../_actions/user.action'
 // Style
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
-
-//Auth
-//import axios from 'axios';
-
 
 class Login extends React.Component {
 
