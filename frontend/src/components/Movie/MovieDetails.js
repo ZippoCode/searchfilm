@@ -10,8 +10,11 @@ import { userActions } from '../../_actions/user.action'
 
 // Style
 import {
-    Button
-} from 'react-bootstrap';
+    FormControl,
+    Select,
+    Button,
+    MenuItem
+} from '@material-ui/core'
 import './MovieDetails.css'
 
 class MovieDetails extends React.Component {
@@ -20,11 +23,15 @@ class MovieDetails extends React.Component {
         super(props);
         this.state = {
             movie: [],
+            value_vote: '',
             cast: [],
             directors: []
         }
         this.handleAdd = this.handleAdd.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleAddVoteMovie = this.handleAddVoteMovie.bind(this);
+        this.handleRemoveVoteMovie = this.handleRemoveVoteMovie.bind(this);
 
     }
 
@@ -40,6 +47,12 @@ class MovieDetails extends React.Component {
             }))
     }
 
+    handleChange = (event) => {
+        this.setState({
+            value_vote: event.target.value
+        })
+    }
+
     handleAdd() {
         const { user } = this.props;
         const { id } = this.state.movie;
@@ -52,10 +65,24 @@ class MovieDetails extends React.Component {
         this.props.remove_movie(user, id);
     }
 
+    handleAddVoteMovie() {
+        const { user } = this.props;
+        const { movie, value_vote } = this.state;
+        const { id } = movie;
+        this.props.add_vote_movie(user, id, value_vote);
+    }
+
+    handleRemoveVoteMovie() {
+        const { user } = this.props;
+        const { id } = this.state;
+        this.props.remove_vote_movie(user, id);
+    }
+
     render() {
         let { title, original_title, imdb_id,
             description, release_date, vote_average,
-            vote_count } = this.state.movie;
+            vote_counter } = this.state.movie;
+        let { value_vote } = this.state;
         let button;
         let { favorites } = this.props;
         let isFavorite = favorites.some(elem => elem.title === title);
@@ -74,7 +101,7 @@ class MovieDetails extends React.Component {
                     <h3>Descrizione: {description}</h3>
                     <h3>Data rilascio: {release_date}</h3>
                     <h3>Voto medio: {vote_average}</h3>
-                    <h3>Numero voti: {vote_count}</h3>
+                    <h3>Numero voti: {vote_counter}</h3>
                 </div>
                 <h3>Attori:</h3>
                 <ul>
@@ -101,6 +128,30 @@ class MovieDetails extends React.Component {
                 <div>
                     {button}
                 </div>
+                <p></p>
+                <div>
+                    <FormControl>
+                        <Select
+                            labelId='genres-choices-label'
+                            id='vote-value'
+                            value={value_vote}
+                            onChange={this.handleChange}
+                        >
+                            <MenuItem value={1}>1</MenuItem>
+                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={3}>3</MenuItem>
+                            <MenuItem value={4}>4</MenuItem>
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={6}>6</MenuItem>
+                            <MenuItem value={7}>7</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                            <MenuItem value={9}>9</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+
+                        </Select>
+                    </FormControl>
+                    <Button variant='contained' onClick={this.handleAddVoteMovie} >Vota</Button>
+                </div>
             </div>
         );
     }
@@ -115,15 +166,16 @@ function ButtonRemoveFavorite(props) {
 }
 
 function mapStateToProps(state) {
-    const { user } = state.userAddRemoveMovie;
-    const { favorites } = user
-    return { user, favorites };
+    const { user } = state.authentication;
+    const { favorites, voted } = user
+    return { user, favorites, voted };
 }
 
 const actionCreators = {
     put_movie: userActions.add_to_favorites,
-    remove_movie: userActions.remove_to_favorites
-
+    remove_movie: userActions.remove_to_favorites,
+    add_vote_movie: userActions.add_vote,
+    remove_vote_movie: userActions.remove_vote,
 }
 
 const connectedMovieDetails = connect(mapStateToProps, actionCreators)(MovieDetails);

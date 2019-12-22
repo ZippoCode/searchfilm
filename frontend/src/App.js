@@ -18,7 +18,6 @@ import "./App.css";
 import { Login, AccountDetail, Register } from './components/Account';
 import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
 
-
 import {
   HomePage,
   NavBar
@@ -46,7 +45,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <NavBar loggedIn={this.state.loggedIn} />
+        <NavBar />
         <Router history={history}>
           <Switch>
             <Route exact path='/' component={HomePage} />

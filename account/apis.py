@@ -12,9 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountWithMoviesSerializer,
-                          FavoriteMoviesSerializer)
-from .models import Account, FavoriteMovie
+from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountFMSerializer, AccountVMSerializer)
+from .models import Account, FavoriteMovie, VotedMovie
 
 # External importing
 from movie.models import Movie
@@ -30,16 +29,60 @@ class AccountAPI(generics.RetrieveAPIView):
         return self.request.user
 
 
-# Get User API with movie. Allow to view favorite movies list and put a movie
-class AccountMoviesApi(views.APIView):
+# Get User with favorite movies API with movie. Allow to view favorite movies list and put a movie
+class AccountFavoriteMoviesAPI(views.APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    serializer_class = AccountWithMoviesSerializer
+    serializer_class = AccountFMSerializer
 
     def get(self, request, *args, **kwargs):
         try:
             account = Account.objects.get(username=self.request.user)
-            serializer = AccountWithMoviesSerializer(account)
+            serializer = AccountFMSerializer(account)
+        except Account.DoesNotExist:
+            return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        try:
+            account = Account.objects.get(username=request.user)
+            movie = Movie.objects.get(id=request.data.get('id'))
+            favoriteMovie, _ = account.favoritemovie_set.get_or_create(movie=movie)
+            favoriteMovie.save()
+            serializer = AccountFMSerializer(account)
+            token, _ = Token.objects.get_or_create(user=account)
+            response = {'token': token.key}
+            response.update(serializer.data)
+        except Account.DoesNotExist:
+            return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
+        except Movie.DoesNotExist:
+            return Response('Movie not found', status=status.HTTP_404_NOT_FOUND)
+        return Response(response, status=status.HTTP_202_ACCEPTED)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            account = Account.objects.get(username=request.user)
+            movie = Movie.objects.get(id=request.data.get('id'))
+            account.favorites.remove(movie)
+            serializer = AccountFMSerializer(account)
+            token, _ = Token.objects.get_or_create(user=account)
+            response = {'token': token.key}
+            response.update(serializer.data)
+        except Account.DoesNotExist:
+            return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
+        return Response(response, status=status.HTTP_202_ACCEPTED)
+
+
+# Get User API with voted movie. Allow to view voted movies list and put a vote in a movie
+class AccountVotedMoviesAPI(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = AccountVMSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            account = Account.objects.get(username=request.user)
+            serializer = AccountVMSerializer(account)
         except Account.DoesNotExist:
             return Response('Account not found', status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.data)
@@ -47,10 +90,23 @@ class AccountMoviesApi(views.APIView):
     def put(self, request, *args, **kwargs):
         try:
             account = Account.objects.get(username=self.request.user)
-            movie = Movie.objects.get(id=self.request.data.get('id'))
-            favoriteMovie = FavoriteMovie(person=account, movie=movie)
-            favoriteMovie.save()
-            serializer = AccountWithMoviesSerializer(account)
+            movie = Movie.objects.get(id=request.data.get('id'))
+            value = int(request.data.get('value_vote'))
+            if value < 0 or value > 0:
+                return Response({'Error': 'Value vote outside range'}, status=status.HTTP_400_BAD_REQUEST)
+            '''
+            votedMovie, _ = account.votedmovie_set.get_or_create(movie=movie)
+            votedMovie.value_vote = value
+            votedMovie.save()
+            '''
+            if VotedMovie.objects.filter(person=account, movie=movie):
+                votedMovie = VotedMovie.objects.get(person=account, movie=movie)
+
+            else:
+                votedMovie = VotedMovie(person=account, movie=movie)
+            votedMovie.value_vote = value
+            votedMovie.save()
+            serializer = AccountVMSerializer(account)
             token, _ = Token.objects.get_or_create(user=account)
             response = {'token': token.key}
             response.update(serializer.data)
@@ -64,9 +120,8 @@ class AccountMoviesApi(views.APIView):
         try:
             account = Account.objects.get(username=self.request.user)
             movie = Movie.objects.get(id=self.request.data.get('id'))
-            account.favorites.remove(movie)
-            serializer = AccountWithMoviesSerializer(account)
-            token, _ = (Token.objects.get_or_create(user=account))
+            account.votes.remove(movie)
+            serializer = AccountVMSerializer(account)
             token, _ = Token.objects.get_or_create(user=account)
             response = {'token': token.key}
             response.update(serializer.data)
@@ -83,7 +138,7 @@ class LoginAccountAPI(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         account = serializer.validated_data['user']
         token, _ = Token.objects.get_or_create(user=account)
-        data = (AccountWithMoviesSerializer(account)).data
+        data = (AccountSerializer(account)).data
         data['token'] = token.key
         return Response(data, status=status.HTTP_202_ACCEPTED)
 

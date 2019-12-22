@@ -6,7 +6,7 @@ from django.views import generic
 import datetime
 
 from .models import Movie
-from account.models import VoteMovie, FavoriteMovie
+from account.models import FavoriteMovie, VotedMovie
 
 
 class IndexView(generic.ListView):
@@ -35,7 +35,7 @@ class DetailView(View):
         if request.user.is_active:
             value['is_preferred'] = request.user.favorites.filter(id=kwargs['pk']).count() > 0
             try:
-                vf = VoteMovie.objects.get(person=request.user, film=film)
+                vf = VotedMovie.objects.get(person=request.user, film=film)
                 value['vote'] = vf.vote
             except:
                 pass
@@ -63,16 +63,15 @@ class ShowFilmWithTag(generic.ListView):
 @login_required
 def vote(request, id_film):
     account = request.user
-    film = Movie.objects.get(id_film=id_film)
+    film = Movie.objects.get(id=id_film)
     value = request.POST.get('vote')
 
-    if VoteMovie.objects.filter(person=account, film=film):
-        vf = VoteMovie.objects.get(person=account, film=film)
+    if VotedMovie.objects.filter(person=account, movie=film):
+        vf = VotedMovie.objects.get(person=account, movie=film)
 
     else:
-        vf = VoteMovie(person=account, film=film)
-    vf.date_vote = datetime.date.today()
-    vf.vote = value
+        vf = VotedMovie(person=account, movie=film)
+    vf.value_vote = value
     vf.save()
 
     film.vote_counter += 1

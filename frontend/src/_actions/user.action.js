@@ -102,10 +102,53 @@ function remove_to_favorites(user, id_movie) {
     }
 }
 
+
+function add_vote(user, id_movie, value_vote) {
+    return dispatch => {
+        dispatch(request(user));
+
+        userService.add_vote(user, id_movie, value_vote)
+            .then(
+                user => {
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    alert('Error: '.concat(error.status));
+                });
+
+        function request(user) { return { type: userConstants.ADD_VOTE_REQUEST, user } }
+        function success(user) { return { type: userConstants.ADD_VOTE_SUCCESS, user } }
+        function failure(error) { return { type: userConstants.ADD_VOTE_FAILURE, error } }
+    }
+}
+
+function remove_vote(user, id_movie) {
+    return dispatch => {
+
+        dispatch(request(user));
+
+        userService.remove_vote(user, id_movie)
+            .then(
+                user => {
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    alert('Error: '.concat(error.status));
+                });
+
+        function request(user) { return { type: userConstants.REMOVE_VOTE_REQUEST, user } }
+        function success(user) { return { type: userConstants.REMOVE_VOTE_SUCCESS, user } }
+        function failure(error) { return { type: userConstants.REMOVE_VOTE_FAILURE, error } }
+    }
+}
 export const userActions = {
     login,
     logout,
     register,
     add_to_favorites,
-    remove_to_favorites
+    remove_to_favorites,
+    add_vote,
+    remove_vote
 }

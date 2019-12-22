@@ -1,10 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 
 import axios from 'axios';
 
 import {
     Link,
-    withRouter
 } from 'react-router-dom'
 
 // Style
@@ -73,7 +74,7 @@ class HomePage extends React.Component {
     render() {
         return (
             <div className='container'>
-                
+
                 <div>
                     <form onSubmit={this.handleSubmit}>
                         <h1> Ricerca Film </h1>
@@ -123,4 +124,5 @@ class HomePage extends React.Component {
 
 }
 
-export default withRouter(HomePage)
+const connectedHomePage = connect()(HomePage);
+export { connectedHomePage as HomePage };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux'
 import {
     Navbar,
     Nav,
@@ -10,21 +10,8 @@ import {
 
 class NavBar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
-            user: localStorage.getItem('user'),
-        })
-    }
-
     render() {
-        const { user } = this.state;
+        const { user } = this.props;
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand href="/">
@@ -53,7 +40,6 @@ class NavBar extends Component {
                             </Button>
                             <Button
                                 href='/login'
-                                onClick={this.props.handleLogout}
                                 variant='outline-success'>
                                 Logout
                             </Button>
@@ -74,4 +60,14 @@ class NavBar extends Component {
     }
 }
 
-export default NavBar;
+
+function mapStateToProps(state) {
+    const { user } = state.authentication;
+    return { user }
+}
+
+const actionsCreator = {
+}
+
+const connectedNavBar = connect(mapStateToProps, actionsCreator)(NavBar);
+export { connectedNavBar as NavBar };

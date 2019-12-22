@@ -1,18 +1,8 @@
-# Python importing
-import datetime
-
 # Rest importing
 from rest_framework import serializers
 
-from .models import Account, FavoriteMovie
-
-
-# Account Serializer
-class AccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Account
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
-        read_only_fields = ['id']
+# Internal importing
+from .models import Account, FavoriteMovie, VotedMovie
 
 
 # class favorite movies serializer
@@ -24,13 +14,43 @@ class FavoriteMoviesSerializer(serializers.ModelSerializer):
         fields = ['movie', 'title', 'date_add']
 
 
+# Class voted movie serializer
+class VotedMovieSerializer(serializers.ModelSerializer):
+    title = serializers.ReadOnlyField(source='movie.title')
+
+    class Meta:
+        model = VotedMovie
+        fields = ['movie', 'title', 'date_vote', 'value_vote']
+
+
 # class favorite movies serializer
-class AccountWithMoviesSerializer(serializers.ModelSerializer):
+class AccountFMSerializer(serializers.ModelSerializer):
     favorites = FavoriteMoviesSerializer(source='favoritemovie_set', many=True)
 
     class Meta:
         model = Account
         fields = ['id', 'username', 'first_name', 'last_name', 'favorites']
+        read_only_fields = ['id']
+
+
+# Class for voted movies serializer
+class AccountVMSerializer(serializers.ModelSerializer):
+    voted = VotedMovieSerializer(source='votedmovie_set', many=True)
+
+    class Meta:
+        model = Account
+        fields = ['id', 'username', 'first_name', 'last_name', 'voted']
+        read_only_fields = ['id']
+
+
+# Account Serializer
+class AccountSerializer(serializers.ModelSerializer):
+    favorites = FavoriteMoviesSerializer(source='favoritemovie_set', many=True)
+    voted = VotedMovieSerializer(source='votedmovie_set', many=True)
+
+    class Meta:
+        model = Account
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'favorites', 'voted']
         read_only_fields = ['id']
 
 
