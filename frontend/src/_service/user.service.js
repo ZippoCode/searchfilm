@@ -1,8 +1,10 @@
 const PATH_LOGIN = 'http://127.0.0.1:8000/account/api/auth/login';
+const PATH_LOGOUT = 'http://127.0.0.1:8000/account/api/auth/logout';
 const PATH_FAVORITE = 'http://127.0.0.1:8000/account/api/favorite';
 const PATH_VOTE = 'http://127.0.0.1:8000/account/api/voted';
 
-function login(username, password) {
+
+async function login(username, password) {
     const requestInfo = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -10,31 +12,37 @@ function login(username, password) {
     }
 
 
-    return fetch(PATH_LOGIN, requestInfo)
+    return await fetch(PATH_LOGIN, requestInfo)
         .then(handleResponse)
         .then(user => {
             localStorage.setItem('user', JSON.stringify(user));
             return user;
         })
-        .catch(error => {
-            console.log(error);
-            alert('Credenziali errate. Error: ' + error.status);
-        });
 }
 
-function logout() {
-    localStorage.removeItem('user');
+function logout(token) {
+    var headers = new Headers();
+    headers.append("Authorization", "Token ".concat(token));
+
+    var requestOptions = {
+        method: 'GET',
+        headers: headers,
+    };
+
+    fetch(PATH_LOGOUT, requestOptions)
+        .then(localStorage.removeItem('user'))
+    localStorage.removeItem('user')
 }
 
 
-function register(user) {
+async function register(user) {
     const requestInfo = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     }
 
-    return fetch('http://127.0.0.1:8000/account/api/auth/register', requestInfo)
+    return await fetch('http://127.0.0.1:8000/account/api/auth/register', requestInfo)
         .then(handleResponse);
 }
 
@@ -124,21 +132,22 @@ async function remove_vote(user, id_movie) {
 
 
 function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                logout();
-                //location.reload(true);
+    return response.text()
+        .then(text => {
+            const data = text && JSON.parse(text);
+            console.log(response);
+            if (!response.ok) {
+                if (response.status === 400) {
+                    logout();
+                    window.location.reload(true);
+                }
+
+                const error = (data && data.message) || response.statusText;
+                return Promise.reject(error);
             }
 
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-
-        return data;
-    });
+            return data;
+        });
 }
 
 

@@ -17,8 +17,8 @@ class Login extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.props.logout(); // Reset Login State
+        if (this.props.token)
+            this.props.logout(this.props.token); // Reset Login State
 
         this.state = {
             email: '',
@@ -90,7 +90,11 @@ class Login extends React.Component {
 
 
 function mapStateToProps(state) {
-    const { loggingIn } = state.authentication;
+    const { loggingIn, loggedIn } = state.authentication;
+    if (loggedIn) {
+        const { token } = state.authentication.user;
+        return { loggingIn, token }
+    }
     return { loggingIn };
 }
 

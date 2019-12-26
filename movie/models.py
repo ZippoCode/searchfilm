@@ -1,4 +1,7 @@
+# Django importing
 from django.db import models
+#from django.core.exceptions import ValidationError
+
 from person.models import Person
 
 
@@ -38,6 +41,9 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.original_title
+
+    def validate_unique(self, exclude=None):
+        super().validate_unique(exclude)
 
     class Meta:
         ordering = ["title"]

@@ -83,14 +83,20 @@ class MovieDetails extends React.Component {
             description, release_date, vote_average,
             vote_counter } = this.state.movie;
         let { value_vote } = this.state;
+        let { user } = this.props;
         let button;
-        let { favorites } = this.props;
-        let isFavorite = favorites.some(elem => elem.title === title);
-        if (isFavorite) {
-            button = <ButtonRemoveFavorite onClick={this.handleRemove} />
+        if (user) {
+            let { favorites } = this.props;
+            const isFavorite = favorites.some(elem => elem.title === title);
+            if (isFavorite) {
+                button = <ButtonRemoveFavorite onClick={this.handleRemove} />
+            } else {
+                button = <ButtonAddFavorite onClick={this.handleAdd} />
+            }
         } else {
             button = <ButtonAddFavorite onClick={this.handleAdd} />
         }
+
         return (
             <div className='container'>
                 <div>
@@ -167,8 +173,10 @@ function ButtonRemoveFavorite(props) {
 
 function mapStateToProps(state) {
     const { user } = state.authentication;
-    const { favorites, voted } = user
-    return { user, favorites, voted };
+    if (user) {
+        const { favorites, voted } = user;
+        return { user, favorites, voted };
+    }
 }
 
 const actionCreators = {

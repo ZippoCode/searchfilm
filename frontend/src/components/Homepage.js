@@ -4,10 +4,6 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import {
-    Link,
-} from 'react-router-dom'
-
 // Style
 import './Homepage.css'
 import {
@@ -18,6 +14,8 @@ import {
     InputLabel,
     MenuItem
 } from '@material-ui/core'
+
+import { movieAction } from '../_actions/movie.action'
 
 
 class HomePage extends React.Component {
@@ -74,7 +72,6 @@ class HomePage extends React.Component {
     render() {
         return (
             <div className='container'>
-
                 <div>
                     <form onSubmit={this.handleSubmit}>
                         <h1> Ricerca Film </h1>
@@ -94,7 +91,6 @@ class HomePage extends React.Component {
                             })}
                         </ul>
                     </form>
-                    <Link to='/movies/popular'>I 10 film più popolari</Link>
                     <div>
                         <FormControl>
                             <InputLabel id="genres-select-label">Genere</InputLabel>
@@ -111,7 +107,7 @@ class HomePage extends React.Component {
                             <FormHelperText>Scegli una tipologia di film</FormHelperText>
                         </FormControl>
                         <Button variant='contained' onClick={(event) => (
-                            this.props.history.push(`/movies/popular/${this.state.genre_choiced}/`)
+                            this.props.viewPopolarGenre(this.state.genre_choiced)
                         )}
                         >Ricerca
                         </Button>
@@ -124,5 +120,17 @@ class HomePage extends React.Component {
 
 }
 
-const connectedHomePage = connect()(HomePage);
+
+function mapPropsToState(state) {
+    return { state };
+}
+
+const actionCreator = {
+    viewPopolarGenre: movieAction.viewTopPopularWithGenre,
+    viewTopPopular: movieAction.viewTopPopular,
+
+}
+
+
+const connectedHomePage = connect(mapPropsToState, actionCreator)(HomePage);
 export { connectedHomePage as HomePage };

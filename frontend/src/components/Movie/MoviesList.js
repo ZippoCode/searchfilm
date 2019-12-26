@@ -1,16 +1,18 @@
-import React from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
+
 import {
     Link,
-} from 'react-router-dom'
+} from 'react-router-dom';
 
-
-import Axios from 'axios'
+//import Axios from 'axios';
 
 // Style
 import './MoviesList.css'
 
 class MoviesList extends React.Component {
 
+    /*
     constructor(props) {
         super(props);
         this.state = {
@@ -44,29 +46,46 @@ class MoviesList extends React.Component {
                     isLoading: false
                 }))
         }
-    }
+    }*/
 
 
     render() {
-        const  {movies} = this.state
+        const { movies, typeList } = this.props
+        let emptyList = (movies === undefined || movies.length === 0);
         return (
             <div className='container'>
-                <h2>I 10 film più popolari {this.state.genre}</h2>
-                <ul>
-                    {movies.map((movie, index) => (
-                        <li key={index}>
-                            <Link to={{
-                                pathname: `/movie/${movie.id}`,
-                            }}>
-                                {movie.title}
-                            </Link>
-                        </li>
-                    ))
-                    }
-                </ul>
+                {typeList === 'POPULAR' ?
+                    (<h2>Lista film popolari</h2>)
+                    :
+                    (<h2>Lista film maggiormente votati</h2>)
+                }
+                {!emptyList ? (
+                    <ul>
+                        {movies.map((movie, index) => (
+                            <li key={index}>
+                                <Link to={{
+                                    pathname: `/movie/${movie.id}`
+                                }}>
+                                    {movie.title}
+                                </Link>
+                                {typeList === 'RANKING' ? (<p>Vote: {movie.vote_average}</p>) : (<p></p>)}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (<p>Nessun film.</p>)
+                }
             </div >
         );
     }
 }
 
-export default MoviesList;
+function mapStateToProps(state) {
+    const { movies, typeList } = state.moviesList
+    return { movies, typeList }
+}
+
+const actionCreator = {
+}
+
+const connectedMoviesList = connect(mapStateToProps, actionCreator)(MoviesList);
+export { connectedMoviesList as MoviesList }

@@ -30,18 +30,16 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'original_title', 'imdb_id', 'description', 'release_date', 'vote_average',
                   'vote_counter', 'actors', 'directors']
 
-    def create(self, validated_data):
-        """
-            Create and return a new 'Film' instance, given the validated data
 
-        :param validated_data:
-        :return:
-        """
-        return Movie.objects.create(**validated_data)
-
-
-# Movie Serializer with Name and id
-class MovieNameSerializer(serializers.ModelSerializer):
+# Movie Serializer with Id and Title
+class MovieSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title']
+
+
+# Movie serializer with ID, Title, Vote Average and Vote Counter
+class MovieSimpleVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ['id', 'title', 'vote_counter', 'vote_average']

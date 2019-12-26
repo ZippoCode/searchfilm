@@ -8,7 +8,10 @@ import {
     NavDropdown
 } from 'react-bootstrap'
 
+
+import { movieAction } from '../_actions/movie.action';
 class NavBar extends Component {
+
 
     render() {
         const { user } = this.props;
@@ -23,8 +26,12 @@ class NavBar extends Component {
                         <Nav.Link href="/">Home Page</Nav.Link>
                         <Nav.Link href="/about">About</Nav.Link>
                         <NavDropdown title="Top" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Top film più votati</NavDropdown.Item>
-                            <NavDropdown.Item href="/movies/popular">Top film più popolari</NavDropdown.Item>
+                            <NavDropdown.Item onClick={this.props.viewTopRankingMovie}>
+                                Top film più votati
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={this.props.viewTopPopularMovie}>
+                                Top film più popolari
+                            </NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="#action/3.3">Top Registi</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.4">Top Attori</NavDropdown.Item>
@@ -62,11 +69,15 @@ class NavBar extends Component {
 
 
 function mapStateToProps(state) {
-    const { user } = state.authentication;
+    //const { authentication, moviesList } = state;
+    const { authentication } = state;
+    const { user } = authentication;
     return { user }
 }
 
 const actionsCreator = {
+    viewTopPopularMovie: movieAction.viewTopPopular,
+    viewTopRankingMovie: movieAction.viewTopRanked,
 }
 
 const connectedNavBar = connect(mapStateToProps, actionsCreator)(NavBar);

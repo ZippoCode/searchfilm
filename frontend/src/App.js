@@ -45,8 +45,9 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <NavBar />
         <Router history={history}>
+          <NavBar />
+
           <Switch>
             <Route exact path='/' component={HomePage} />
 
@@ -55,7 +56,8 @@ class App extends React.Component {
             <Route path='/details' component={AccountDetail} />
 
 
-            <Route exact path='/movies/popular' component={MoviesList} />
+            <Route exact path='/movies/top/popular' component={MoviesList} />
+            <Route exact path='/movies/top/ranking' component={MoviesList} />
             <Route path='/movies/popular/:genre' component={MoviesList} />
             <Route path='/movie/:id' component={MovieDetail} />
             <Route path='/person/:id' component={PeopleDetail} />

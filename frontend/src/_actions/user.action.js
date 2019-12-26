@@ -19,7 +19,7 @@ function login(username, password) {
 
                 error => {
                     dispatch(failure(error.toString()));
-                    alert(error); // MESSAGGIO DI ERRORE
+                    alert('Credenziali errate'); // MESSAGGIO DI ERRORE
                 }
             );
 
@@ -30,8 +30,8 @@ function login(username, password) {
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
-function logout() {
-    userService.logout();
+function logout(token) {
+    userService.logout(token);
     return { type: userConstants.LOGOUT }
 }
 

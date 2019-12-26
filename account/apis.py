@@ -92,7 +92,7 @@ class AccountVotedMoviesAPI(views.APIView):
             account = Account.objects.get(username=self.request.user)
             movie = Movie.objects.get(id=request.data.get('id'))
             value = int(request.data.get('value_vote'))
-            if value < 0 or value > 0:
+            if value < 0 or value > 10:
                 return Response({'Error': 'Value vote outside range'}, status=status.HTTP_400_BAD_REQUEST)
             '''
             votedMovie, _ = account.votedmovie_set.get_or_create(movie=movie)
@@ -101,7 +101,6 @@ class AccountVotedMoviesAPI(views.APIView):
             '''
             if VotedMovie.objects.filter(person=account, movie=movie):
                 votedMovie = VotedMovie.objects.get(person=account, movie=movie)
-
             else:
                 votedMovie = VotedMovie(person=account, movie=movie)
             votedMovie.value_vote = value
@@ -141,6 +140,16 @@ class LoginAccountAPI(ObtainAuthToken):
         data = (AccountSerializer(account)).data
         data['token'] = token.key
         return Response(data, status=status.HTTP_202_ACCEPTED)
+
+
+# Logout Account API
+class LogoutAccountAPI(views.APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    
+    def get(self, request, *args, **kwargs):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 # Register APIs
