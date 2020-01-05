@@ -15,6 +15,12 @@ export function authentication(state = initialState, action) {
             return {};
         case userConstants.LOGOUT:
             return {};
+        case userConstants.CHANGE_PASSWORD_REQUEST:
+            return { user: action.user };
+        case userConstants.CHANGE_PASSWORD_SUCCESS:
+            return {};
+        case userConstants.CHANGE_PASSWORD_FAILURE:
+            return {};
         case userConstants.ADD_PREFERITE_REQUEST:
             return { loading: true, user: action.user };
         case userConstants.ADD_PREFERITE_SUCCESS: {

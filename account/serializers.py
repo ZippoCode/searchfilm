@@ -54,6 +54,13 @@ class AccountSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+# Change Password Serializer
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    model = Account
+
+
 # Register Account Serializer
 class RegisterAccountSerializer(serializers.ModelSerializer):
     class Meta:

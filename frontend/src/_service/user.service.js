@@ -1,8 +1,20 @@
 const PATH_LOGIN = 'http://127.0.0.1:8000/account/api/auth/login';
 const PATH_LOGOUT = 'http://127.0.0.1:8000/account/api/auth/logout';
+const PATH_CHANGE_PASSWORD = 'http://127.0.0.1:8000/account/api/auth/change_password';
 const PATH_FAVORITE = 'http://127.0.0.1:8000/account/api/favorite';
 const PATH_VOTE = 'http://127.0.0.1:8000/account/api/voted';
 
+
+export const userService = {
+    login,
+    logout,
+    change_password,
+    register,
+    put_favorite,
+    remove_favorite,
+    add_vote,
+    remove_vote
+}
 
 async function login(username, password) {
     const requestInfo = {
@@ -10,7 +22,6 @@ async function login(username, password) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     }
-
 
     return await fetch(PATH_LOGIN, requestInfo)
         .then(handleResponse)
@@ -34,6 +45,24 @@ function logout(token) {
     localStorage.removeItem('user')
 }
 
+// Change passowrd of user
+async function change_password(token, old_password, new_password) {
+    var headers = new Headers();
+    headers.append("Authorization", "Token ".concat(token));
+    var formdata = new FormData();
+    formdata.append("old_password", old_password);
+    formdata.append("new_password", new_password);
+
+    var requestOptions = {
+        method: 'PUT',
+        headers: headers,
+        body: formdata,
+    };
+
+    return await fetch(PATH_CHANGE_PASSWORD, requestOptions)
+        .then(handleResponse)
+}
+
 
 async function register(user) {
     const requestInfo = {
@@ -45,7 +74,6 @@ async function register(user) {
     return await fetch('http://127.0.0.1:8000/account/api/auth/register', requestInfo)
         .then(handleResponse);
 }
-
 
 
 async function put_favorite(user, id_movie) {
@@ -64,9 +92,13 @@ async function put_favorite(user, id_movie) {
     return await fetch(PATH_FAVORITE, requestOptions)
         .then(handleResponse)
         .then(user => {
-            return user;
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            currentUser.favorites = user.favorites
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            return currentUser;
         });
 }
+
 
 async function remove_favorite(user, id_movie) {
     var headers = new Headers();
@@ -84,7 +116,10 @@ async function remove_favorite(user, id_movie) {
     return await fetch(PATH_FAVORITE, requestOptions)
         .then(handleResponse)
         .then(user => {
-            return user;
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            currentUser.favorites = user.favorites
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            return currentUser;
         });
 }
 
@@ -106,7 +141,10 @@ async function add_vote(user, id_movie, value_vote) {
     return await fetch(PATH_VOTE, requestOptions)
         .then(handleResponse)
         .then(user => {
-            return user;
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            currentUser.voted = user.voted
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            return currentUser;
         });
 }
 
@@ -126,7 +164,10 @@ async function remove_vote(user, id_movie) {
     return await fetch(PATH_VOTE, requestOptions)
         .then(handleResponse)
         .then(user => {
-            return user;
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            currentUser.voted = user.voted
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            return currentUser;
         });
 }
 
@@ -135,7 +176,6 @@ function handleResponse(response) {
     return response.text()
         .then(text => {
             const data = text && JSON.parse(text);
-            console.log(response);
             if (!response.ok) {
                 if (response.status === 400) {
                     logout();
@@ -148,16 +188,4 @@ function handleResponse(response) {
 
             return data;
         });
-}
-
-
-
-export const userService = {
-    login,
-    logout,
-    register,
-    put_favorite,
-    remove_favorite,
-    add_vote,
-    remove_vote
 }

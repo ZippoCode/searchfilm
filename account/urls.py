@@ -23,6 +23,7 @@ urlpatterns += [
     path('api/auth/user', apis.AccountAPI.as_view()),
     path('api/auth/login', apis.LoginAccountAPI.as_view()),
     path('api/auth/logout', apis.LogoutAccountAPI.as_view()),
+    path('api/auth/change_password', apis.ChangePasswordAPI.as_view()),
     path('api/auth/register', apis.RegisterAccountAPI.as_view()),
     # API for relation with movies
     path('api/favorite', apis.AccountFavoriteMoviesAPI.as_view()),

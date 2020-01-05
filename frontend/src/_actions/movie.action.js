@@ -6,7 +6,8 @@ import { history } from '../_helpers/history';
 export const movieAction = {
     viewTopPopular,
     viewTopPopularWithGenre,
-    viewTopRanked
+    viewTopRanked,
+    searchMovie
 }
 
 function viewTopPopular() {
@@ -48,7 +49,6 @@ function viewTopPopularWithGenre(genre) {
 }
 
 
-
 function viewTopRanked() {
     return dispatch => {
         dispatch(request());
@@ -69,3 +69,22 @@ function viewTopRanked() {
     function failure(error) { return { type: movieConstant.VIEW_TOP_RANKING_MOVIE_FAILURE, error } }
 }
 
+function searchMovie(title_movie) {
+
+    return dispatch => {
+        dispatch(request(title_movie));
+
+        movieService.searchMovie(title_movie)
+            .then(
+                movie => {
+                    dispatch(success(movie));
+                    history.push('/movie/'.concat(movie.id));
+                },
+                error => dispatch(failure(error))
+            )
+    }
+
+    function request(title) { return { type: movieConstant.SEARCH_MOVIE_REQUEST, title } }
+    function success(movie) { return { type: movieConstant.SEARCH_MOVIE_SUCCESS, movie } }
+    function failure(error) { return { type: movieConstant.SEARCH_MOVIE_FAILURE, error } }
+}

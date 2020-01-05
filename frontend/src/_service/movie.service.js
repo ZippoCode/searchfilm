@@ -1,6 +1,22 @@
+const PATH_SEARCH_MOVIE = 'http://127.0.0.1:8000/movie/api/search/';
 const PATH_POPULAR = 'http://127.0.0.1:8000/movie/api/topPopular';
 const PATH_POPULAR_GENRE = 'http://127.0.0.1:8000/movie/api/topPopular/';
 const PATH_RANKING = 'http://127.0.0.1:8000/movie/api/topRanking';
+
+
+export const movieService = {
+    searchMovie,
+    getTopPopular,
+    getTopPopularWithGenre,
+    getTopRanked,
+}
+
+function searchMovie(title_movie) {
+    return fetch(PATH_SEARCH_MOVIE.concat(title_movie))
+        .then(response => { return response.json(); })
+        .then(data => { return data })
+        .catch(error => console.log(error))
+}
 
 function getTopPopular() {
 
@@ -29,11 +45,4 @@ async function getTopRanked() {
             return response.json();
         }).then(data => { return data })
         .catch(error => console.log(error))
-}
-
-
-export const movieService = {
-    getTopPopular,
-    getTopPopularWithGenre,
-    getTopRanked,
 }

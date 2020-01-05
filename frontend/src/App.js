@@ -7,21 +7,15 @@ import {
 } from 'react-router-dom'
 
 import { connect } from 'react-redux';
-
-
 import { history } from './_helpers/history'
 
 
-import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { Login, AccountDetail, Register } from './components/Account';
+import { LoginPage, ProfilePage, RegisterPage } from './components/Account';
 import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
-
-import {
-  HomePage,
-  NavBar
-} from './components';
+import { HomePage, AppBarCustom } from './components';
 
 class App extends React.Component {
 
@@ -46,15 +40,15 @@ class App extends React.Component {
     return (
       <div>
         <Router history={history}>
-          <NavBar />
+          <CssBaseline />
+          <AppBarCustom />
 
           <Switch>
             <Route exact path='/' component={HomePage} />
 
-            <Route path='/login' component={Login} />
-            <Route path='/register' component={Register} />
-            <Route path='/details' component={AccountDetail} />
-
+            <Route path='/login' component={LoginPage} />
+            <Route path='/register' component={RegisterPage} />
+            <Route path='/account-details' component={ProfilePage} />
 
             <Route exact path='/movies/top/popular' component={MoviesList} />
             <Route exact path='/movies/top/ranking' component={MoviesList} />

@@ -12,8 +12,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountFMSerializer, AccountVMSerializer)
-from .models import Account, FavoriteMovie, VotedMovie
+from .serializers import (AccountSerializer, RegisterAccountSerializer, AccountFMSerializer, AccountVMSerializer,
+                          ChangePasswordSerializer)
+from .models import Account, VotedMovie
 
 # External importing
 from movie.models import Movie
@@ -146,10 +147,31 @@ class LoginAccountAPI(ObtainAuthToken):
 class LogoutAccountAPI(views.APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    
+
     def get(self, request, *args, **kwargs):
         request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response({'Response': 'Successful Logout.'}, status=status.HTTP_200_OK)
+
+
+class ChangePasswordAPI(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = ChangePasswordSerializer
+
+    def put(self, request, *args, **kwargs):
+        account = request.user
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            if not account.check_password(serializer.data.get('old_password')):
+                return Response({'Error old password': 'Old password is wrong'}, status=status.HTTP_400_BAD_REQUEST)
+            account.set_password(serializer.data.get('new_password'))
+            account.save()
+            return Response({
+                'Message': 'Password update successful',
+            }, status=status.HTTP_200_OK, )
+
+        return Response({'Error. Bad request': ' Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Register APIs
@@ -157,6 +179,7 @@ class RegisterAccountAPI(generics.GenericAPIView):
     serializer_class = RegisterAccountSerializer
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         account = serializer.save()

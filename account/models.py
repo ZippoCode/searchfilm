@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils import timezone
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -49,19 +49,26 @@ class VotedMovie(models.Model):
         return "{} has voted {} : {} - {}".format(self.person, self.movie, self.value_vote, self.date_vote)
 
 
-
-@receiver(post_save, sender=VotedMovie)
-def update_votes(sender, instance, **kwargs):
+@receiver(pre_save, sender=VotedMovie)
+def pre_voteMovie(sender, instance, **kwargs):
     """
-        Update counter and average of votes from Movie's instance
+        Delete a relationship VotedMovie when the user has already voted
+        the current movie
     """
     movie = instance.movie
     account = instance.person
-    # if VotedMovie.objects.filter(movie=movie, person=account).exists():
-    # The user's vote is already present
-    #    return
-    # movie.vote_counter = VotedMovie.objects.filter(movie=movie).count()
-    movie.vote_counter += 1
-    movie.vote_average = (movie.vote_average + int(instance.value_vote)) / movie.vote_counter
-    movie.save()
+    if VotedMovie.objects.filter(movie=movie, person=account).exists():
+        movie = Movie.objects.get(title=movie)
+        account.votes.remove(movie)
 
+
+@receiver(post_save, sender=VotedMovie)
+def post_voteMovie(sender, instance, **kwargs):
+    """
+        Update the movie's counter and rating after the user has voted
+    """
+    movie = instance.movie
+    movie.vote_counter = VotedMovie.objects.filter(movie=movie).count()
+    value = VotedMovie.objects.filter(movie=movie).aggregate(vote_average=models.Avg('value_vote'))
+    movie.vote_average = value['vote_average']
+    movie.save()

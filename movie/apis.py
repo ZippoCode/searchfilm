@@ -22,14 +22,19 @@ class SearchFilmAPI(views.APIView):
 
     def get(self, request, query, format=None):
         try:
+            '''
             ts = TrigramSimilarity('original_title', query)
             films = Movie.objects.annotate(similarity=ts).filter(
                 similarity__gt=0.3).order_by('-similarity')
+            '''
+            film = Movie.objects.get(title=query)
         except:
             raise Http404
 
-        serializers = MovieSerializer(films, many=True)
-        return Response(serializers.data)
+        # serializers = MovieSerializer(films, many=True)
+        # return Response(serializers.data)
+        serializer = MovieSerializer(film)
+        return Response(serializer.data)
 
 
 class GetFilm(views.APIView):

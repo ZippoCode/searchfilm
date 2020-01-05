@@ -1,3 +1,3 @@
-export { Login } from './Login';
-export { Register } from './Register'
-export { AccountDetail } from './AccountDetail';
+export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage'
+export { ProfilePage } from './ProfilePage';

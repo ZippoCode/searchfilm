@@ -2,10 +2,21 @@ import { userConstants } from '../_constants/user.constants';
 import { userService } from '../_service/user.service'
 // ALERT ACTIONS
 
-
 import { history } from '../_helpers/history';
 
+export const userActions = {
+    login,
+    logout,
+    changePassword,
+    register,
+    add_to_favorites,
+    remove_to_favorites,
+    add_vote,
+    remove_vote
+}
+
 function login(username, password) {
+
     return dispatch => {
 
         dispatch(request({ username }));
@@ -14,7 +25,7 @@ function login(username, password) {
             .then(
                 user => {
                     dispatch(success(user));
-                    history.push('/');
+                    history.goBack();
                 },
 
                 error => {
@@ -32,7 +43,34 @@ function login(username, password) {
 
 function logout(token) {
     userService.logout(token);
+    history.push('/');
     return { type: userConstants.LOGOUT }
+}
+
+function changePassword(user, old_password, new_password) {
+    console.log(user, old_password, new_password);
+    return dispatch => {
+
+        dispatch(request(user));
+
+        const { token } = user;
+        userService.change_password(token, old_password, new_password)
+            .then(
+                user => {
+                    dispatch(success());
+                    userService.logout(token);
+                    history.push('/');
+                },
+                error => {
+                    dispatch(failure(error.toString))
+                    dispatch(alert(error.toString()));
+                }
+            )
+    }
+
+    function request(user) { return { type: userConstants.CHANGE_PASSWORD_REQUEST, user } }
+    function success() { return { type: userConstants.LOGOUT } }
+    function failure(error) { return { type: userConstants.CHANGE_PASSWORD_FAILURE, error } }
 }
 
 function register(user) {
@@ -142,13 +180,4 @@ function remove_vote(user, id_movie) {
         function success(user) { return { type: userConstants.REMOVE_VOTE_SUCCESS, user } }
         function failure(error) { return { type: userConstants.REMOVE_VOTE_FAILURE, error } }
     }
-}
-export const userActions = {
-    login,
-    logout,
-    register,
-    add_to_favorites,
-    remove_to_favorites,
-    add_vote,
-    remove_vote
 }

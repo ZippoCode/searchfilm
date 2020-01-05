@@ -2,10 +2,10 @@ import React from 'react';
 
 import Axios from 'axios';
 import { connect } from 'react-redux';
-
 import { Link } from 'react-router-dom';
 
 import { userActions } from '../../_actions/user.action'
+import { history } from '../../_helpers/history'
 
 
 // Style
@@ -55,6 +55,9 @@ class MovieDetails extends React.Component {
 
     handleAdd() {
         const { user } = this.props;
+        if (!user) {
+            return history.push('/login')
+        }
         const { id } = this.state.movie;
         this.props.put_movie(user, id);
     }
@@ -67,6 +70,9 @@ class MovieDetails extends React.Component {
 
     handleAddVoteMovie() {
         const { user } = this.props;
+        if (!user) {
+            return history.push('/login')
+        }
         const { movie, value_vote } = this.state;
         const { id } = movie;
         this.props.add_vote_movie(user, id, value_vote);
@@ -86,12 +92,17 @@ class MovieDetails extends React.Component {
         let { user } = this.props;
         let button;
         if (user) {
-            let { favorites } = this.props;
+            let { favorites, voted } = this.props;
             const isFavorite = favorites.some(elem => elem.title === title);
             if (isFavorite) {
                 button = <ButtonRemoveFavorite onClick={this.handleRemove} />
             } else {
                 button = <ButtonAddFavorite onClick={this.handleAdd} />
+            }
+            const isVoted = voted.some(elem => elem.title === title);
+            if (isVoted) {
+                const movie = voted.find(object => object.title === title)
+                value_vote = movie.value_vote;
             }
         } else {
             button = <ButtonAddFavorite onClick={this.handleAdd} />
@@ -177,6 +188,7 @@ function mapStateToProps(state) {
         const { favorites, voted } = user;
         return { user, favorites, voted };
     }
+    return { 'None': 'None' };
 }
 
 const actionCreators = {

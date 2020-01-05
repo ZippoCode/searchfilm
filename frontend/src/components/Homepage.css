@@ -1,5 +1,10 @@
-.container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+.Container-HomePage {
+    background: #e65c00;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(45deg, #e0eafc,  #cfdef3);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(45deg, #e0eafc, #cfdef3);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    text-align: center;
+    height: 100vh;
 }

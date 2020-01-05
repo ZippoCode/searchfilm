@@ -80,7 +80,7 @@ class MoviesList extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { movies, typeList } = state.moviesList
+    const { movies, typeList } = state.movie
     return { movies, typeList }
 }
 
