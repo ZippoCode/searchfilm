@@ -6,8 +6,9 @@ import { App } from './App'
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 
-import { store } from './_helpers/store'
+import configureStore from './_helpers/store'
 
+const store = configureStore();
 
 ReactDOM.render(
     <Provider store={store}>

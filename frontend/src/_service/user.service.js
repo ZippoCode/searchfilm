@@ -16,14 +16,14 @@ export const userService = {
     remove_vote
 }
 
-async function login(username, password) {
+// Login
+function login(username, password) {
     const requestInfo = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     }
-
-    return await fetch(PATH_LOGIN, requestInfo)
+    return fetch(PATH_LOGIN, requestInfo)
         .then(handleResponse)
         .then(user => {
             localStorage.setItem('user', JSON.stringify(user));

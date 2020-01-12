@@ -1,27 +1,32 @@
 import React from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
-import { movieAction } from '../_actions/movie.action'
+import { movieAction } from '../_actions/movie.action';
+import { userActions } from '../_actions/user.action';
 
 // Style
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Drawer, List, ListItem, ListItemText, Divider, CssBaseline } from '@material-ui/core';
+import { Drawer, List, ListItem, ListItemText, Divider, CssBaseline, Menu, MenuItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
+// Icon
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import AccountCircle from '@material-ui/icons/AccountCircle'
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
+    },
+    appbar: {
+        background: '#1F2120'
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -47,6 +52,9 @@ export function AppBarCustom() {
     const theme = useTheme();
 
     const [open, setOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const openMenu = Boolean(anchorEl);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -55,10 +63,23 @@ export function AppBarCustom() {
         setOpen(false);
     };
 
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    }
+
+    const { token } = useSelector(state => state.authentication.user) || 'null';
+    const handleLogout = () => {
+        dispatch(userActions.logout(token));
+    }
+
     return (
         <div className={classes.root} >
             <CssBaseline />
-            <AppBar position="static">
+            <AppBar className={classes.appbar} position="static">
                 <Toolbar>
                     <IconButton
                         className={classes.menuButton}
@@ -73,10 +94,29 @@ export function AppBarCustom() {
                         SearchMovie
                     </Typography>
                     {user ?
-                        (<ButtonGroup>
-                            <Button href='/account-details' color="inherit">Dettagli Account</Button>
-                            <Button href='/login' color="inherit">Logout</Button>
-                        </ButtonGroup>)
+                        (<div>
+                            <IconButton
+                                aria-label='account of current user'
+                                aria-controls='menu-appbar-account'
+                                aria-haspopup='true'
+                                onClick={handleMenu}
+                                color='inherit'
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                keepMounted
+                                id='menu-appbar-account'
+                                anchorEl={anchorEl}
+                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                open={openMenu}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose} component={Link} to='/account-details'>Dettagli Account</MenuItem>
+                                <Divider />
+                                <MenuItem onClick={handleLogout} >Logout</MenuItem>
+                            </Menu>
+                        </div>)
                         :
                         (<Button href='/login' color="inherit">Login</Button>)
                     }

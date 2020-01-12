@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { userActions } from '../../_actions/user.action'
 import { history } from '../../_helpers/history'
 
+import { ButtonPreferite } from '../ButtonPreferite';
 
 // Style
 import {
@@ -27,8 +28,6 @@ class MovieDetails extends React.Component {
             cast: [],
             directors: []
         }
-        this.handleAdd = this.handleAdd.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleAddVoteMovie = this.handleAddVoteMovie.bind(this);
         this.handleRemoveVoteMovie = this.handleRemoveVoteMovie.bind(this);
@@ -53,21 +52,6 @@ class MovieDetails extends React.Component {
         })
     }
 
-    handleAdd() {
-        const { user } = this.props;
-        if (!user) {
-            return history.push('/login')
-        }
-        const { id } = this.state.movie;
-        this.props.put_movie(user, id);
-    }
-
-    handleRemove() {
-        const { user } = this.props;
-        const { id } = this.state.movie;
-        this.props.remove_movie(user, id);
-    }
-
     handleAddVoteMovie() {
         const { user } = this.props;
         if (!user) {
@@ -85,31 +69,15 @@ class MovieDetails extends React.Component {
     }
 
     render() {
-        let { title, original_title, imdb_id,
+        let { id, title, original_title, imdb_id,
             description, release_date, vote_average,
             vote_counter } = this.state.movie;
         let { value_vote } = this.state;
         let { user } = this.props;
-        let button;
-        if (user) {
-            let { favorites, voted } = this.props;
-            const isFavorite = favorites.some(elem => elem.title === title);
-            if (isFavorite) {
-                button = <ButtonRemoveFavorite onClick={this.handleRemove} />
-            } else {
-                button = <ButtonAddFavorite onClick={this.handleAdd} />
-            }
-            const isVoted = voted.some(elem => elem.title === title);
-            if (isVoted) {
-                const movie = voted.find(object => object.title === title)
-                value_vote = movie.value_vote;
-            }
-        } else {
-            button = <ButtonAddFavorite onClick={this.handleAdd} />
-        }
+        let button = <ButtonPreferite id={id} title={title} />
 
         return (
-            <div className='container'>
+            <div>
                 <div>
                     <h1>Dettagli Film </h1>
                     <h3>Titolo: {title}</h3>
@@ -172,14 +140,6 @@ class MovieDetails extends React.Component {
             </div>
         );
     }
-}
-
-function ButtonAddFavorite(props) {
-    return <Button onClick={props.onClick}>Aggiungi ai preferiti</Button>
-}
-
-function ButtonRemoveFavorite(props) {
-    return <Button onClick={props.onClick}>Rimuovi dai preferiti</Button>
 }
 
 function mapStateToProps(state) {

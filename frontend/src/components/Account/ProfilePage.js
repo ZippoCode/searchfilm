@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(3),
     },
     tabs: {
@@ -50,12 +51,22 @@ function a11yProps(index) {
     };
 }
 
+
+function LinkTab(props) {
+
+    return (
+        <Tab
+            component="a"
+            onClick={event => { event.preventDefault(); }}
+            {...props}
+        />
+    )
+}
 export function ProfilePage() {
     const classes = useStyles();
 
     const { user } = useSelector(state => state.authentication);
     const { email, first_name, last_name } = user;
-
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -73,9 +84,9 @@ export function ProfilePage() {
                 aria-label="Vertical tabs example"
                 className={classes.tabs}
             >
-                <Tab label="Dettagli Account" {...a11yProps(0)} />
-                <Tab label="Statistiche" {...a11yProps(1)} />
-                <Tab label="Modifica account" {...a11yProps(2)} />
+                <LinkTab label="Dettagli Account" href='/ciao' {...a11yProps(0)} />
+                <LinkTab label="Statistiche" href='/ciaooo' {...a11yProps(1)} />
+                <LinkTab label="Modifica account" href='cuiiiajbf' {...a11yProps(2)} />
             </Tabs>
             <TabPanelDetailAccount value={value} index={0}>
                 <h1>Dettagli Account: </h1>

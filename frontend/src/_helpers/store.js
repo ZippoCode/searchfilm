@@ -7,11 +7,11 @@ const loggerMiddleware = createLogger();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 
-export const store = createStore(
-    rootReducer,
-    composeEnhancers(
-        applyMiddleware(
-            thunkMiddleware,
-            loggerMiddleware
-        ))
-);
+export default function configureStore(preloadedState) {
+    return createStore(
+        rootReducer,
+        preloadedState,
+        composeEnhancers(
+            applyMiddleware(thunkMiddleware, loggerMiddleware))
+    )
+}

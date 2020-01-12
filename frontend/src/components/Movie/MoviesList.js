@@ -53,7 +53,7 @@ class MoviesList extends React.Component {
         const { movies, typeList } = this.props
         let emptyList = (movies === undefined || movies.length === 0);
         return (
-            <div className='container'>
+            <div>
                 {typeList === 'POPULAR' ?
                     (<h2>Lista film popolari</h2>)
                     :

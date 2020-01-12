@@ -100,6 +100,8 @@ def save_film(id_film):
         film = Movie(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
     if film_data['release_date'] != '':
         film.release_date = datetime.datetime.strptime(film_data['release_date'], '%Y-%m-%d')
+    if film_data['poster_path']:
+        film.tmdb_file_path_poster = film_data['poster_path']
     film.save()
     # Save Genres
     time.sleep(3)

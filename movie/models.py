@@ -1,6 +1,6 @@
 # Django importing
 from django.db import models
-#from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 
 from person.models import Person
 
@@ -27,6 +27,7 @@ class Movie(models.Model):
     original_title = models.CharField(max_length=80, null=True)
     imdb_id = models.CharField(max_length=10, unique=True, null=True)
     description = models.TextField(blank=True)
+    tmdb_file_path_poster = models.CharField(max_length=50, blank=True)
 
     release_date = models.DateField(null=True)
     vote_average = models.FloatField(default=0.0)

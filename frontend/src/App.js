@@ -6,39 +6,31 @@ import {
   Redirect
 } from 'react-router-dom'
 
-import { connect } from 'react-redux';
 import { history } from './_helpers/history'
 
-
-import "./App.css";
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { LoginPage, ProfilePage, RegisterPage } from './components/Account';
 import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
-import { HomePage, AppBarCustom } from './components';
+import { AppBarCustom } from './components';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { HomePage } from './components/Homepage';
 
-class App extends React.Component {
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: '#607D8B' },
+    secondary: { main: '#B0BEC5' },
+  },
+  typography: {
+    fontFamily: ['Roboto'].join(','),
+  },
+});
 
-  constructor(props) {
-    super(props);
+export function App() {
 
-    this.state = {
-      loggedIn: '',
-    }
-
-    history.listen((location, action) => {
-      console.log(action, location.pathname, location.state);
-    });
-  }
-
-  componentDidMount() {
-    this.setState({ loggedIn: localStorage.getItem('loggedIn') })
-  }
-
-
-  render() {
-    return (
-      <div>
+  return (
+    <ThemeProvider theme={theme}>
+      <React.Fragment>
         <Router history={history}>
           <CssBaseline />
           <AppBarCustom />
@@ -59,10 +51,7 @@ class App extends React.Component {
             <Redirect from='*' to='/' />
           </Switch>
         </Router>
-      </div>
-    );
-  }
+      </React.Fragment>
+    </ThemeProvider>
+  );
 }
-
-const connectedApp = connect()(App);
-export { connectedApp as App };

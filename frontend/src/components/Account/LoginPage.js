@@ -28,37 +28,36 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export function LoginPage() {
+function LoginPage() {
     const classes = useStyles();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
 
-    const validateForm = () => {
-        return email.length > 0 && password.length > 0;
-    }
+    const validateForm = email.length > 0 && password.length > 0;
 
     const handleSubmit = (event) => {
         if (event) {
+            event.preventDefault();
             dispatch(userActions.login(email, password))
         }
     }
-    /*
-    const loggedIn = useSelector(state => state.authentication);
+    const { error } = useSelector(state => state.authentication);
+    /*const loggedIn = useSelector(state => state.authentication);
     const token = useSelector(state => state.authentication.user);
-    if (loggedIn) { dispatch(userActions.logout(token)); }
-    */
+    if (loggedIn) { dispatch(userActions.logout(token)); }*/
 
     return (
         <Container component='main' maxWidth='xs' >
             <CssBaseline />
             <div className={classes.paper}>
                 <Typography component='h1' variant='h5'>Login</Typography>
-                <form className={classes.form}>
+                <form className={classes.form} onSubmit={handleSubmit}>
                     <TextField
                         required
                         fullWidth
+                        error={error}
                         variant='outlined'
                         margin='normal'
                         name='email'
@@ -69,6 +68,7 @@ export function LoginPage() {
                     />
                     <TextField
                         required
+                        error={error}
                         fullWidth
                         variant='outlined'
                         margin='normal'
@@ -81,9 +81,10 @@ export function LoginPage() {
                     <Button
                         fullWidth
                         className={classes.submit}
+                        disabled={!validateForm}
                         variant='contained'
                         color='primary'
-                        onClick={handleSubmit}
+                        type='submit'
                     >
                         Login
                     </Button>
@@ -104,3 +105,6 @@ export function LoginPage() {
         </Container >
     )
 }
+
+const MemorizedLoginPage = React.memo(LoginPage);
+export { MemorizedLoginPage as LoginPage };

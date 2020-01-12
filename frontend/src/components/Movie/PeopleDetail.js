@@ -27,7 +27,7 @@ class PeopleDetail extends React.Component {
 
     render() {
         return (
-            <div className='container'>
+            <div>
                 <h1>Dettagli: </h1>
                 <h3>Nome: {this.state.actor.first_name} </h3>
                 <h3>Cognome: {this.state.actor.second_name}</h3>
