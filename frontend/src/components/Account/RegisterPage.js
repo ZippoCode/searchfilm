@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { userActions } from '../../_actions/user.action';
 
 // Style
 import { Container, CssBaseline, Typography, TextField, makeStyles, Button } from '@material-ui/core'
-import { useDispatch } from 'react-redux';
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 export function RegisterPage() {
 
     const classes = useStyles();
+    const error = useSelector(state => state.error);
     const dispatch = useDispatch();
 
     const [user, setUser] = useState({
@@ -82,6 +83,8 @@ export function RegisterPage() {
                     <TextField
                         autoFocus
                         fullWidth
+                        error={error}
+                        helperText={error && 'E-mail già presente.'}
                         name='email'
                         type='email'
                         variant='outlined'

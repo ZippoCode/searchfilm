@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,14 +8,11 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-// Personal Importing
-import { ButtonPreferite } from './../ButtonPreferite';
-
 
 const useStyles = makeStyles(theme => ({
     cardMoviePopular: {
@@ -31,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const settings = {
-    dots: true,
     infinite: true,
     slidesToShow: 5,
     slidesToScroll: 1,
@@ -39,37 +35,53 @@ const settings = {
     speed: 2000,
     autoplaySpeed: 2000,
     cssEase: "linear",
-    padding:'50',
 };
 
 
-export function SliderPopularMovie(props) {
+export function SliderPopularMovie() {
     const classes = useStyles();
 
-    const popularMovie = props.popularMovie;
+    const PATH_POPULAR = 'http://127.0.0.1:8000/movie/api/topPopular';
+    const PATH_POSTER = "https://image.tmdb.org/t/p/w500/";
+    const [popularMovie, setPopularMovie] = useState([]);
+
+    useEffect(() => {
+        const fetchDataPopularMovies = async () => {
+            const result = await fetch(PATH_POPULAR)
+                .then(response => response.json())
+                .then(data => { return data })
+                .catch(error => console.log(error));
+            setPopularMovie(result);
+        }
+        fetchDataPopularMovies();
+    }, []);
 
     return (
         <Slider {...settings}>
-            {popularMovie.map((movie) =>
-                <Card className={classes.cardMoviePopular}>
-                    <CardActionArea>
-                        <Link to={{
-                            pathname: `/movie/${movie.id}`
-                        }}>
-                            <CardMedia
-                                className={classes.mediaPoster}
-                                image={"https://image.tmdb.org/t/p/w500/".concat(movie.tmdb_file_path_poster)}
-                            />
-                        </Link>
+            {popularMovie.map((movie, index) =>
+                <Card
+                    className={classes.cardMoviePopular}
+                    key={index}
+                >
+                    <CardActionArea key={index}>
+                        <CardMedia
+                            className={classes.mediaPoster}
+                            image={PATH_POSTER.concat(movie.tmdb_file_path_poster)}
+                            component={NavLink}
+                            to={{ pathname: `/movie/${movie.id}` }}
+                        />
                         <CardContent className={classes.contentPopularMovie}>
-                            <Typography variant='body1'>{movie.title}</Typography>
+                            <Grid container wrap='nowrap'>
+                                <Grid item xs zeroMinWidth>
+                                    <Typography noWrap component='h1' variant='h6'>{movie.title}</Typography>
+                                </Grid>
+                            </Grid>
                         </CardContent>
                         <CardActions className={classes.contentPopularMovie}>
-                            < ButtonPreferite id={movie.id} title={movie.title} />
                         </CardActions>
                     </CardActionArea>
                 </Card>
             )}
-        </Slider>
+        </Slider >
     )
 }

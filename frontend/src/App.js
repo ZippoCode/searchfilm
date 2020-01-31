@@ -15,6 +15,7 @@ import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
 import { AppBarCustom } from './components';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { HomePage } from './components/Homepage';
+import { FooterHomePage } from './components/Homepage/Footer';
 
 const theme = createMuiTheme({
   palette: {
@@ -51,6 +52,8 @@ export function App() {
             <Redirect from='*' to='/' />
           </Switch>
         </Router>
+        <FooterHomePage />
+
       </React.Fragment>
     </ThemeProvider>
   );

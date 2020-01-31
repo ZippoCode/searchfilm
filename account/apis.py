@@ -179,7 +179,6 @@ class RegisterAccountAPI(generics.GenericAPIView):
     serializer_class = RegisterAccountSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         account = serializer.save()

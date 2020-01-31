@@ -9,21 +9,19 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # External importing
 from movie.models import Movie
 
-
 class Account(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    gender = models.CharField(max_length=10, choices=(('man', 'Man'), ('woman', 'Woman')))
+
     # Custom Fields
     favorites = models.ManyToManyField(Movie, related_name='FavoriteMovie', through='FavoriteMovie')
     votes = models.ManyToManyField(Movie, related_name='VotedMovie', through='VotedMovie')
 
     def __str__(self):
         return str(self.email)
-
-    def full_name(self):
-        return ''
 
 
 class FavoriteMovie(models.Model):
@@ -36,9 +34,6 @@ class FavoriteMovie(models.Model):
 
 
 class VotedMovie(models.Model):
-    """
-        Store the account's vote
-    """
     person = models.ForeignKey(Account, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     date_vote = models.DateField(default=timezone.now)

@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import styled from 'styled-components';
 
 
 const theme = createMuiTheme();
@@ -27,17 +28,24 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const StyledFooter = styled.div`
+    clear: both;
+    padding-top: 40px;
+    padding-bottom: 26px;
+    background-color: #ffffff;
+`;
+
 export function FooterHomePage() {
     const classes = useStyles();
 
     return (
         <ThemeProvider theme={theme}>
-            <div className='footer'>
+            <StyledFooter>
                 <Grid container className={'container-footer'}>
-                    <Grid item lg='4'>
+                    <Grid item lg={4}>
                         <Typography paragraph component='h2' variant='h2'>Search Movie</Typography>
                     </Grid>
-                    <Grid item lg='6' md='8' sm='7'>
+                    <Grid item lg={6} md={8} sm={7}>
                         <Grid container justify='space-evenly'>
                             <Grid item>
                                 <Typography component='h5' variant='h5' paragraph>Contatti</Typography>
@@ -59,7 +67,7 @@ export function FooterHomePage() {
                     <Grid item className={classes.info}>
                         <Typography component='h6' variant='subtitle2' paragraph>2020, SearchMovie</Typography>
                     </Grid>
-                    <Grid item className={classes.info} lg='6' md='7' xl='5' justify='space-evenly'>
+                    <Grid container item className={classes.info} lg={6} md={7} xl={5} justify='space-evenly'>
                         <Typography component='h6' variant='subtitle2' paragraph>Condizioni d'uso</Typography>
                         <Typography component='h6' variant='subtitle2' paragraph>|</Typography>
                         <Typography component='h6' variant='subtitle2' paragraph>Politica Privacy</Typography>
@@ -67,7 +75,7 @@ export function FooterHomePage() {
                         <Typography component='h6' variant='subtitle2' paragraph>Credits</Typography>
                     </Grid>
                 </Grid>
-            </div>
+            </StyledFooter>
         </ThemeProvider>
     )
 }

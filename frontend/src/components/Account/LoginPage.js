@@ -6,14 +6,9 @@ import { userActions } from '../../_actions/user.action';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, CssBaseline, Typography, TextField, Button, Grid } from '@material-ui/core';
+import styled from 'styled-components';
 
 const useStyles = makeStyles(theme => ({
-    paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
@@ -27,14 +22,24 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const StyledContainer = styled(Container)`
+    height: 100%;
+`;
+const StyledPaper = styled.div`
+    display: 'flex';
+    margin-top: 64px;
+    margin-bottom: 64px;
+    flex-direction: 'column';
+    align-items: 'center';
+`;
 
 function LoginPage() {
     const classes = useStyles();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const error = useSelector(state => state.error);
     const dispatch = useDispatch();
-
     const validateForm = email.length > 0 && password.length > 0;
 
     const handleSubmit = (event) => {
@@ -43,21 +48,16 @@ function LoginPage() {
             dispatch(userActions.login(email, password))
         }
     }
-    const { error } = useSelector(state => state.authentication);
-    /*const loggedIn = useSelector(state => state.authentication);
-    const token = useSelector(state => state.authentication.user);
-    if (loggedIn) { dispatch(userActions.logout(token)); }*/
+
 
     return (
-        <Container component='main' maxWidth='xs' >
+        <StyledContainer maxWidth='xs'>
             <CssBaseline />
-            <div className={classes.paper}>
-                <Typography component='h1' variant='h5'>Login</Typography>
+            <StyledPaper>
+                <Typography component='h3' variant='h3'>Login</Typography>
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <TextField
-                        required
                         fullWidth
-                        error={error}
                         variant='outlined'
                         margin='normal'
                         name='email'
@@ -67,9 +67,9 @@ function LoginPage() {
                         onChange={event => setEmail(event.target.value)}
                     />
                     <TextField
-                        required
-                        error={error}
                         fullWidth
+                        error = {error}
+                        helperText = {error && 'Password errata'}
                         variant='outlined'
                         margin='normal'
                         name='password'
@@ -101,8 +101,8 @@ function LoginPage() {
                         </Grid>
                     </Grid>
                 </form>
-            </div>
-        </Container >
+            </StyledPaper>
+        </StyledContainer>
     )
 }
 

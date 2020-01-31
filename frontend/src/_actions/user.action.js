@@ -1,5 +1,6 @@
 import { userConstants } from '../_constants/user.constants';
 import { userService } from '../_service/user.service'
+import * as ErrorAction from './error.action';
 
 import { history } from '../_helpers/history';
 
@@ -14,31 +15,21 @@ export const userActions = {
     remove_vote
 }
 
-const PATH_LOGIN = 'http://127.0.0.1:8000/account/api/auth/login';
-
-
 function login(username, password) {
 
     return dispatch => {
 
         dispatch(request({ username }));
-
-        const requestInfo = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        }
-        
-        return fetch(PATH_LOGIN, requestInfo)
-            .then(handleResponse)
+        userService.login(username, password)
             .then(
                 user => {
-                    localStorage.setItem('user', JSON.stringify(user));
                     dispatch(success(user));
-                    history.goBack();
+                    history.push('/');
                 },
-                error => { dispatch(failure(error.toString)) }
-            )
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(ErrorAction.errorLogin(error.toString()));
+                });
     };
 
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
@@ -47,35 +38,31 @@ function login(username, password) {
 }
 
 function logout(token) {
-    console.log(token);
     userService.logout(token);
     history.push('/');
     return { type: userConstants.LOGOUT }
 }
 
-function changePassword(user, old_password, new_password) {
-    console.log(user, old_password, new_password);
+function changePassword(token, old_password, new_password) {
     return dispatch => {
 
-        dispatch(request(user));
+        dispatch(request({token}));
 
-        const { token } = user;
         userService.change_password(token, old_password, new_password)
             .then(
                 user => {
-                    dispatch(success());
-                    userService.logout(token);
-                    history.push('/');
+                    dispatch(success(token));
+                    logout(token);
                 },
                 error => {
-                    dispatch(failure(error.toString))
-                    dispatch(alert(error.toString()));
+                    dispatch(failure(error.toString()));
+                    alert(error.toString());
                 }
             )
     }
 
-    function request(user) { return { type: userConstants.CHANGE_PASSWORD_REQUEST, user } }
-    function success() { return { type: userConstants.LOGOUT } }
+    function request(token) { return { type: userConstants.CHANGE_PASSWORD_REQUEST, token } }
+    function success() { return { type: userConstants.CHANGE_PASSWORD_SUCCESS, token } }
     function failure(error) { return { type: userConstants.CHANGE_PASSWORD_FAILURE, error } }
 }
 
@@ -84,7 +71,6 @@ function register(user) {
     return dispatch => {
 
         dispatch(request(user));
-
         userService.register(user)
             .then(
                 user => {
@@ -93,7 +79,7 @@ function register(user) {
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    alert('Error: '.concat(error.status));
+                    dispatch(ErrorAction.errorRegister(error.toString()));
                 }
             )
     }
@@ -186,22 +172,4 @@ function remove_vote(user, id_movie) {
         function success(user) { return { type: userConstants.REMOVE_VOTE_SUCCESS, user } }
         function failure(error) { return { type: userConstants.REMOVE_VOTE_FAILURE, error } }
     }
-}
-
-function handleResponse(response) {
-    return response.text()
-        .then(text => {
-            const data = text && JSON.parse(text);
-            if (!response.ok) {
-                if (response.status === 400) {
-                    logout();
-                    window.location.reload(true);
-                }
-
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-
-            return data;
-        });
 }

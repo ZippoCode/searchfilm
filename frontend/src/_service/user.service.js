@@ -46,7 +46,7 @@ function logout(token) {
 }
 
 // Change passowrd of user
-async function change_password(token, old_password, new_password) {
+function change_password(token, old_password, new_password) {
     var headers = new Headers();
     headers.append("Authorization", "Token ".concat(token));
     var formdata = new FormData();
@@ -59,8 +59,9 @@ async function change_password(token, old_password, new_password) {
         body: formdata,
     };
 
-    return await fetch(PATH_CHANGE_PASSWORD, requestOptions)
+    return fetch(PATH_CHANGE_PASSWORD, requestOptions)
         .then(handleResponse)
+        .then(user => { return user });
 }
 
 
@@ -173,11 +174,12 @@ async function remove_vote(user, id_movie) {
 
 
 function handleResponse(response) {
+    console.log(response)
     return response.text()
         .then(text => {
             const data = text && JSON.parse(text);
             if (!response.ok) {
-                if (response.status === 400) {
+                if (response.status === 401) {
                     logout();
                     window.location.reload(true);
                 }

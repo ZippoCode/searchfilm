@@ -3,76 +3,68 @@ import { useDispatch, useSelector } from "react-redux";
 import { userActions } from '../../../_actions/user.action';
 
 // Style Page
-import { Form, Button } from 'react-bootstrap';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import styled from 'styled-components';
+import { userService } from '../../../_service/user.service';
+
+const StyledForm = styled.form`
+    width: 100%;
+    height: 100%
+    display: flex;
+    align-items: center;
+`;
+
 
 export function EditAccountTab() {
-    /*
-    validateForm() {
-        var { old_password, new_password, new_new_password } = this.state;
-        return (
-            old_password.length > 0 && new_password.length > 0 && new_new_password.length > 0
-        );
-    }
-
-
-
-    handleSubmit(event) {
-        event.preventDefault();
-        const { user } = this.props;
-        const { old_password, new_password } = this.state;
-        this.props.changePassword(user, old_password, new_password);
-    }
-    */
-
-    const { user } = useSelector(state => state.authentication);
+    const token  = useSelector(state => state.authentication.user.token);
+    console.log(token)
     const dispatch = useDispatch();
 
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [newNewPassword, setNewNewPassword] = useState('');
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        dispatch(userActions.changePassword(token, oldPassword, newPassword));
+    }
+
     return (
         <div className='Change-Password' >
             <h3>Cambia password</h3>
-            <main>
-                <Form.Group controlId='old-password' bssize='large'>
-                    <Form.Label>Old passoword</Form.Label>
-                    <Form.Control
-                        autoFocus
-                        name='old_password'
-                        type='password'
-                        value={oldPassword}
-                        onChange={e => setOldPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group controlId='new_password' bssize='large'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        name='new_password'
-                        type='password'
-                        value={newPassword}
-                        onChange={e => setNewPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group controlId='new-new-password' bssize='large'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        name='new_new_password'
-                        type='password'
-                        value={newNewPassword}
-                        onChange={e => setNewNewPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <div className="form-group">
-                    <Button
-                        block bssize='large'
-                        onClick={() => dispatch(userActions.changePassword(user, oldPassword, newPassword))}
-                    //disabled={!this.validateForm()}
-                    >
-                        Cambia
-                        </Button>
-                </div>
-            </main>
+            <StyledForm onSubmit={handleSubmit}>
+                <TextField
+                    variant='outlined'
+                    label='Password precedente'
+                    name='old_password'
+                    type='password'
+                    value={oldPassword}
+                    onChange={e => setOldPassword(e.target.value)}
+                />
+                <TextField
+                    variant='outlined'
+                    label='Nuova password'
+                    name='new_password'
+                    type='password'
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                />
+                <TextField
+                    variant='outlined'
+                    label='Digita nuovamente la password'
+                    name='new_new_password'
+                    type='password'
+                    value={newNewPassword}
+                    onChange={e => setNewNewPassword(e.target.value)}
+                />
+                <Button
+                    block bssize='large'
+                    type='submit'
+                >
+                    Cambia
+                </Button>
+            </StyledForm>
         </div>
     )
 }

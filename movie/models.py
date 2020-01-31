@@ -1,6 +1,6 @@
 # Django importing
 from django.db import models
-# from django.core.exceptions import ValidationError
+
 
 from person.models import Person
 
@@ -28,12 +28,11 @@ class Movie(models.Model):
     imdb_id = models.CharField(max_length=10, unique=True, null=True)
     description = models.TextField(blank=True)
     tmdb_file_path_poster = models.CharField(max_length=50, blank=True)
-
     release_date = models.DateField(null=True)
     vote_average = models.FloatField(default=0.0)
     vote_counter = models.IntegerField(default=0)
 
-    # Relantion
+    # Relationship other models
     directors = models.ManyToManyField(Person, related_name='Directors')
     writers = models.ManyToManyField(Person, related_name='Writers')
     actors = models.ManyToManyField(Person, related_name='Cast', through='Cast')
@@ -41,10 +40,11 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre, related_name='Genres')
 
     def __str__(self):
-        return self.original_title
-
-    def validate_unique(self, exclude=None):
-        super().validate_unique(exclude)
+        """
+            Return the movie's name and release date
+        :return:
+        """
+        return str(self.title) + " : " + (str(self.release_date.year) if self.release_date else '')
 
     class Meta:
         ordering = ["title"]
@@ -52,11 +52,10 @@ class Movie(models.Model):
 
 class Cast(models.Model):
     """
-        Rappresenta il legame tra un movie e un attore e memorizza
-            - Il Film
-            - L'attore
-            - Il nome del personaggio interpretato
-
+        Represent the link between a movie and an actor and memorized it.
+            - Movie
+            - Actor
+            - Character's name
     """
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)

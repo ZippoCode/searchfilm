@@ -12,6 +12,8 @@ export function ButtonPreferite(props) {
     const title = props.title;
     const id = props.id;
 
+    let button;
+
     const handleAdd = () => {
         if (!user) {
             return history.push('/login');
@@ -27,13 +29,15 @@ export function ButtonPreferite(props) {
         const favorites = user.favorites;
         const isFavorite = favorites.some(elem => elem.title === title);
         if (isFavorite) {
-            return <ButtonRemoveFavorite onClick={handleRemove} />
+            button = <ButtonRemoveFavorite onClick={handleRemove} />
         } else {
-            return <ButtonAddFavorite onClick={handleAdd} />
+            button = <ButtonAddFavorite onClick={handleAdd} />
         }
     } else {
-        return <ButtonAddFavorite onClick={handleAdd} />
+        button = <ButtonAddFavorite onClick={handleAdd} />
     }
+
+    return <div>{button}</div>;
 }
 
 
