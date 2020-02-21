@@ -1,60 +1,82 @@
 import React from 'react';
 import {
-  Router,
   Switch,
   Route,
-  Redirect
-} from 'react-router-dom'
+} from 'react-router-dom';
 
-import { history } from './_helpers/history'
+import logo from './logo.svg';
 
+import {
+  AppBarCustom,
+  FooterCustom,
+  HomePage
+} from './components';
+
+import {
+  LoginPage,
+  AccountPage
+} from './components/Account';
+
+import {
+  MovieDetail,
+  PeopleDetail,
+  ViewListMovies,
+} from './components/Movie';
+
+// Importing from Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
 
-import { LoginPage, ProfilePage, RegisterPage } from './components/Account';
-import { MoviesList, MovieDetail, PeopleDetail } from './components/Movie';
-import { AppBarCustom } from './components';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { HomePage } from './components/Homepage';
-import { FooterHomePage } from './components/Homepage/Footer';
+//import './App.css';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: { main: '#607D8B' },
-    secondary: { main: '#B0BEC5' },
-  },
-  typography: {
-    fontFamily: ['Roboto'].join(','),
-  },
-});
-
-export function App() {
-
+function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <React.Fragment>
-        <Router history={history}>
-          <CssBaseline />
-          <AppBarCustom />
+    <div className='App'>
+      <CssBaseline />
+      <header className='App-header'>
+        <AppBarCustom />
+        <Toolbar />
+      </header>
+      <div id='container'>
+        <Switch>
+          <Route exact path='/' component={HomePage} />
+          <Route path='/movie/:id' component={MovieDetail} />
+          <Route path='/movies/:type' component={ViewListMovies} />
+          <Route path='/person/:id' component={PeopleDetail} />
 
-          <Switch>
-            <Route exact path='/' component={HomePage} />
+          <Route exact path='/login' component={LoginPage} />
+          <Route path='/account-page' component={AccountPage} />
+        </Switch>
+      </div>
+      <div id='footer'>
+        <FooterCustom />
+      </div>
+    </div>
+  )
+}
 
-            <Route path='/login' component={LoginPage} />
-            <Route path='/register' component={RegisterPage} />
-            <Route path='/account-details' component={ProfilePage} />
-
-            <Route exact path='/movies/top/popular' component={MoviesList} />
-            <Route exact path='/movies/top/ranking' component={MoviesList} />
-            <Route path='/movies/popular/:genre' component={MoviesList} />
-            <Route path='/movie/:id' component={MovieDetail} />
-            <Route path='/person/:id' component={PeopleDetail} />
-
-            <Redirect from='*' to='/' />
-          </Switch>
-        </Router>
-        <FooterHomePage />
-
-      </React.Fragment>
-    </ThemeProvider>
+export default App;
+/*
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
+
+export default App;
+*/

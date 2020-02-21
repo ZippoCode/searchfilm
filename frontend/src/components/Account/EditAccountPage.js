@@ -7,9 +7,6 @@ import { ChangePasswordPage } from './ChangePasswordPage'
 // Style
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-    },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
@@ -22,7 +19,7 @@ export function EditAccountPage() {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div>
             <MenuOptionsAccount />
             <main className={classes.content}>
                 <div className={classes.toolbar} />

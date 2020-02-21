@@ -1,10 +1,5 @@
 import React from 'react';
 
-import Axios from 'axios';
-
-import './PeopleDetail.css';
-
-
 class PeopleDetail extends React.Component {
 
     constructor(props) {
@@ -15,7 +10,7 @@ class PeopleDetail extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get(`http://127.0.0.1:8000/person/api/get/${this.props.match.params.id}/`)
+        fetch(`http://127.0.0.1:8000/person/api/get/${this.props.match.params.id}/`)
             .then(response => this.setState({
                 actor: response.data
             }))

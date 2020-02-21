@@ -1,50 +1,54 @@
-import React from 'react';
-
+import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userActions } from '../_actions/user.action';
-import { history } from '../_helpers/history';
+import { useHistory } from 'react-router-dom';
 
+// Importing Actions
+import { addRemoveMoviePreferite } from '../actions/user.action';
+import { ADD_FAVORITE, REMOVE_FAVORITE } from '../constants/user.constants';
+
+
+// Importing from Material-UI
 import Button from '@material-ui/core/Button';
 
 export function ButtonPreferite(props) {
-    const user = useSelector(state => state.authentication.user);
+
+    const { idMovie } = props;
+    const history = useHistory();
+
     const dispatch = useDispatch();
-    const title = props.title;
-    const id = props.id;
+    const token = useSelector(state => state.authentication.token) || '';
+    const favorites = useSelector(state => state.user.favorite) || [];
+    const isFavorite = favorites.some(elem => elem.movie === idMovie)
 
-    let button;
+    const handleAdd = useCallback(
+        () => {
+            if (token === '')
+                history.replace('/login');
+            dispatch(addRemoveMoviePreferite(token, idMovie, ADD_FAVORITE));
+        },
+        [dispatch, token, idMovie, history]
+    );
 
-    const handleAdd = () => {
-        if (!user) {
-            return history.push('/login');
-        }
-        return dispatch(userActions.add_to_favorites(user, id));
-    }
+    const handleRemove = useCallback(
+        () => dispatch(addRemoveMoviePreferite(token, idMovie, REMOVE_FAVORITE)),
+        [dispatch, token, idMovie]
+    );
 
-    const handleRemove = () => {
-        return dispatch(userActions.remove_to_favorites(user, id))
-    }
-
-    if (user) {
-        const favorites = user.favorites;
-        const isFavorite = favorites.some(elem => elem.title === title);
-        if (isFavorite) {
-            button = <ButtonRemoveFavorite onClick={handleRemove} />
-        } else {
-            button = <ButtonAddFavorite onClick={handleAdd} />
-        }
-    } else {
-        button = <ButtonAddFavorite onClick={handleAdd} />
-    }
-
-    return <div>{button}</div>;
+    return (
+        <div>
+            {isFavorite ? (
+                <ButtonRemoveFavorite onClick={handleRemove} />
+            ) : (
+                    <ButtonAddFavorite onClick={handleAdd} />
+                )}
+        </div>
+    )
 }
 
+const ButtonRemoveFavorite = ({ onClick }) => (
+    <Button type='submit' onClick={onClick}>Rimuovi dai preferiti</Button>
+);
 
-function ButtonAddFavorite(props) {
-    return <Button onClick={props.onClick}>Aggiungi ai preferiti</Button>
-}
-
-function ButtonRemoveFavorite(props) {
-    return <Button onClick={props.onClick}>Rimuovi dai preferiti</Button>
-}
+const ButtonAddFavorite = ({ onClick }) => (
+    <Button type='submit' onClick={onClick}>Aggiungi ai preferiti</Button>
+)

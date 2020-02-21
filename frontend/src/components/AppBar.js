@@ -1,155 +1,123 @@
-import React from 'react';
-import { useSelector, useDispatch } from "react-redux";
-
-import { movieAction } from '../_actions/movie.action';
-import { userActions } from '../_actions/user.action';
-
-// Style
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Typography from '@material-ui/core/Typography';
-import { Drawer, List, ListItem, ListItemText, Divider, CssBaseline, Menu, MenuItem } from '@material-ui/core';
+import React, { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-// Icon
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AccountCircle from '@material-ui/icons/AccountCircle'
+// Importing from React-Redux
+import { useSelector, useDispatch } from 'react-redux';
 
-const drawerWidth = 240;
-const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    appbar: {
-        background: '#1F2120'
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    title: {
-        flexGrow: 1,
-    },
-}));
+// Importing Styled-Components
+import styled from 'styled-components';
+
+
+// importing from Material-UI
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+//import ListItemText from '@material-ui/core/ListItemText';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Toolbar from '@material-ui/core/Toolbar';
+
+
+// dispatch actions
+import {
+    logout
+} from '../actions';
+
+// Const Styled
+const TitleAppBar = styled.h3`
+    flex-grow: 1;
+`
+
+const DrawerMenuStyled = styled.div`
+    width: 256px;
+    padding-left: 4%;
+`;
+
+
+const MenuItemLink = ({ path, valueText }) => (
+    <ListItem button component={Link} to={path}>
+        {valueText}
+    </ListItem>
+);
+
 
 export function AppBarCustom() {
-    const { user } = useSelector(state => state.authentication);
-    const dispatch = useDispatch();
+    const [openDrawer, setOpenDrawer] = useState(false);
 
-
-    const classes = useStyles();
-    const theme = useTheme();
-
-    const [open, setOpen] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const openMenu = Boolean(anchorEl);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    }
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    }
-
-    const { token } = useSelector(state => state.authentication.user) || 'null';
-    const handleLogout = () => {
-        dispatch(userActions.logout(token));
-    }
+    let logged = useSelector(state => state.authentication.logged) || false;
+    const handleOpenDrawer = () => (setOpenDrawer(openDrawer => !openDrawer));
 
     return (
-        <div className={classes.root} >
-            <CssBaseline />
-            <AppBar className={classes.appbar} position="static">
-                <Toolbar>
-                    <IconButton
-                        className={classes.menuButton}
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        SearchMovie
-                    </Typography>
-                    {user ?
-                        (<div>
-                            <IconButton
-                                aria-label='account of current user'
-                                aria-controls='menu-appbar-account'
-                                aria-haspopup='true'
-                                onClick={handleMenu}
-                                color='inherit'
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            <Menu
-                                keepMounted
-                                id='menu-appbar-account'
-                                anchorEl={anchorEl}
-                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                open={openMenu}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleClose} component={Link} to='/account-details'>Dettagli Account</MenuItem>
-                                <Divider />
-                                <MenuItem onClick={handleLogout} >Logout</MenuItem>
-                            </Menu>
-                        </div>)
-                        :
-                        (<Button href='/login' color="inherit">Login</Button>)
-                    }
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                anchor='left'
-                variant='persistent'
-                open={open}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                onClick={handleDrawerClose}
-            >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
-                </div>
-                <List>
-                    <ListItem button component={Link} to='/'>
-                        <ListItemText primary='Home' />
-                    </ListItem>
-                    < Divider />
-                    <ListItem button onClick={() => dispatch(movieAction.viewTopPopular())}>
-                        <ListItemText primary='I film più popolari' />
-                    </ListItem>
-                    <ListItem button onClick={() => dispatch(movieAction.viewTopRanked())}>
-                        <ListItemText primary='I film più votati' />
-                    </ListItem>
-                </List >
-            </Drawer>
-        </div>
+        <AppBar position='fixed'>
+            <Toolbar>
+                <Button edge='start' onClick={handleOpenDrawer}>Menu</Button>
+                <SwipeableDrawer
+                    open={openDrawer}
+                    onClick={handleOpenDrawer}
+                    onOpen={handleOpenDrawer}
+                    onClose={handleOpenDrawer}
+                >
+                    <ClickAwayListener onClickAway={handleOpenDrawer}>
+                        <DrawerMenuStyled>
+                            <List>
+                                <MenuItemLink path='/' valueText='Home' />
+                                <MenuItemLink path='last-movie' valueText='Ultimi film' />
+                                <MenuItemLink path='/movies/popular' valueText='I film più popolari' />
+                                <MenuItemLink path='/movies/rated' valueText='I film più votati' />
+                            </List>
+                        </DrawerMenuStyled>
+                    </ClickAwayListener>
+                </SwipeableDrawer>
+                <TitleAppBar>Search Movie</TitleAppBar>
+                {logged ? (<Logout />) : (<Login />)}
+            </Toolbar>
+        </AppBar>
+    )
+}
+
+function Login() {
+    return (
+        <Button component={Link} to='/login' color='inherit' type='submit'>Login</Button>
+    )
+}
+
+function Logout() {
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.authentication.token);
+
+    const handleSubmit = useCallback(
+        () => dispatch(logout(token)), [dispatch, token]
     );
+
+    const handleClose = () => { setOpen(open => !open); };
+
+    return (
+        <div>
+            <Button
+                ref={anchorRef}
+                onClick={() => setOpen(open => !open)}
+            >
+                Account
+            </Button>
+            <Popper open={open} anchorEl={anchorRef.current}>
+                <ClickAwayListener onClickAway={handleClose}>
+                    <Paper>
+                        <MenuList>
+                            <MenuItem component={Link} to='/account-page' onClick={handleClose}>Profilo</MenuItem>
+                            <MenuItem onClick={handleClose}>Statistiche</MenuItem>
+                            <MenuItem onClick={handleSubmit}>Logout</MenuItem>
+                        </MenuList>
+                    </Paper>
+                </ClickAwayListener>
+            </Popper>
+        </div>
+    )
 }

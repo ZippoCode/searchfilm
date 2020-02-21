@@ -137,6 +137,7 @@ REST_FRAMEWORK = {
 # List of origins that are authorized to make cross-site HTTP requests
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
+    "http://192.168.1.10:3000",
 ]
 CORS_ALLOW_CREDENTIAL = True
 CSRF_COOKIE_NAME = 'csrftoken'

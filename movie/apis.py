@@ -1,10 +1,11 @@
+# Python importing
+import random
 # Django importing
 from django.http import Http404
-from django.contrib.postgres.search import TrigramSimilarity
 # Rest Framework importing
 from rest_framework import views, status
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, filters
 
 # Internal importing
 from .serializers import MovieSerializer, MovieSimpleSerializer, MovieSimpleVoteSerializer, GenreSerializers
@@ -18,23 +19,29 @@ class GenreListAPI(generics.ListAPIView):
 
 
 # Search movie APIs
-class SearchFilmAPI(views.APIView):
+class SearchFilmAPI(generics.ListCreateAPIView):
+    search_fields = ['title']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Movie.objects.all()
+    serializer_class = MovieSimpleSerializer
+"""
 
     def get(self, request, query, format=None):
-        try:
-            '''
-            ts = TrigramSimilarity('original_title', query)
-            films = Movie.objects.annotate(similarity=ts).filter(
-                similarity__gt=0.3).order_by('-similarity')
-            '''
-            film = Movie.objects.get(title=query)
-        except:
-            raise Http404
+           try:
+                '''
+                ts = TrigramSimilarity('original_title', query)
+                films = Movie.objects.annotate(similarity=ts).filter(
+                    similarity__gt=0.3).order_by('-similarity')
+                '''
+                film = Movie.objects.get(title=query)
+            except:
+                raise Http404
 
-        # serializers = MovieSerializer(films, many=True)
-        # return Response(serializers.data)
-        serializer = MovieSerializer(film)
-        return Response(serializer.data)
+            # serializers = MovieSerializer(films, many=True)
+            # return Response(serializers.data)
+            serializer = MovieSerializer(film)
+            return Response(serializer.data)
+        """
 
 
 class GetFilm(views.APIView):
@@ -43,6 +50,18 @@ class GetFilm(views.APIView):
             film = Movie.objects.get(id=film_id)
         except Movie.DoesNotExist:
             raise Http404
+        serializer = MovieSerializer(film)
+        return Response(serializer.data)
+
+
+class RandomMovie(views.APIView):
+    def get(self, request):
+        try:
+            films = Movie.objects.all()
+            index = random.randint(0, len(films));
+            film = films[index]
+        except Movie.DoesNotExist:
+            return Response({'Error': 'Genre not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = MovieSerializer(film)
         return Response(serializer.data)
 

@@ -1,3 +1,84 @@
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+
+// Importing custom UI-Element
+import { ButtonPreferite } from '../../components/ButtonPreferite';
+
+// Importing Actions
+import { loadMovie } from '../../actions/movie.action';
+
+// Importing custom function
+import { SelectCustom } from '../SelectForm';
+
+// Importing style from Material-UI
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
+
+// Importing style from Styled-Components
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+    margin-top: 8%;
+    margin-left: 8%;
+    margin-right: 8%;
+`;
+
+const PosterMovie = styled.img`
+    height: 502px;
+    width: 357px;
+`;
+
+
+export function MovieDetail() {
+
+    let { id } = useParams();
+    const votes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+
+    const dispatch = useDispatch();
+    let isLoaded = useSelector(state => state.movie.loaded) || false;
+    let movie = useSelector(state => state.movie['movie']) || 'None';
+    let data = new Date(movie.release_date);
+
+    useEffect(() => {
+        dispatch(loadMovie(id));
+    }, [dispatch, id]);
+
+    return (
+        <Wrapper>
+            {isLoaded && (
+                <Grid container component='main' spacing={4}>
+                    <Grid item xs>
+                        <Grid container justify='flex-start' direction='column' alignItems='center'>
+                            <PosterMovie alt='poster-movie' src={`https://image.tmdb.org/t/p/w500/${movie.tmdb_file_path_poster}`} />
+                            <ButtonPreferite idMovie={movie.id} />
+                            <SelectCustom list={votes} title={'Vota'} />
+                            <Button>Vota</Button>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs>
+                        <h2>{movie.title}</h2>
+                        <p>{movie.description}</p>
+                        <p>{data.getFullYear()}</p>
+                        <p>Numero voti : {movie.vote_counter}</p>
+                        <p>Voto medio: {movie.vote_average}</p>
+                        <MenuList>
+                            {movie.actors.map((actor, index) => {
+                                return <MenuItem key={index} component={Link} to={`/person/${actor.person_id}`}>{actor.person}</MenuItem>
+                            })}
+                        </MenuList>
+                    </Grid>
+                </Grid>
+            )}
+        </Wrapper>
+    )
+}
+
+/*
+
 import React, { useState, useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -70,12 +151,10 @@ const StyledFixedSizeList = styled(FixedSizeList)`
 	width: 16px;
 	background-color: #1F2120;
 }
-
 ::-webkit-scrollbar-track {
 	border-radius: 16px;
 	background-color: white;
 }
-
 ::-webkit-scrollbar-thumb {
     width: 16px;
 	border-radius: 32px;
@@ -227,3 +306,4 @@ function renderRowActor(props) {
         </ListItem >
     );
 }
+*/

@@ -1,3 +1,3 @@
 export { MovieDetail } from './MovieDetails';
-export { MoviesList } from './MoviesList';
+export { ViewListMovies } from './ListMovies';
 export { default as PeopleDetail } from './PeopleDetail';

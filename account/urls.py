@@ -27,5 +27,5 @@ urlpatterns += [
     path('api/auth/register', apis.RegisterAccountAPI.as_view()),
     # API for relation with movies
     path('api/favorite', apis.AccountFavoriteMoviesAPI.as_view()),
-    path('api/voted', apis.AccountVotedMoviesAPI.as_view())
+    path('api/voted', apis.AccountVotedMoviesAPI.as_view()),
 ]

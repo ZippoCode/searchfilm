@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { userActions } from '../../_actions/user.action';
+import { userActions } from '../../actions/user.action';
 
 // Style
 import { Container, CssBaseline, Typography, TextField, makeStyles, Button } from '@material-ui/core'

@@ -44,18 +44,6 @@ class VotedMovie(models.Model):
         return "{} has voted {} : {} - {}".format(self.person, self.movie, self.value_vote, self.date_vote)
 
 
-@receiver(pre_save, sender=VotedMovie)
-def pre_voteMovie(sender, instance, **kwargs):
-    """
-        Delete a relationship VotedMovie when the user has already voted
-        the current movie
-    """
-    movie = instance.movie
-    account = instance.person
-    if VotedMovie.objects.filter(movie=movie, person=account).exists():
-        movie = Movie.objects.get(title=movie)
-        account.votes.remove(movie)
-
 
 @receiver(post_save, sender=VotedMovie)
 def post_voteMovie(sender, instance, **kwargs):

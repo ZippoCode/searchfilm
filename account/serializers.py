@@ -29,7 +29,7 @@ class AccountFMSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'first_name', 'last_name', 'favorites']
+        fields = ['favorites']
         read_only_fields = ['id']
 
 
@@ -50,7 +50,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'favorites', 'voted']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'favorites', 'voted']
         read_only_fields = ['id']
 
 

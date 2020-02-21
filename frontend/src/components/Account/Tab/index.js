@@ -1,2 +1,3 @@
+export { MainTab } from './MainTab';
 export { StatisticsTab } from './StatisticsTab';
-export { EditAccountTab } from './EditAccountTab';
+export { EditTab } from './EditAccountTab';
