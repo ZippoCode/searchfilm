@@ -1,18 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { recommendedMovie } from '../actions/movie.action';
-import { movieAction, getGenres } from '../actions/main.action';
+import { recommendedMovie } from '../redux/actions/movie.action';
+import { movieAction, getGenres } from '../redux/actions/main.action';
 
 import {
-   //CarouselMovie,
+    //CarouselMovie,
     SearchMovieBar,
     SelectCustom
 } from './index';
 
 // Style Material-UI
+import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
-import Collapse from '@material-ui/core/Collapse';
+//import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -25,7 +26,7 @@ import Switch from '@material-ui/core/Switch';
 //Import for Styled-Components
 import styled from 'styled-components';
 
-const Button = styled.button`
+const ButtonStyled = styled(Button)`
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -38,12 +39,17 @@ export function HomePage() {
     const [watched, setWatched] = useState(false);
     const [premiated, setPremiated] = useState(false);
     const [checkDate, setCheckDate] = useState(false);
-    const [selectedFirstDate, handleFirstDateChange] = useState(new Date(1900));
-    const [selectedEndDate, handleEndDateChange] = useState(new Date());
+    const [valueGenre, setValueGenre] = useState('');
+    const [valueMoodUser, setValueMoodUser] = useState('');
+    const handleChangeGenre = event => { setValueGenre(event.target.value); }
+    const handleMoodUser = event => { setValueMoodUser(event.target.value); }
+
+    //const [selectedFirstDate, handleFirstDateChange] = useState(new Date(1900));
+    //const [selectedEndDate, handleEndDateChange] = useState(new Date());
 
 
     const dispatch = useDispatch();
-    let popularMovies = useSelector(state => state.main.popularMovies) || [];
+    //let popularMovies = useSelector(state => state.main.popularMovies) || [];
     let genresArray = useSelector(state => state.main.genres) || [];
     let genres = genresArray.map((genre) => { return genre.name });
     let loadedPopular = useSelector(state => state.main.loadedPopular) || false;
@@ -73,14 +79,14 @@ export function HomePage() {
                 <h1>Ricerca un film</h1>
             </Grid>
             <Grid container spacing={4}>
-                <Grid item xs>
+                <Grid item xs={6} md={4}>
                     <Grid container direction='column'>
                         <h3>Settaggio principale</h3>
-                        <SelectCustom title={'Umore'} list={userMood} />
-                        <SelectCustom title={'Genere'} list={genres} />
+                        <SelectCustom title={'Umore'} list={userMood} value={valueMoodUser} handleChange={handleMoodUser} />
+                        <SelectCustom title={'Genere'} list={genres} value={valueGenre} handleChange={handleChangeGenre} />
                     </Grid>
                 </Grid>
-                <Grid item xs>
+                <Grid item xs={6} md={4}>
                     <h3>Altre informazioni</h3>
                     <FormGroup row>
                         <FormControlLabel
@@ -129,10 +135,13 @@ export function HomePage() {
                             */}
                     </FormGroup>
                 </Grid>
-                <Grid item xs>
-                    <Button onClick={getRecommendedMovie}>
+                <Grid item xs={12} sm={4}>
+                    <ButtonStyled
+                        onClick={getRecommendedMovie}
+                        variant='contained'
+                    >
                         Ricerca Movie
-          </Button>
+                     </ButtonStyled>
                 </Grid>
             </Grid>
             <Grid item xs>

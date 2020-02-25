@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
 
-// Import Actions
-import { movieAction } from '../../actions/main.action';
+// Importing constants
+import * as URL from '../../helpers/matcher';
 
 // Importing from Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -23,7 +21,7 @@ function MovieItem(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            fetch(`http://127.0.0.1:8000/movie/api/get/${idMovie}`)
+            fetch(URL.DETAILSMOVIE.concat(idMovie))
                 .then(response => response.json())
                 .then(movie => setMovie(movie))
         }
@@ -43,7 +41,7 @@ function MovieItem(props) {
     )
 }
 
-const ListMovies = ({ title, movies }) => (
+export const ListMovies = ({ title, movies }) => (
     <Grid container>
         <h2>{title}</h2>
         <Grid container item xs={12} spacing={3}>
@@ -55,25 +53,3 @@ const ListMovies = ({ title, movies }) => (
         </Grid>
     </Grid>
 );
-
-export function ViewListMovies() {
-    let { type } = useParams();
-    const dispatch = useDispatch();
-
-    let popular = useSelector(state => state.main.popularMovies);
-    let rated = useSelector(state => state.main.topRankedMovies);
-
-    useEffect(() => {
-        dispatch(movieAction.getListMovies(type));
-    }, [type, dispatch]);
-
-    return (
-        <div>
-            {type === 'popular' ?
-                <ListMovies movies={popular} title='I film più popolari' />
-                :
-                <ListMovies movies={rated} title='I film più votati' />
-            }
-        </div>
-    )
-}

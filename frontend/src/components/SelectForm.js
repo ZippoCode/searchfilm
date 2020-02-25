@@ -5,20 +5,24 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import styled from 'styled-components';
+
+const SelectStyled = styled(Select)`
+    background-color: ${props => props.theme.color.component};
+    color: ${props => props.theme.color.textcomponent};
+`
 
 export function SelectCustom(props) {
-    const { title, list } = props;
-    const [value, setValue] = useState('')
+    const { title, list, value, handleChange } = props;
     const inputLabel = useRef(null);
     const [labelWidth, setLabelWidth] = useState(0);
-    const handleChange = event => { setValue(event.target.value); }
 
     useEffect(() => { setLabelWidth(inputLabel.current.offsetWidth); }, []);
 
     return (
         <FormControl variant='outlined' margin='normal'>
             <InputLabel id={`mood-label-${title}`} ref={inputLabel}>{title}</InputLabel>
-            <Select
+            <SelectStyled
                 labelId={`mood-label-${title}`}
                 labelWidth={labelWidth}
                 value={value}
@@ -27,7 +31,7 @@ export function SelectCustom(props) {
                 {list.map((value, index) => (
                     <MenuItem key={index} value={value}>{value}</MenuItem>
                 ))}
-            </Select>
+            </SelectStyled>
         </FormControl>
     )
 }

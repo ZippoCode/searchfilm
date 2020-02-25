@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
-import { changePassword } from '../../../actions/authentication.action';
+import { changePassword } from '../../../redux/actions/authentication.action';
 
 // Import style from Material-UI
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
@@ -23,7 +24,7 @@ export function EditTab() {
         <Grid container direction='column'>
             <h3>Cambia password</h3>
             <form onSubmit={handleSubmit}>
-                <Grid container direction='column'>
+                <Grid container direction='column' xs={6}>
                     <TextField
                         label='Password precedente'
                         type='password'
@@ -44,7 +45,7 @@ export function EditTab() {
                         value={repeatedPassword}
                         onChange={event => { setRepeatedPassword(event.target.value) }}
                     />
-                    <button type='submit'>Cambia</button>
+                    <Button type='submit'>Cambia</Button>
                 </Grid>
             </form>
         </Grid>

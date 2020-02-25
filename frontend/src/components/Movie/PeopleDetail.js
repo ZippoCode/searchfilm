@@ -11,9 +11,8 @@ class PeopleDetail extends React.Component {
 
     componentDidMount() {
         fetch(`http://127.0.0.1:8000/person/api/get/${this.props.match.params.id}/`)
-            .then(response => this.setState({
-                actor: response.data
-            }))
+            .then(response => response.json())
+            .then(response => this.setState({ actor: response }))
             .catch(err => this.setState({
                 error: err,
             }))

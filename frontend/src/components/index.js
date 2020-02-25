@@ -1,3 +1,4 @@
+
 export { AppBarCustom } from './AppBar';
 export { FooterCustom } from './Footer';
 
@@ -6,6 +7,7 @@ export { CarouselMovie } from './CarouselMovie';
 export { SearchMovieBar } from './SearchMovieBar';
 export { SelectCustom } from './SelectForm';
 export { HomePage } from './HomePage';
+export { default as NotFoundPage } from './NotFoundPage';
 
 export { default as About } from './About';
 export { ButtonPreferite } from './ButtonPreferite';

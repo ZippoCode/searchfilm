@@ -1,5 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+// Constants
+import * as URL from '../helpers/matcher';
 
 // Importing from Material-UI
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -11,7 +14,7 @@ import Paper from '@material-ui/core/Paper';
 // Import Styled-Component
 import styled from 'styled-components';
 
-const SearchBar = styled.input`
+const InputStyled = styled.input`
     width: 32px;
     box-sizing: border-box;
     border: 2px solid #ccc;
@@ -19,7 +22,6 @@ const SearchBar = styled.input`
     font-size: 16px;
     background-color: white;
     background-position: 10px 10px; 
-    background-image: url('https://cdn3.iconfinder.com/data/icons/unicons-vector-icons-pack/32/search-16.png');
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
     -webkit-transition: width 0.4s ease-in-out;
@@ -31,75 +33,120 @@ const SearchBar = styled.input`
 `;
 
 export function SearchMovieBar() {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
     const [query, setQuery] = useState('');
-
     const [suggestedMovies, setSuggestedMovies] = useState([]);
-    const [open, setOpen] = useState(false);
-    const anchorRef = useRef(null);
-    const prevOpen = useRef(open);
 
-    useEffect(() => {
-        if (prevOpen.current === true && open === false)
-            anchorRef.current.focus();
-
-        prevOpen.current = open;
-    }, [open])
-
-    const handleToggle = () => {
-        setOpen(prevOpen => !prevOpen);
+    const handleClick = event => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
     }
 
-    const handleClose = event => {
-        if (anchorRef.current && anchorRef.current.contains(event.target))
-            return;
-        setSuggestedMovies([]);
-        setOpen(false);
-    }
-
-    const handleChange = event => {
-        setQuery(event.target.value)
-    }
+    const handleClose = () => { setAnchorEl(null); }
 
     useEffect(() => {
         const getMovies = () => {
-            fetch(`http://127.0.0.1:8000/movie/api/title/?search=${query}`)
+            fetch(URL.SEARCHMOVIEBYTITLE.concat(query))
                 .then(response => response.json())
-                .then(movies => setSuggestedMovies(movies));
+                .then(movies => setSuggestedMovies(movies))
+                .catch(error => console.log(error));
         }
         if (query && query.length > 1 && query.length % 2 === 0)
             getMovies();
-    }, [query])
+    }, [query]);
 
     return (
         <div>
-            <form id='search-movie'>
-                <SearchBar
-                    aria-controls={open ? 'search-bar-suggested' : undefined}
-                    type='search'
-                    placeholder='Ricerca un film...'
-                    onChange={handleChange}
-                    onClick={handleToggle}
-                    ref={anchorRef}
-                />
-            </form>
-            <Popper open={open} anchorEl={anchorRef.current}>
+            <InputStyled
+                type='text'
+                onClick={handleClick}
+                onChange={event => setQuery(event.target.value)}
+            />
+            <Popper id='search-movie-bar' open={open} anchorEl={anchorEl}>
                 <Paper>
                     <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList id='search-bar-suggested'>
-                            {suggestedMovies.map((movie, index) => (
-                                <MenuItem
-                                    component={Link}
-                                    to={`/movie/${movie.id}`}
-                                    onClick={handleClose}
-                                    key={index}
-                                >
-                                    {movie.title}
-                                </MenuItem>
-                            ))}
+                        <MenuList>
+                            {suggestedMovies.map((movie, index) => {
+                                if (index < 5)
+                                    return <MenuItem
+                                        key={index}
+                                        component={Link}
+                                        to={`/movie/${movie.id}`}
+                                        onClick={handleClose}
+                                    >
+                                        {movie.title}
+                                    </MenuItem>
+                                else
+                                    return null;
+                            })}
                         </MenuList>
                     </ClickAwayListener>
                 </Paper>
             </Popper>
         </div>
     )
+    /*
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+    const prevOpen = useRef(open);
+    
+        useEffect(() => {
+            if (prevOpen.current === true && open === false)
+                anchorRef.current.focus();
+    
+            prevOpen.current = open;
+        }, [open])
+    
+        const handleToggle = () => {
+            setOpen(prevOpen => !prevOpen);
+        }
+    
+        const handleClose = event => {
+            if (anchorRef.current && anchorRef.current.contains(event.target))
+                return;
+            setSuggestedMovies([]);
+            setOpen(false);
+        }
+    
+        const handleChange = event => {
+            setQuery(event.target.value)
+        }
+    
+        useEffect(() => {
+
+        }, [query])
+    */
+
+    /*
+        <form id='search-movie'>
+            <SearchBar
+                aria-controls={open ? 'search-bar-suggested' : undefined}
+                type='search'
+                placeholder='Ricerca un film...'
+                onChange={handleChange}
+                onClick={handleToggle}
+                ref={anchorRef}
+            />
+        </form>
+        <Popper open={open} anchorEl={anchorRef.current}>
+            <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                    <MenuList id='search-bar-suggested'>
+                        {suggestedMovies.map((movie, index) => (
+                            <MenuItem
+                                component={Link}
+                                to={`/movie/${movie.id}`}
+                                onClick={handleClose}
+                                key={index}
+                            >
+                                {movie.title}
+                            </MenuItem>
+                        ))}
+                    </MenuList>
+                </ClickAwayListener>
+            </Paper>
+        </Popper>
+ 
+)
+                        */
 }

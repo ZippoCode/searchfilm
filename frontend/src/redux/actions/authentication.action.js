@@ -7,7 +7,7 @@ import {
 import { requestInfoAccount } from './user.action';
 import * as ErrorAction from './error.action';
 
-import { history } from '../helpers/history';
+import * as URL from '../../helpers/matcher';
 
 function handleResponse(response) {
     return response.text()
@@ -39,13 +39,12 @@ export function login(username, password) {
     return dispatch => {
 
         dispatch(request(LOGIN_REQUEST));
-        return fetch('http://127.0.0.1:8000/account/api/auth/login', requestInfo)
+        return fetch(URL.LOGIN, requestInfo)
             .then(handleResponse)
             .then(user => {
                 localStorage.setItem('token', JSON.stringify(user.token));
                 dispatch(success(user.token));
                 dispatch(requestInfoAccount(user.token));
-                history.push('/');
             },
                 error => {
                     dispatch(failure(LOGIN_FAILURE, error.toString()));
@@ -67,7 +66,7 @@ export function logout(token) {
 
     return dispatch => {
         dispatch(request(LOGOUT_REQUEST));
-        return fetch('http://127.0.0.1:8000/account/api/auth/logout', requestOptions)
+        return fetch(URL.LOGOUT, requestOptions)
             .then(response => {
                 if (response.ok) {
                     localStorage.removeItem('token');
@@ -98,7 +97,7 @@ export function changePassword(token, old_password, new_password) {
 
     return dispatch => {
         dispatch(request(CHANGE_PASSWORD_REQUEST));
-        return fetch('http://127.0.0.1:8000/account/api/auth/change_password', requestOptions)
+        return fetch(URL.CHANGEPASSWORD, requestOptions)
             .then(handleResponse)
             .then(dispatch(success()))
             .catch(error => dispatch(failure(CHANGE_PASSWORD_FAILURE, error.toString)))

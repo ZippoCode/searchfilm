@@ -20,10 +20,9 @@ SECRET_KEY = 'zw-pdevq!cy4s0uy6d6s8*iemr1s-)v+(rnyp$tn1xg!6u4z^_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     # DEFAULT APP
     'django.contrib.admin',
@@ -136,7 +135,9 @@ REST_FRAMEWORK = {
 
 # List of origins that are authorized to make cross-site HTTP requests
 CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5000",
     "http://localhost:3000",
+    "http://192.168.1.10:5000",
     "http://192.168.1.10:3000",
 ]
 CORS_ALLOW_CREDENTIAL = True

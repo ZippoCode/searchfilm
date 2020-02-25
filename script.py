@@ -51,6 +51,7 @@ def details_person(details, type):
     person.nationality = (re.split(", |-", person.place_of_birth))[-1] if person.place_of_birth is not None else None
     person.imdb_id = details['imdb_id'] if details['imdb_id'] is not None else None
     person.biography = details['biography'] if details['biography'] is not None else None
+    person.profile_img = details['profile_path'] if details['profile_path'] is not None else None
 
     person.save()
     return person

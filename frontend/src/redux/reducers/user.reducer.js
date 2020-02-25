@@ -27,20 +27,33 @@ export function user(state = initialState, action) {
             });
         case UserActions.SEND_PREFERITE_REQUEST:
             return Object.assign({}, state, {
-                userLoaded: false,
+                sendRequestVote: false,
                 request: action.typeRequest
             });
         case UserActions.SEND_PREFERITE_SUCCESS:
             return Object.assign({}, state, {
                 ...state,
-                userLoaded: true,
+                sendRequestVote: true,
                 favorite: action.favorite
             })
         case UserActions.SEND_PREFERITE_FAILURE:
             return Object.assign({}, state, {
                 error: true,
                 errorValue: action.error,
-            }); default:
+            });
+        case UserActions.SEND_VOTE_REQUEST:
+            return Object.assign({}, state, {
+                sendVoteRequest: false,
+                vote: action.vote,
+            });
+        case UserActions.SEND_VOTE_SUCCESS:
+            return Object.assign({}, state, {
+                sendVoteRequest: true,
+                ...state,
+                sendRequestVote: true,
+                voted: action.voted
+            })
+        default:
             return state;
     }
 }

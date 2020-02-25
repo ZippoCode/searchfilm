@@ -58,7 +58,7 @@ class RandomMovie(views.APIView):
     def get(self, request):
         try:
             films = Movie.objects.all()
-            index = random.randint(0, len(films));
+            index = random.randint(0, len(films))
             film = films[index]
         except Movie.DoesNotExist:
             return Response({'Error': 'Genre not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -71,7 +71,7 @@ class GenreMovieAPI(views.APIView):
 
     def get(self, request, genre, *args, **kwargs):
         try:
-            movies = Movie.objects.filter(genres__name=genre).order_by('-vote_counter')
+            movies = Movie.objects.filter(genres__name__iexact=genre).order_by('-vote_counter')
             serializers = MovieSimpleSerializer(movies, many=True)
         except Movie.DoesNotExist:
             return Response({'Error': 'Genre not found'}, status=status.HTTP_404_NOT_FOUND)

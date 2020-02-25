@@ -3,6 +3,8 @@ import {
     ADD_FAVORITE,
 } from '../constants/user.constants';
 
+import * as URL from '../../helpers/matcher';
+
 function successInfoAccount(user) {
     return {
         type: UserActions.USER_INFO_SUCCESS,
@@ -24,7 +26,7 @@ export function requestInfoAccount(token) {
 
     return dispatch => {
         dispatch(request());
-        return fetch('http://127.0.0.1:8000/account/api/auth/user', requestOptions)
+        return fetch(URL.GETINFOACCOUNT, requestOptions)
             .then(response => response.json())
             .then(
                 user => {
@@ -51,7 +53,7 @@ export function addRemoveMoviePreferite(token, id_movie, typeRequest) {
     return dispatch => {
 
         dispatch(request(typeRequest));
-        return fetch('http://127.0.0.1:8000/account/api/favorite', requestOptions)
+        return fetch(URL.MANAGEFAVORITEMOVIE, requestOptions)
             .then(response => response.json())
             .then(response => { dispatch(success(response.favorites, typeRequest)) });
 
@@ -62,43 +64,27 @@ export function addRemoveMoviePreferite(token, id_movie, typeRequest) {
     }
 }
 
-/*
-function add_vote(user, id_movie, value_vote) {
-    return dispatch => {
-        dispatch(request(user));
-        userService.add_vote(user, id_movie, value_vote)
-            .then(
-                user => {
-                    dispatch(success(user));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    alert('Error: '.concat(error.status));
-                });
+export function voteMovie(token, id_movie, value_vote) {
+    const headers = new Headers();
+    headers.append("Authorization", "Token ".concat(token));
+    const formdata = new FormData();
+    formdata.append("id", id_movie);
+    formdata.append("value_vote", value_vote);
 
-        function request() { return { type: userConstants.ADD_VOTE_REQUEST } }
-        function success(user) { return { type: userConstants.ADD_VOTE_SUCCESS, user } }
-        function failure(error) { return { type: userConstants.ADD_VOTE_FAILURE, error } }
+    const requestOptions = {
+        method: 'PUT',
+        headers: headers,
+        body: formdata,
+    };
+
+    return dispatch => {
+        dispatch(request(value_vote));
+
+        fetch(URL.MANAGEVOTEDMOVIE, requestOptions)
+            .then(response => response.json())
+            .then(response => dispatch(success(response.voted)))
+
+        function request(vote) { return { type: UserActions.SEND_VOTE_REQUEST, vote } }
+        function success(voted) { return { type: UserActions.SEND_VOTE_SUCCESS, voted } }
     }
 }
-
-function remove_vote(user, id_movie) {
-    return dispatch => {
-
-        dispatch(request(user));
-
-        userService.remove_vote(user, id_movie)
-            .then(
-                user => {
-                    dispatch(success(user));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    alert('Error: '.concat(error.status));
-                });
-
-        function request(user) { return { type: userConstants.REMOVE_VOTE_REQUEST, user } }
-        function success(user) { return { type: userConstants.REMOVE_VOTE_SUCCESS, user } }
-        function failure(error) { return { type: userConstants.REMOVE_VOTE_FAILURE, error } }
-    }
-}*/

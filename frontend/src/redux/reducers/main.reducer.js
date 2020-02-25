@@ -15,6 +15,7 @@ import {
 const initialState = {
     popularMovies: [],
     topRankedMovies: [],
+    movieGenre: [],
     genres: []
 }
 
@@ -47,12 +48,16 @@ export function main(state = initialState, action) {
             return Object.assign({}, state, {
                 loadedGenres: !state.loadedGenres,
                 genres: action.genres,
-            })
-
+            });
         case VIEW_TOP_POPULAR_GENRE_MOVIE_REQUEST:
-            return { loading: true };
+            return Object.assign({}, state, {
+                loadingMovieGenre: false,
+            });
         case VIEW_TOP_POPULAR_GENRE_MOVIE_SUCCESS:
-            return { movies: action.movies };
+            return Object.assign({}, state, {
+                loadingMovieGenre: !state.loadingMovieGenre,
+                movieGenre: action.movies
+            });
         default:
             return state;
     }

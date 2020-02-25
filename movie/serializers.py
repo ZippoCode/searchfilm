@@ -12,23 +12,25 @@ class GenreSerializers(serializers.ModelSerializer):
 
 
 class CastSerializers(serializers.ModelSerializer):
-    person = serializers.CharField(source='person.full_name', read_only=True)
-    person_id = serializers.CharField(source='person.id_person', read_only=True)
+    id = serializers.CharField(source='person.id_person', read_only=True)
+    name = serializers.CharField(source='person.full_name', read_only=True)
+    profile_img = serializers.CharField(source='person.profile_img', read_only=True)
 
     class Meta:
         model = Cast
-        fields = ['person', 'person_id', 'name_character']
+        fields = ['id', 'name', 'name_character', 'profile_img']
 
 
 # Movie Serializer with Actors and Directors
 class MovieSerializer(serializers.ModelSerializer):
     actors = CastSerializers(source='cast_set', many=True)
     directors = PersonSerializers(many=True)
+    genres = GenreSerializers(many=True)
 
     class Meta:
         model = Movie
         fields = ['id', 'title', 'original_title', 'imdb_id', 'description', 'release_date', 'vote_average',
-                  'vote_counter', 'actors', 'directors', 'tmdb_file_path_poster']
+                  'vote_counter', 'actors', 'directors', 'tmdb_file_path_poster', 'genres']
 
 
 # Movie Serializer with Id and Title

@@ -4,12 +4,13 @@ import {
   Route,
 } from 'react-router-dom';
 
-import logo from './logo.svg';
+//import logo from './logo.svg';
 
 import {
   AppBarCustom,
   FooterCustom,
-  HomePage
+  HomePage,
+  NotFoundPage,
 } from './components';
 
 import {
@@ -18,40 +19,55 @@ import {
 } from './components/Account';
 
 import {
-  MovieDetail,
+  FullCastPage,
+  MoviePage,
   PeopleDetail,
-  ViewListMovies,
+  ListMoviePage,
+  ListMovieGenrePage,
 } from './components/Movie';
 
 // Importing from Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 
-//import './App.css';
+// Importing from Styled-Components
+import { ThemeProvider } from 'styled-components';
+
+// Theme and CSS
+import './App.css';
+import { theme } from './components/Theme';
 
 function App() {
   return (
-    <div className='App'>
-      <CssBaseline />
-      <header className='App-header'>
-        <AppBarCustom />
-        <Toolbar />
-      </header>
-      <div id='container'>
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route path='/movie/:id' component={MovieDetail} />
-          <Route path='/movies/:type' component={ViewListMovies} />
-          <Route path='/person/:id' component={PeopleDetail} />
+    <ThemeProvider theme={theme}>
+      <div className='App'>
+        <CssBaseline />
+        <header className='App-header'>
+          <AppBarCustom />
+          <Toolbar />
+        </header>
+        <div className='App-container'>
+          <Switch>
+            <Route exact path='/' component={HomePage} />
+            <Route exact path='/movie/:id' component={MoviePage} />
+            <Route path='/movie/:id/cast' component={FullCastPage} />
+            
+            <Route exact path='/movies/:type' component={ListMoviePage} />
+            <Route path='/movies/genre/:genre' component={ListMovieGenrePage} />
 
-          <Route exact path='/login' component={LoginPage} />
-          <Route path='/account-page' component={AccountPage} />
-        </Switch>
+            <Route path='/person/:id' component={PeopleDetail} />
+
+            <Route exact path='/login' component={LoginPage} />
+            <Route path='/account-page' component={AccountPage} />
+
+            <Route path='*' component={NotFoundPage} />
+          </Switch>
+        </div>
+        <div className='App-Footer'>
+          <FooterCustom />
+        </div>
       </div>
-      <div id='footer'>
-        <FooterCustom />
-      </div>
-    </div>
+    </ThemeProvider>
   )
 }
 

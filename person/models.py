@@ -23,10 +23,11 @@ class Person(models.Model):
     place_of_birth = models.CharField(max_length=255, null=True)
     imdb_id = models.CharField(max_length=10, null=True)
     biography = models.TextField(null=True, blank=True)
+    profile_img = models.TextField(max_length=255, null=True, blank=True)
 
     @property
     def full_name(self):
-        return '%s %s' % (self.second_name, self.first_name)
+        return '%s %s' % (self.first_name, self.second_name)
 
     def __str__(self):
         return self.full_name

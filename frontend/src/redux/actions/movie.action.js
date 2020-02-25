@@ -1,7 +1,8 @@
 
 import { movieConstants } from '../constants/movie.constants';
-import { history } from '../helpers/history';
 
+import { history } from '../../helpers/history';
+import * as URL from '../../helpers/matcher';
 
 function request() {
     return {
@@ -19,7 +20,7 @@ function failure(error) {
 export function recommendedMovie() {
     return dispatch => {
         dispatch(request());
-        return fetch(`http://127.0.0.1:8000/movie/api/get/movie`)
+        return fetch(URL.RECOMMENDMOVIE)
             .then(response => response.json())
             .then(json => {
                 dispatch(success(json));
@@ -33,12 +34,11 @@ export function recommendedMovie() {
 
 
 export function loadMovie(id) {
-    const PATH_DETAIL_MOVIE = 'http://127.0.0.1:8000/movie/api/get/';
 
     return function (dispatch) {
         dispatch(request(id))
 
-        return fetch(PATH_DETAIL_MOVIE.concat(id))
+        return fetch(URL.DETAILSMOVIE.concat(id))
             .then(response => response.json())
             .then(
                 data => { dispatch(success(data)); },
@@ -51,13 +51,12 @@ export function loadMovie(id) {
 
 export function searchMovie(title_movie) {
 
-    const PATH_SEARCH_MOVIE = 'http://127.0.0.1:8000/movie/api/search/';
 
     return function (dispatch) {
 
         dispatch(request(title_movie));
 
-        return fetch(PATH_SEARCH_MOVIE.concat(title_movie))
+        return fetch(URL.SEARCHMOVIEBYID.concat(title_movie))
             .then(response => response.json())
             .then(
                 movie => {
@@ -69,7 +68,3 @@ export function searchMovie(title_movie) {
 
     function success(movie) { return { type: movieConstants.SEARCH_MOVIE_SUCCESS, movie } }
 }
-/*
-export function updateVote(movie) {
-    return { type: movieConstants.UPDATE_VOTE_MOVIE, movie };
-}*/

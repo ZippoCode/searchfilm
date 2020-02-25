@@ -4,14 +4,19 @@ import { Link } from 'react-router-dom';
 // Importing from React-Redux
 import { useSelector, useDispatch } from 'react-redux';
 
+// dispatch actions
+import {
+    logout
+} from '../redux/actions/authentication.action';
+
 // Importing Styled-Components
 import styled from 'styled-components';
-
 
 // importing from Material-UI
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 //import ListItemText from '@material-ui/core/ListItemText';
@@ -23,18 +28,23 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Toolbar from '@material-ui/core/Toolbar';
 
 
-// dispatch actions
-import {
-    logout
-} from '../actions';
+// Icons
+import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 // Const Styled
+const AppBarStyled = styled(AppBar)`
+    background-color: ${props => props.theme.color.textcomponent};
+`;
+
 const TitleAppBar = styled.h3`
     flex-grow: 1;
 `
 
 const DrawerMenuStyled = styled.div`
     width: 256px;
+    background-color: ${props => props.theme.color.component};
+    color: ${props => props.theme.color.textcomponent};
     padding-left: 4%;
 `;
 
@@ -45,7 +55,6 @@ const MenuItemLink = ({ path, valueText }) => (
     </ListItem>
 );
 
-
 export function AppBarCustom() {
     const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -53,9 +62,9 @@ export function AppBarCustom() {
     const handleOpenDrawer = () => (setOpenDrawer(openDrawer => !openDrawer));
 
     return (
-        <AppBar position='fixed'>
+        <AppBarStyled position='fixed'>
             <Toolbar>
-                <Button edge='start' onClick={handleOpenDrawer}>Menu</Button>
+                <MenuIcon edge='start' onClick={handleOpenDrawer}>Menu</MenuIcon>
                 <SwipeableDrawer
                     open={openDrawer}
                     onClick={handleOpenDrawer}
@@ -76,13 +85,25 @@ export function AppBarCustom() {
                 <TitleAppBar>Search Movie</TitleAppBar>
                 {logged ? (<Logout />) : (<Login />)}
             </Toolbar>
-        </AppBar>
+        </AppBarStyled>
     )
 }
 
+const ButtonStyled = styled(Button)`
+    background-color: ${props => props.theme.color.component};
+    color: ${props => props.theme.color.textcomponent};
+`
+
 function Login() {
     return (
-        <Button component={Link} to='/login' color='inherit' type='submit'>Login</Button>
+        <ButtonStyled
+            component={Link}
+            to='/login'
+            type='submit'
+            variant='contained'
+        >
+            Login
+        </ButtonStyled>
     )
 }
 
@@ -101,12 +122,14 @@ function Logout() {
 
     return (
         <div>
-            <Button
+            <IconButton
+                color='inherit'
+                edge='end'
                 ref={anchorRef}
                 onClick={() => setOpen(open => !open)}
             >
-                Account
-            </Button>
+                <AccountCircleIcon />
+            </IconButton>
             <Popper open={open} anchorEl={anchorRef.current}>
                 <ClickAwayListener onClickAway={handleClose}>
                     <Paper>
@@ -118,6 +141,6 @@ function Logout() {
                     </Paper>
                 </ClickAwayListener>
             </Popper>
-        </div>
+        </div >
     )
 }
