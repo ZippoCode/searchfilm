@@ -1,18 +1,14 @@
 .App {
   text-align: center;
+  justify-content: center;
 }
 
 .App-container{
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
   min-height: 100vh;
-  padding-right: 32px;
-  padding-left: 32px;
-  background-color: white;
-  color: black;
+  background-color: #F5E4C3;
 }
-
 /*
 .App-logo {
   height: 40vmin;

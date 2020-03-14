@@ -39,7 +39,7 @@ class AccountVMSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'first_name', 'last_name', 'voted']
+        fields = ['voted']
         read_only_fields = ['id']
 
 
@@ -50,7 +50,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'favorites', 'voted']
+        fields = ['id', 'first_name', 'last_name', 'date_joined', 'favorites', 'voted']
         read_only_fields = ['id']
 
 

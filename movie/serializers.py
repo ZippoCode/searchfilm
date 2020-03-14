@@ -30,18 +30,12 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title', 'original_title', 'imdb_id', 'description', 'release_date', 'vote_average',
-                  'vote_counter', 'actors', 'directors', 'tmdb_file_path_poster', 'genres']
+                  'vote_counter', 'actors', 'directors', 'poster_path', 'genres']
 
 
 # Movie Serializer with Id and Title
 class MovieSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ['id', 'title', 'tmdb_file_path_poster']
-
-
-# Movie serializer with ID, Title, Vote Average and Vote Counter
-class MovieSimpleVoteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = ['id', 'title', 'vote_counter', 'vote_average']
+        fields = ['id', 'title', 'original_title', 'imdb_id', 'description', 'release_date', 'vote_average',
+                  'vote_counter', 'poster_path', 'genres', 'vote_counter', 'vote_average']

@@ -1,43 +1,44 @@
-import React from 'react';
-import {
-  Switch,
-  Route,
-} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 //import logo from './logo.svg';
-
-import {
-  AppBarCustom,
-  FooterCustom,
-  HomePage,
-  NotFoundPage,
-} from './components';
-
-import {
-  LoginPage,
-  AccountPage
-} from './components/Account';
-
-import {
-  FullCastPage,
-  MoviePage,
-  PeopleDetail,
-  ListMoviePage,
-  ListMovieGenrePage,
-} from './components/Movie';
+import { AppBarCustom, FooterCustom } from './components';
+import RouterPages from './helpers/history';
 
 // Importing from Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 
-// Importing from Styled-Components
-import { ThemeProvider } from 'styled-components';
+// Importing Theme's component
+import { ThemeProvider } from '@material-ui/core/styles';
+import { theme } from './Theme';
 
 // Theme and CSS
 import './App.css';
-import { theme } from './components/Theme';
+
+// Importing actions
+import { AuthenticationActions } from './redux/actions/authentication.action';
+import { getGenres } from './redux/actions/main.action';
 
 function App() {
+
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.authentication.token) || undefined;
+  const loaded = useSelector(state => state.authentication.id) || false;
+
+  useEffect(() => {
+    const fetchData = () => { dispatch(AuthenticationActions.getInfoAccount(token)); }
+    if (token && !loaded) { fetchData(); }
+  }, [dispatch, token, loaded]);
+
+  let loadedGenres = useSelector(state => state.main.loadedGenres) || false;
+
+  useEffect(() => {
+    const loadGenres = () => { dispatch(getGenres()); }
+    if (!loadedGenres)
+      loadGenres();
+  }, [dispatch, loadedGenres]);
+
   return (
     <ThemeProvider theme={theme}>
       <div className='App'>
@@ -47,21 +48,7 @@ function App() {
           <Toolbar />
         </header>
         <div className='App-container'>
-          <Switch>
-            <Route exact path='/' component={HomePage} />
-            <Route exact path='/movie/:id' component={MoviePage} />
-            <Route path='/movie/:id/cast' component={FullCastPage} />
-            
-            <Route exact path='/movies/:type' component={ListMoviePage} />
-            <Route path='/movies/genre/:genre' component={ListMovieGenrePage} />
-
-            <Route path='/person/:id' component={PeopleDetail} />
-
-            <Route exact path='/login' component={LoginPage} />
-            <Route path='/account-page' component={AccountPage} />
-
-            <Route path='*' component={NotFoundPage} />
-          </Switch>
+          <RouterPages />
         </div>
         <div className='App-Footer'>
           <FooterCustom />
@@ -72,27 +59,3 @@ function App() {
 }
 
 export default App;
-/*
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-*/

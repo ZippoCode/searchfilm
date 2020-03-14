@@ -11,7 +11,7 @@ export function registration(state = {}, action) {
         case REGISTER_SUCCESS:
             return {};
         case REGISTER_FAILURE:
-            return {};
+            return { error: action.error };
         default:
             return state;
     }

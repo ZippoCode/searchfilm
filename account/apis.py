@@ -21,19 +21,21 @@ from movie.models import Movie
 
 
 # Get User API
-class AccountAPI(generics.RetrieveAPIView):
+class AccountAPI(views.APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-    serializer_class = AccountSerializer
 
-    def get_object(self):
-        return self.request.user
-
+    def get(self, request, *args, **kwargs):
+        try:
+            account = Account.objects.get(username=self.request.user)
+        except Movie.DoesNotExist:
+            raise Http404
+        serializer = AccountSerializer(account)
+        return Response(serializer.data)
 
 # Get User with favorite movies API with movie. Allow to view favorite movies list and put a movie
 class AccountFavoriteMoviesAPI(views.APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     serializer_class = AccountFMSerializer
 
     def get(self, request, *args, **kwargs):
@@ -77,7 +79,7 @@ class AccountFavoriteMoviesAPI(views.APIView):
 # Get User API with voted movie. Allow to view voted movies list and put a vote in a movie
 class AccountVotedMoviesAPI(views.APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     serializer_class = AccountVMSerializer
 
     def get(self, request, *args, **kwargs):

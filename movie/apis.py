@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import generics, filters
 
 # Internal importing
-from .serializers import MovieSerializer, MovieSimpleSerializer, MovieSimpleVoteSerializer, GenreSerializers
+from .serializers import MovieSerializer, MovieSimpleSerializer, GenreSerializers
 from .models import Movie, Genre
 
 
@@ -24,6 +24,8 @@ class SearchFilmAPI(generics.ListCreateAPIView):
     filter_backends = (filters.SearchFilter,)
     queryset = Movie.objects.all()
     serializer_class = MovieSimpleSerializer
+
+
 """
 
     def get(self, request, query, format=None):
@@ -55,9 +57,19 @@ class GetFilm(views.APIView):
 
 
 class RandomMovie(views.APIView):
-    def get(self, request):
+    def post(self, request, *args, **kwargs):
+        print(self.request.data)
+        mood = self.request.data.get('mood')
+        genre = self.request.data.get('genre')
+        premiated = self.request.data.get('premiated')
+        watched = self.request.data.get('watched')
+        print(genre)
         try:
-            films = Movie.objects.all()
+            if genre != '':
+                print(genre)
+                films = Movie.objects.filter(genres__name=genre)
+            else:
+                films = Movie.objects.all()
             index = random.randint(0, len(films))
             film = films[index]
         except Movie.DoesNotExist:
@@ -84,5 +96,5 @@ class GetPopularMovies(generics.ListCreateAPIView):
 
 
 class GetTopRatedMovies(generics.ListCreateAPIView):
-    serializer_class = MovieSimpleVoteSerializer
+    serializer_class = MovieSimpleSerializer
     queryset = Movie.objects.all().order_by('-vote_average')[:10]

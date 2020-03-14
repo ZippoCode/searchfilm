@@ -27,7 +27,7 @@ urlpatterns = [
 # Custom Api's URL
 urlpatterns += [
     path('api/get/<int:film_id>/', apis.GetFilm.as_view()),
-    path('api/get/movie', apis.RandomMovie.as_view()),
+    path('api/recommend/', apis.RandomMovie.as_view()),
     path('api/title/', apis.SearchFilmAPI.as_view()),
     path('api/topPopular', apis.GetPopularMovies.as_view()),
     path('api/topRanking', apis.GetTopRatedMovies.as_view()),

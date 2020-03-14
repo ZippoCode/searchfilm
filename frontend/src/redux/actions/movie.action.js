@@ -1,12 +1,21 @@
 
+import axios from 'axios';
+
 import { movieConstants } from '../constants/movie.constants';
 
 import { history } from '../../helpers/history';
 import * as URL from '../../helpers/matcher';
 
-function request() {
+export const MovieActions = {
+    recommendedMovie,
+    loadMovie,
+}
+
+
+function request(movie_id) {
     return {
-        type: movieConstants.MOVIE_REQUEST
+        type: movieConstants.MOVIE_REQUEST,
+        movie_id
     }
 }
 
@@ -17,33 +26,37 @@ function failure(error) {
     }
 }
 
-export function recommendedMovie() {
-    return dispatch => {
+function recommendedMovie(info) {
+    return async dispatch => {
         dispatch(request());
-        return fetch(URL.RECOMMENDMOVIE)
-            .then(response => response.json())
-            .then(json => {
-                dispatch(success(json));
-                history.push('/movie/'.concat(json['id']));
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: URL.RECOMMENDMOVIE,
+                headers: { "Content-Type": "application/json" },
+                data: JSON.stringify(info)
             })
-            .catch(error => dispatch(failure(error)))
+            dispatch(success(response.data));
+            history.push('/movie/'.concat(response.data['id']))
+        } catch (error) {
+            dispatch(failure(error));
+        }
     }
 
     function success(movie) { return { type: movieConstants.RECOMMENDED_SEARCH_MOVIE_SUCCESS, movie } };
 }
 
 
-export function loadMovie(id) {
+function loadMovie(id) {
 
-    return function (dispatch) {
+    return async dispatch => {
         dispatch(request(id))
-
-        return fetch(URL.DETAILSMOVIE.concat(id))
-            .then(response => response.json())
-            .then(
-                data => { dispatch(success(data)); },
-                error => { dispatch(failure(error)); }
-            )
+        try {
+            const response = await axios.get(URL.DETAILSMOVIE.concat(id));
+            dispatch(success(response.data));
+        } catch (error) {
+            dispatch(failure(error))
+        }
     }
 
     function success(movie) { return { type: movieConstants.VIEW_MOVIE_SUCCESS, movie } }

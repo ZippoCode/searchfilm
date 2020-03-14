@@ -10,10 +10,11 @@ export function movie(state = initialState, action) {
         case movieConstants.MOVIE_REQUEST:
             return Object.assign({}, state, {
                 loaded: false,
+                id: action.movie_id,
             });
         case movieConstants.VIEW_MOVIE_SUCCESS:
             return Object.assign({}, state, {
-                loaded: !state.loaded,
+                loaded: true,
                 movie: action.movie,
             });
         case movieConstants.RECOMMENDED_SEARCH_MOVIE_SUCCESS:
