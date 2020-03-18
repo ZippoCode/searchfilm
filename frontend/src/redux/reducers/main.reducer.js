@@ -13,8 +13,8 @@ import {
 
 
 const initialState = {
-    popularMovies: [],
-    topRankedMovies: [],
+    resultPopular: [],
+    resultRating: [],
     movieGenre: [],
     genres: []
 }
@@ -28,12 +28,14 @@ export function main(state = initialState, action) {
         case GET_POPULAR_MOVIE_SUCCESS:
             return Object.assign({}, state, {
                 loadedPopular: !state.loadedPopular,
-                popularMovies: action.movies
+                resultPopular: action.movies,
+                numPagePopular: Math.floor(action.numPage / 10)
             });
         case GET_TOP_RANKED_SUCCESS:
             return Object.assign({}, state, {
                 loadedPopular: !state.loadedPopular,
-                topRankedMovies: action.movies
+                resultRating: action.movies,
+                numPageRating: Math.floor(action.numPage / 10)
             });
         case GET_LIST_FAILURE:
             return Object.assign({}, state, {

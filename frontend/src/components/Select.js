@@ -12,7 +12,10 @@ import Select from '@material-ui/core/Select';
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.primary.main,
-        color: theme.palette.secondary.main,
+        '& .MuiInputBase-root': {
+            color: theme.palette.secondary.main,
+            fontSize: 21,
+        },
     },
     item: {
         color: theme.palette.primary.main,

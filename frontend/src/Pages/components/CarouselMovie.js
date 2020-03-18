@@ -31,11 +31,15 @@ const styles = theme => ({
         '& .MuiTypography-root': { margin: theme.spacing(3), }
     },
     posterMovie: {
-        backgroundColor: theme.palette.secondary.main,
-        color: theme.palette.primary.dark,
-        width: '300px !important',
+        position: 'relative',
+        backgroundColor: '#FCEFF9',
+        color: theme.palette.primary.main,
         marginRight: theme.spacing(3),
+        width: '300px !important',
         '&:hover': { opacity: 0.9, },
+        [theme.breakpoints.down('xs')]: {
+            width: '250px !important',
+        }
     },
 });
 
@@ -49,9 +53,11 @@ function CarouselMovie(props) {
         dots: false,
         infinite: true,
         slidesToShow: 1,
-        speed: 500,
         swipeToSlide: true,
         variableWidth: true,
+        autoplay: true,
+        speed: 2000,
+        autoplaySpeed: 2000,
         responsive: [
             {
                 breakpoint: 1280,
@@ -82,7 +88,13 @@ function CarouselMovie(props) {
         <section className={classes.root}>
             <div className={classes.title}>
                 <Typography variant='h4' component='h2' align='left' gutterBottom> I film più popolari</Typography>
-                <Button>Visualizzali tutti</Button>
+                <Button
+                    component={Link}
+                    href='/movies/popular'
+                    undeline='none'
+                >
+                    Visualizza tutti
+                </Button>
             </div>
             <Slider {...settings}>
                 {popularMovies.map((movie) =>
@@ -94,18 +106,20 @@ function CarouselMovie(props) {
                         >
                             <CardMedia
                                 component='img'
+                                className={classes.posterImage}
                                 alt={movie.poster}
-                                height='120%'
                                 image={PATH_POSTER.concat(movie.poster_path)}
                                 title={movie.title}
-                                style={{ maxHeight: '450px' }}
                             />
                             <CardContent>
                                 <Typography variant='h5' component='h1'>{movie.title}</Typography>
                             </CardContent>
                         </CardActionArea>
-                        <CardActions>
-                            <ButtonPreferite idMovie={movie.id} />
+                        <CardActions style={{ alignContent: 'center' }}>
+                            <ButtonPreferite
+                                fullWidth
+                                idMovie={movie.id}
+                            />
                         </CardActions>
                     </Card>
                 )}

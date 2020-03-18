@@ -37,17 +37,17 @@ const CssTextField = withStyles(theme => ({
     root: {
         '& .MuiInputBase-root': {
             fontSize: 27,
-            color: theme.palette.secondary.main,
+            color: theme.palette.text.primary,
         },
         '& .MuiFormLabel-root': {
-            color: theme.palette.secondary.main,
+            color: theme.palette.text.primary,
             fontSize: 31,
         },
         '& .MuiInput-underline': {
-            '&:after': { borderColor: theme.palette.secondary.main, },
-            '&:before': { borderColor: theme.palette.secondary.main, },
-            '&:hover:not(.Mui-disabled):before': { borderColor: theme.palette.secondary.light, },
-            '&:hover:not(.Mui-disabled):after': { borderColor: theme.palette.secondary.light, },
+            '&:after': { borderColor: theme.palette.text.primary, },
+            '&:before': { borderColor: theme.palette.text.primary, },
+            '&:hover:not(.Mui-disabled):before': { borderColor: theme.palette.text.primary.light, },
+            '&:hover:not(.Mui-disabled):after': { borderColor: theme.palette.text.primary.light, },
         },
     }
 }))(TextField);
@@ -56,7 +56,7 @@ const StyledMenuItem = withStyles(theme => ({
     root: {
         '&:hover': {
             backgroundColor: theme.palette.primary.main,
-            color: theme.palette.secondary.main,
+            color: 'white',
         }
     }
 }))(MenuItem);

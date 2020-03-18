@@ -52,7 +52,7 @@ function loadMovie(id) {
     return async dispatch => {
         dispatch(request(id))
         try {
-            const response = await axios.get(URL.DETAILSMOVIE.concat(id));
+            const response = await axios.get(URL.DETAILSMOVIE.concat(id, '/'));
             dispatch(success(response.data));
         } catch (error) {
             dispatch(failure(error))

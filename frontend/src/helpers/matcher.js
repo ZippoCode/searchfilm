@@ -7,8 +7,8 @@ export const LOGOUT = `${LOCALHOSTIP}/account/api/auth/logout`;
 export const CHANGEPASSWORD = `${LOCALHOSTIP}/account/api/auth/change_password`;
 export const REGISTER = `${LOCALHOSTIP}/account/api/auth/register`;
 
-export const TOPPOPULAR = `${LOCALHOSTIP}/movie/api/topPopular`;
-export const TOPRANKING = `${LOCALHOSTIP}/movie/api/topRanking`;
+export const TOPPOPULAR = `${LOCALHOSTIP}/movie/api/topPopular/`;
+export const TOPRANKING = `${LOCALHOSTIP}/movie/api/topRanking/`;
 export const GENRES = `${LOCALHOSTIP}/movie/api/genres`;
 export const SEARCHMOVIEWITHGENRE = `${LOCALHOSTIP}/movie/api/topPopular/`;
 

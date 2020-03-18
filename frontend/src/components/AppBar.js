@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
-
-// Importing from React-Redux
 import { useSelector, useDispatch } from 'react-redux';
 
-// dispatch actions
+// Dispatch actions
 import { AuthenticationActions } from '../redux/actions/authentication.action';
 
 // Import Custom Element UI
@@ -16,7 +14,6 @@ import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
-//import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
@@ -45,7 +42,6 @@ function Login() {
 function Logout() {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef(null);
-
     const dispatch = useDispatch();
     const token = useSelector(state => state.authentication.token) || undefined;
 
@@ -65,16 +61,20 @@ function Logout() {
             >
                 <AccountCircleIcon />
             </IconButton>
-            <Popper open={open} anchorEl={anchorRef.current}>
-                <ClickAwayListener onClickAway={handleClose}>
-                    <Paper>
+            <Popper
+                open={open}
+                anchorEl={anchorRef.current}
+                placeholder='bottom'
+            >
+                <Paper>
+                    <ClickAwayListener onClickAway={handleClose}>
                         <MenuList>
-                            <MenuItem component={Link} href={`/account-page/`} onClick={handleClose}>Profilo</MenuItem>
-                            <MenuItem component={Link} href={`/account-page/`} onClick={handleClose}>Statistiche</MenuItem>
+                            <MenuItem component={Link} href={'/account'} onClick={handleClose}>Profilo</MenuItem>
+                            <MenuItem component={Link} href={`/account/edit`} onClick={handleClose}>Modifica Account</MenuItem>
                             <MenuItem component={Link} href={'/'} onClick={handleSubmit}>Logout</MenuItem>
                         </MenuList>
-                    </Paper>
-                </ClickAwayListener>
+                    </ClickAwayListener>
+                </Paper>
             </Popper>
         </div>
     )
@@ -89,7 +89,7 @@ const styles = theme => ({
         alignItems: 'center',
         flexGrow: 1,
         fontSize: 24,
-        '& .MuiSvgIcon-root':{ lineHeight: 0 }
+        '& .MuiSvgIcon-root': { lineHeight: 0 }
     },
 });
 
@@ -101,33 +101,36 @@ function AppBarCustom(props) {
     const handleOpenDrawer = () => (setOpenDrawer(openDrawer => !openDrawer));
 
     return (
-        <AppBar position='fixed'>
-            <Toolbar>
-                <IconButton
-                    className={classes.menuButton}
-                    edge='start'
-                    onClick={handleOpenDrawer}
-                    color='inherit'
-                    aria-label='menu'
-                >
-                    <MenuIcon />
-                </IconButton>
-                <DrawerMenu
-                    openDrawer={openDrawer}
-                    handleOpenDrawer={handleOpenDrawer}
-                />
-                <Link
-                    className={classes.title}
-                    href='/'
-                    variant='h6'
-                    color='inherit'
-                    underline='none'
-                >
-                    {'Search Movie'}
-                </Link>
-                {logged ? (<Logout />) : (<Login />)}
-            </Toolbar>
-        </AppBar>
+        <div>
+            <AppBar position='fixed'>
+                <Toolbar>
+                    <IconButton
+                        className={classes.menuButton}
+                        edge='start'
+                        onClick={handleOpenDrawer}
+                        color='inherit'
+                        aria-label='menu'
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <DrawerMenu
+                        openDrawer={openDrawer}
+                        handleOpenDrawer={handleOpenDrawer}
+                    />
+                    <Link
+                        className={classes.title}
+                        href='/'
+                        variant='h6'
+                        color='inherit'
+                        underline='none'
+                    >
+                        {'Search Movie'}
+                    </Link>
+                    {logged ? (<Logout />) : (<Login />)}
+                </Toolbar>
+            </AppBar>
+            <Toolbar />
+        </div>
     )
 }
 

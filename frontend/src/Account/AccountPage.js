@@ -1,34 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 
 import Axios from 'axios';
 
+import MoviesButton from './components/MoviesButton';
+
 // Importing from Material-UI
 import { makeStyles } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography'
-
-const ListMovie = ({ array }) => {
-    return (
-        <List>
-            {array.map((movie, index) =>
-                <ListItem
-                    button
-                    key={index}
-                    component={Link}
-                    href={`/movie/${movie.movie}`}
-                    color='inherit'
-                >
-                    {movie.title}
-                </ListItem>)}
-            <Typography component={Link} color='inherit'>Visualizzali tutti.</Typography>
-        </List>
-    )
-}
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -54,18 +38,18 @@ export function AccountPage() {
                 headers: { 'Authorization': 'Bearer '.concat(token) }
             });
             setUser(response.data);
-            setFavorite(response.data.favorites)
-            setVote(response.data.voted)
+            setFavorite(response.data.favorites.slice(0, 5))
+            setVote(response.data.voted.slice(0, 5))
         }
         fetchUser();
-    }, [token])
+    }, [token]);
 
     return (
         <div>
             {user &&
                 <div className={classes.root}>
-                    <Typography variant='h2'>Dettagli utenti</Typography>
-                    <Typography variant='h4'>Utente: {user.first_name} {user.last_name}</Typography>
+                    <Typography variant='h2'>Dettagli utente</Typography>
+                    <Typography variant='h4' gutterBottom>{user.first_name} {user.last_name}</Typography>
                     <Divider />
                     <Typography variant='h4'>
                         Statistiche:
@@ -75,16 +59,39 @@ export function AccountPage() {
                         <p>Numero di film votati: {vote.length} </p>
                     </Typography>
                     <Divider />
-                    <Grid container>
-                        <Grid item xs={12} md={6}>
+                    <Container>
+                        <Grid container alignItems='center'>
                             <h2>Film preferiti</h2>
-                            <ListMovie array={favorite} />
+                            <Link
+                                component={RouterLink}
+                                to={{
+                                    pathname: '/account/fullMovies',
+                                    state: { type: 'favorite' }
+                                }}
+                                style={{ marginLeft: '16px' }}
+                            >
+                                Visualizzali tutti
+                            </Link>
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <MoviesButton movies={favorite} />
+                    </Container>
+                    <Container>
+                        <Grid container alignItems='center'>
                             <h2>Film votati</h2>
-                            <ListMovie array={vote} />
+                            <Link
+                                component={RouterLink}
+                                to={{
+                                    pathname: '/account/fullMovies',
+                                    state: { type: 'voted' }
+                                }}
+                                style={{ marginLeft: '16px' }}
+                            >
+                                Visualizzali tutti
+                            </Link>
                         </Grid>
-                    </Grid>
+
+                        <MoviesButton movies={vote} />
+                    </Container>
                 </div>
             }
         </div>

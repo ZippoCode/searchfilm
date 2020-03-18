@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // Importing Components from Material-UI
 import { makeStyles } from '@material-ui/core';
@@ -24,30 +24,32 @@ const useStyled = makeStyles(theme => ({
 
 function DateSelect(props) {
     const classes = useStyled();
-    const [selectedFirstDate, handleFirstDateChange] = useState(new Date(1900));
-    const [selectedEndDate, handleEndDateChange] = useState(new Date());
+    const { firstYear, lastYear, handleFirstYear, handleLastYear } = props;
 
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
                 disableFuture
+                name='first_year'
                 views={["year"]}
                 variant="inline"
                 inputVariant="outlined"
                 label="Inizio"
-                value={selectedFirstDate}
-                onChange={handleFirstDateChange}
+                value={firstYear}
                 className={classes.root}
+                onChange={handleFirstYear}
             />
             <DatePicker
                 disableFuture
+                name='last_year'
                 variant="inline"
                 inputVariant="outlined"
                 views={["year"]}
                 label="Fine"
-                value={selectedEndDate}
-                onChange={handleEndDateChange}
+                minDate={firstYear}
+                value={lastYear}
                 className={classes.root}
+                onChange={handleLastYear}
             />
         </MuiPickersUtilsProvider>
     )

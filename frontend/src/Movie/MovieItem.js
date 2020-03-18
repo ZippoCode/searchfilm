@@ -5,11 +5,14 @@ import useMovieState from './MovieHook';
 
 // Importing from Material-UI
 import { withStyles } from '@material-ui/core';
-import CircleProgress from '@material-ui/core/CircularProgress';
+import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+
+// Importing from Material-UI-Lab
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = theme => ({
     root: {
@@ -51,9 +54,11 @@ function MovieItem(props) {
                     </Grid>
                 </Grid>
                 :
-                <CircleProgress />
+                <Container>
+                    <Skeleton variant='rect' width={180} height={270} />
+                </Container>
             }
-        </Paper>
+        </Paper >
     )
 }
 

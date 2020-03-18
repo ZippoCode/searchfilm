@@ -1,17 +1,14 @@
-import sys, os, random, re, datetime
+import sys, os, random, re, datetime, requests
+import django, time
 
 sys.path.append('/home/zippo/PycharmProjects/searchfilm')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'searchfilm.settings'
-import django, time
-
 django.setup()
 
-from movie.models import Movie, Keyword, Genre, Cast
+from movie.models import Movie, Keyword, Genre, Cast, Tag
 from person.models import Person
-import requests
 
 APIKEY_TMDB = "dd8353ae5ad8d568675bf7703a9a84c5"
-
 PATH_SEARCH = "https://api.themoviedb.org/3/search/movie?api_key={}&query={}"
 PATH_SIMILAR_MOVIES = 'https://api.themoviedb.org/3/movie/{}/similar?api_key={}'
 PATH_MOVIES = "https://api.themoviedb.org/3/movie/{}?api_key={}"
@@ -26,9 +23,10 @@ def save_keywords(id_film, film):
         return
     keywords = keywords_data['keywords']
     for keyword in keywords:
-        k = Keyword(id=keyword['id'], text=keyword['name'])
+        k, _ = Keyword.objects.get_or_create(text=keyword['name'])
         k.save()
-        film.keywords.add(k)
+        tag, _ = Tag.objects.get_or_create(movie=film, keyword=k)
+        tag.save()
     return
 
 
@@ -45,7 +43,6 @@ def details_person(details, type):
     person.birth_date = datetime.datetime.strptime(details['birthday'], '%Y-%m-%d') if db else None
     dd = (details['deathday'] is not None)
     person.death_date = datetime.datetime.strptime(details['deathday'], '%Y-%m-%d') if dd else None
-
     person.gender = 'Man' if details['gender'] == 2 else 'Woman'
     person.place_of_birth = details['place_of_birth'] if details['place_of_birth'] is not None else None
     person.nationality = (re.split(", |-", person.place_of_birth))[-1] if person.place_of_birth is not None else None
@@ -63,7 +60,7 @@ def save_cast(id_film, film):
         print('Nessun attore trovato.')
         return
     print('Salvo gli attori ...')
-    count = 15
+    count = 25
     for actor_data in data_credits['cast']:
         detail_actor_data = (requests.get(PATH_PERSON.format(actor_data['id'], APIKEY_TMDB))).json()
         actor = details_person(detail_actor_data, Person.TYPE_ACTOR)
@@ -71,7 +68,6 @@ def save_cast(id_film, film):
         if actor_data['character'] is not None:
             cast.name_character = actor_data['character']
         cast.save()
-
         count = count - 1
         if count == 0:
             break
@@ -82,7 +78,6 @@ def save_cast(id_film, film):
             writing_data = (requests.get(PATH_PERSON.format(crew_data['id'], APIKEY_TMDB))).json()
             writer = details_person(writing_data, Person.TYPE_WRITER)
             film.writers.add(writer)
-
         if crew_data['job'] == 'Director':
             director_data = (requests.get(PATH_PERSON.format(crew_data['id'], APIKEY_TMDB))).json()
             director = details_person(director_data, Person.TYPE_DIRECTOR)
@@ -92,35 +87,29 @@ def save_cast(id_film, film):
 
 def save_film(id_film):
     film_data = (requests.get(PATH_MOVIES.format(id_film, APIKEY_TMDB))).json()
-    imdb_id = film_data['imdb_id'] if film_data['imdb_id'] is not None else None
+    imdb_id = film_data['imdb_id'] if (film_data['imdb_id'] is not None or film_data['imdb_id'] != '') else None
     original_title = film_data['original_title'] if film_data['original_title'] is not None else None
-    print('Elaborazione ... ' + original_title)
-    try:
-        film = Movie.objects.get(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
-    except:
-        film = Movie(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
-    if film_data['release_date'] != '':
-        film.release_date = datetime.datetime.strptime(film_data['release_date'], '%Y-%m-%d')
-    if film_data['poster_path']:
-        film.poster_path = film_data['poster_path']
-    if film_data['overview']:
-        film.description = film_data['overview']
-    film.save()
-    # Save Genres
-    time.sleep(3)
-    print('Save to genres ...')
-    if 'genres' in film_data:
-        for genre in film_data['genres']:
-            name = genre['name']
-            try:
-                g = Genre.objects.get(name=name)
-            except:
-                g = Genre(name=name)
-                g.save()
-            film.genres.add(g)
-    save_cast(film_data['id'], film)
-    save_keywords(imdb_id, film)
-    return film
+    if not film_data['adult']:
+        print('Elaborazione ... ' + original_title)
+        film, _= Movie.objects.get_or_create(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
+        if film_data['release_date'] != '':
+            film.release_date = datetime.datetime.strptime(film_data['release_date'], '%Y-%m-%d')
+        if film_data['poster_path']:
+            film.poster_path = film_data['poster_path']
+        if film_data['overview']:
+            film.description = film_data['overview']
+        film.save()
+        # Save Genres
+        time.sleep(3)
+        print('Save to genres ...')
+        if 'genres' in film_data:
+            for genre in film_data['genres']:
+                name = genre['name']
+                g, _ = Genre.objects.get_or_create(name=name)
+                film.genres.add(g)
+        save_cast(film_data['id'], film)
+        save_keywords(imdb_id, film)
+        return film
 
 
 if __name__ == '__main__':

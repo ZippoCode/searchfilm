@@ -5,6 +5,7 @@ import { useParams, useLocation } from 'react-router-dom';
 // Importing custom UI-Element
 import { ButtonPreferite } from '../components';
 import DetailMovie from './components/DetailMovie';
+import DialogViewTag from './components/DialogViewTag'
 import SelectCustom from '../components/Select';
 
 // Importing Actions
@@ -30,12 +31,18 @@ const styles = theme => ({
         textAlign: "left",
         color: theme.palette.secondary.main,
         alignItems: 'center',
-        margin: theme.spacing(8, 16)
+        margin: theme.spacing(8, 16),
+        [theme.breakpoints.down('xs')]: {
+            margin: theme.spacing(4, 2),
+        }
     },
     posterMovie: {
-        maxHeight: 550,
-        maxWidth: 450,
-        width: 'auto',
+        maxHeight: theme.spacing(68),
+        maxWidth: theme.spacing(57),
+        [theme.breakpoints.down('xs')]: {
+            height: `calc(100% - 64px)`,
+            width: `calc(100% - 64px)`,
+        }
     },
     vote: {
         padding: theme.spacing(1),
@@ -98,13 +105,15 @@ function MoviePage(props) {
                                     </Grid>
                                 </Grid>
                                 <Divider />
+                                <DialogViewTag movie={movie} />
+                                <Divider />
                                 <p>Collegamenti esterni</p>
                                 <Avatar
                                     alt='IMDB-ID'
                                     variant='square'
                                     src='https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/171_Imdb-512.png'
                                 />
-                                <Link href={`https://www.imdb.com/title/${movie.imdb_id}`} target='_blank' color='inherit'>IMDb</Link>
+                                <Link href={`https://www.imdb.com/title/${movie.imdb_id}/`} target='_blank' color='inherit'>IMDb</Link>
                             </Grid>
                         </Grid>
                     </Grid>

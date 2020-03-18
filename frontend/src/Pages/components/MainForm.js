@@ -3,19 +3,18 @@ import { useSelector } from 'react-redux';
 
 // Importing Custom Function
 import CheckMovie from './CheckButton';
-import DateSelect from '../../components/DateSelect';
+//import DateSelect from './DateSelect';
 import MainButton from '../../components/MainButton';
 import SelectCustom from '../../components/Select';
 
 // Importing Components from Material-UI
-import { makeStyles, withStyles } from '@material-ui/core';
-import Checkbox from '@material-ui/core/Checkbox';
+import { withStyles } from '@material-ui/core';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+//import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
-import Switch from '@material-ui/core/Switch';
+//import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 
 // Importing Icons
@@ -35,10 +34,12 @@ const styles = theme => ({
 function MainForm(props) {
     const { classes } = props;
     const userMood = ['Casuale', 'Felice', 'Triste', 'Coraggioso', 'Innamorato'];
-    const [checkDate, setCheckDate] = useState(true);
+    //const [checkDate, setCheckDate] = useState(true);
     const [expanded, setExpanded] = useState(false);
     const genresArray = useSelector(state => state.main.genres) || [];
     const genres = genresArray.map((genre) => { return genre.name });
+    //const [firstYear, handleFirstYear] = useState(new Date('1900'));
+    //const [lastYear, handleLastYear] = useState(new Date('2020'));
     const [options, setOptions] = useState({
         mood: '',
         genre: '',
@@ -108,6 +109,7 @@ function MainForm(props) {
                                             onChange={updateCheckValue}
                                         />
                                     </Grid>
+                                    {/*
                                     <Grid container>
                                         <FormControlLabel
                                             label='Anno?'
@@ -120,9 +122,16 @@ function MainForm(props) {
                                                 />}
                                         />
                                         <Collapse in={checkDate} unmountOnExit>
-                                            <DateSelect />
+                                            <DateSelect
+                                                firstYear={firstYear}
+                                                lastYear={lastYear}
+                                                handleFirstYear={handleFirstYear}
+                                                handleLastYear={handleLastYear}
+                                            />
                                         </Collapse>
-                                    </Grid>
+                                    </Grid>*/
+                                    }
+
                                 </Grid>
                             </FormGroup>
                         </Grid>

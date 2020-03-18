@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 //import logo from './logo.svg';
 import { AppBarCustom, FooterCustom } from './components';
-import RouterPages from './helpers/history';
+import NavigationRouter from './helpers/Router';
 
 // Importing from Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
 
 // Importing Theme's component
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -39,16 +38,16 @@ function App() {
       loadGenres();
   }, [dispatch, loadedGenres]);
 
+
   return (
     <ThemeProvider theme={theme}>
       <div className='App'>
         <CssBaseline />
         <header className='App-header'>
           <AppBarCustom />
-          <Toolbar />
         </header>
         <div className='App-container'>
-          <RouterPages />
+          <NavigationRouter />
         </div>
         <div className='App-Footer'>
           <FooterCustom />

@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-// Import Actions
-import { movieAction } from '../redux/actions/main.action';
+import axios from 'axios';
 
 // Importing custom components
 import MovieItem from './MovieItem';
@@ -22,57 +20,44 @@ const styles = theme => ({
     root: {
         padding: theme.spacing(4, 8),
         [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing(1, 4),
+            padding: theme.spacing(4, 2),
         }
-    },
-    pagination: {
-        paddingTop: theme.spacing(3),
     }
 })
 
-function useListMovies(type, page) {
-    const dispatch = useDispatch();
-    const popular = useSelector(state => state.main.resultPopular);
-    const rated = useSelector(state => state.main.resultRating);
-
-    useEffect(() => {
-        dispatch(movieAction.getListMovies(type, page));
-    }, [dispatch, type, page]);
-
-    switch (type) {
-        case 'popular':
-            return popular;
-        case 'rated':
-            return rated;
-        default:
-            return popular
-    }
-}
-
-function ListMoviePage(props) {
+function ListMoviesLastPage(props) {
     const { classes } = props;
-    let { type } = useParams();
-    const numPagePopular = useSelector(state => state.main.numPagePopular);
-    const numPageRating = useSelector(state => state.main.numPageRating);
-
-    const title = type === 'popular' ? ' I film più popolari' : 'I film più votati';
-    const numPage = type === 'popular' ? numPagePopular : numPageRating;
-
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get('page', 10)) || 1;
 
-    const movies = useListMovies(type, page);
+    const [movies, setMovies] = React.useState(null);
+    const [numPage, setNumPage] = React.useState(1);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/movie/api/last/?page=${page}`);
+                setMovies(response.data.results);
+                setNumPage(Math.floor(response.data.count / 10));
+            } catch (error) { console.log(error) }
+        }
+        fetchData();
         window.scrollTo(0, 0);
     }, [page]);
 
     return (
         <Container className={classes.root} component='section'>
-            <Typography component='h2' variant='h3' align='left' gutterBottom>{title}</Typography>
+            <Typography
+                component='h2'
+                variant='h3'
+                align='left'
+                gutterBottom
+            >
+                I film più recenti
+            </Typography>
             <Grid container item xs={12} spacing={1}>
-                {movies.map(movie => (
+                {movies && movies.map(movie => (
                     <Grid item key={movie.id} xs={12} md={6}>
                         <MovieItem idMovie={movie.id} />
                     </Grid>
@@ -95,4 +80,4 @@ function ListMoviePage(props) {
     )
 }
 
-export default withStyles(styles)(ListMoviePage);
+export default withStyles(styles)(ListMoviesLastPage);

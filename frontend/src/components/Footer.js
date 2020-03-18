@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(3, 2),
         marginTop: 'auto',
         textAlign: 'start',
+        color: theme.palette.primary.main,
     }
 }))
 
@@ -26,10 +27,10 @@ export function FooterCustom() {
 
     return (
         <footer className={classes.footer}>
-            <Typography variant='subtitle2' color='textSecondary'>
+            <Typography variant='subtitle2'>
                 <Grid container>
                     <Grid item xs={12} md={7}>
-                        <p>Search Movie, 2020 ©</p>
+                        <Typography variant='h6'>Search Movie, 2020 ©</Typography>
                     </Grid>
                     <Grid item xs={12} md={5}>
                         <Grid container justify='space-evenly'>
@@ -44,7 +45,7 @@ export function FooterCustom() {
                                             rel="noopener noreferrer"
                                         >
                                             Facebook
-                                                </Link>
+                                        </Link>
                                         <Facebook fontSize='small' />
                                     </Grid>
                                     <Grid container>
@@ -55,7 +56,7 @@ export function FooterCustom() {
                                             rel="noopener noreferrer"
                                         >
                                             Instagram
-                                                </Link>
+                                        </Link>
                                         <Instagram fontSize='small' />
                                     </Grid>
                                     <Grid container>
@@ -66,7 +67,7 @@ export function FooterCustom() {
                                             rel="noopener noreferrer"
                                         >
                                             Twitter
-                                                </Link>
+                                        </Link>
                                         <Twitter fontSize='small' />
                                     </Grid>
                                 </Grid>

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 
 // Importing from React-Redux
 import { useDispatch, useSelector } from 'react-redux';
 
 // Import from Action
 import { AuthenticationActions } from '../redux/actions/authentication.action';
-import { history } from '../helpers/history';
 
 // Importing from Material-UI
 import { makeStyles } from '@material-ui/core';
@@ -19,7 +17,6 @@ import Typography from '@material-ui/core/Typography';
 
 // Importing style from CSS
 import '../Animation.css';
-
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -46,6 +43,9 @@ const useStyles = makeStyles(theme => ({
             '&:hover fieldset': {
                 borderColor: theme.palette.primary.main,
             },
+        },
+        '& .MuiFormLabel-root': {
+            color: theme.palette.primary.main,
         }
     },
     submit: {
@@ -55,28 +55,15 @@ const useStyles = makeStyles(theme => ({
 
 export function LoginPage() {
     const classes = useStyles();
-    const location = useLocation();
     const dispatch = useDispatch();
     const [credential, setCredential] = useState({
         email: '',
         password: '',
     });
-    const logged = useSelector(state => state.authentication.logged) || false;
     const error = useSelector(state => state.authentication.error) || false;
-    const [errorValue, setErrorValue] = useState(error);
-
-    useEffect(() => {
-        if (logged) {
-            let { from } = location.state || { from: { pathname: '/' } }
-            history.replace(from);
-        }
-    });
-
-    useEffect(() => { setErrorValue(error) });
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setErrorValue(false);
         dispatch(AuthenticationActions.login(credential.email, credential.password))
     }
 
@@ -96,10 +83,10 @@ export function LoginPage() {
                     <form
                         id='form'
                         onSubmit={handleSubmit}
-                        className={`${classes.form} ${errorValue ? 'error' : ''}`}
+                        className={`${classes.form} ${error ? 'error' : ''}`}
                         noValidate
                     >
-                        {errorValue ?
+                        {error ?
                             <Typography component='p' variant='body1' color='error'>E-mail o password errate</Typography>
                             : <p></p>
                         }

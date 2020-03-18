@@ -31,7 +31,7 @@ function ListMovieGenrePage(props) {
 
     const dispatch = useDispatch();
     const fullMovie = useSelector(state => state.main.movieGenre) || [];
-    const movies = fullMovie.slice(0, 21);
+    const movies = fullMovie.slice(0, 20);
 
     useEffect(() => {
         dispatch(getListMoviesGenre(genre));

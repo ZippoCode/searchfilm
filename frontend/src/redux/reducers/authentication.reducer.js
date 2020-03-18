@@ -47,9 +47,13 @@ export function authentication(state = initialState, action) {
         case ActionConstants.LOGOUT_SUCCESS:
             return { logout: true };
         case ActionConstants.CHANGE_PASSWORD_REQUEST:
-            return { user: action.token };
+            return Object.assign({}, state, {
+                changePasswordRequest: true
+            });
         case ActionConstants.CHANGE_PASSWORD_SUCCESS:
-            return {};
+            return {
+                changedPassword: true,
+            };
         case ActionConstants.SEND_PREFERITE_REQUEST:
             return Object.assign({}, state, {
                 sendRequestPreferite: false,

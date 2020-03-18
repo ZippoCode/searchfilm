@@ -10,8 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 const backgroundImage =
-    'https://images.unsplash.com/photo-1458053688450-eef5d21d43b3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=752&q=80'
-
+    'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg'
 const styles = theme => ({
     root: {
         position: 'relative',
@@ -45,9 +44,6 @@ const styles = theme => ({
         flexDirection: 'column',
         //alignItems: 'center',
     },
-    title: {
-        fontFamily: 'Julius Sans One, sans-serif',
-    },
     subtitle: {
         fontFamily: 'Open Sans Condensed, sans-serif',
         letterSpacing: 3,
@@ -63,9 +59,11 @@ function SearchMovie(props) {
             <img style={{ display: 'none' }} src={backgroundImage} alt="increase priority" />
             <div className={classes.overlay} />
             <Container className={classes.container}>
+                {/*
                 <Typography color='inherit' variant='h1' className={classes.title}>
                     Ricerca un film
-                </Typography>
+                </Typography>                
+                */}
                 <Typography color='inherit' variant='h4' component='h5' className={classes.subtitle}>
                     Dammi qualche informazione e ti consiglierò cosa guardare ...
                 </Typography>

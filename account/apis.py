@@ -97,11 +97,6 @@ class AccountVotedMoviesAPI(views.APIView):
             value = int(request.data.get('value_vote'))
             if value < 0 or value > 10:
                 return Response({'Error': 'Value vote outside range'}, status=status.HTTP_400_BAD_REQUEST)
-            '''
-            votedMovie, _ = account.votedmovie_set.get_or_create(movie=movie)
-            votedMovie.value_vote = value
-            votedMovie.save()
-            '''
             if VotedMovie.objects.filter(person=account, movie=movie):
                 votedMovie = VotedMovie.objects.get(person=account, movie=movie)
             else:
@@ -157,7 +152,6 @@ class LogoutAccountAPI(views.APIView):
 
 class ChangePasswordAPI(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
     serializer_class = ChangePasswordSerializer
 
     def put(self, request, *args, **kwargs):

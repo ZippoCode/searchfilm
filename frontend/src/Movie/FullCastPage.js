@@ -7,8 +7,19 @@ import { MovieActions } from '../redux/actions/movie.action';
 
 import ListPeople from './components/ListPeople';
 
-function FullCastPage() {
+// Importing component from Material-UI
+import { withStyles } from '@material-ui/core'
+import Typography from '@material-ui/core/Typography';
 
+const styles = theme => ({
+    root: {
+        margin: theme.spacing(3, 8),
+    }
+});
+
+function FullCastPage(props) {
+
+    const { classes } = props;
     let { id } = useParams();
     const actors = useSelector(state => state.movie.movie.actors) || [];
     const dispatch = useDispatch();
@@ -19,11 +30,11 @@ function FullCastPage() {
     }, [dispatch, id, actors.length]);
 
     return (
-        <div>
-            <h3>Cast completo</h3>
+        <div className={classes.root}>
+            <Typography variant='h3' component='h3'>Cast completo</Typography>
             <ListPeople list={actors} />
         </div>
     )
 }
 
-export default FullCastPage;
+export default withStyles(styles)(FullCastPage);

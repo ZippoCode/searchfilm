@@ -8,7 +8,7 @@ function useMovieState(id) {
 
     useEffect(() => {
         const fetchMovie = async () => {
-            const response = await axios.get(URL.DETAILSMOVIE.concat(id));
+            const response = await axios.get(URL.DETAILSMOVIE.concat(id, '/'));
             setMovie(response.data);
         }
         fetchMovie();

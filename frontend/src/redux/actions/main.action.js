@@ -13,7 +13,7 @@ import {
 } from '../constants/main.constants';
 
 import * as URL from '../../helpers/matcher';
-
+import axios from 'axios';
 
 export const movieAction = {
     getListMovies,
@@ -38,27 +38,31 @@ function failure(error) {
     }
 }
 
-function getListMovies(type) {
+function getListMovies(type, numPage) {
 
-    return dispatch => {
+    const PATHURL = type === typeList.POPULAR ? URL.TOPPOPULAR : URL.TOPRANKING;
+    return async dispatch => {
 
-        dispatch(request());
-
-        return fetch((type === typeList.POPULAR) ? URL.TOPPOPULAR : URL.TOPRANKING)
-            .then(handleErrors)
-            .then(movies => {
-                if (type === typeList.POPULAR)
-                    dispatch(successFavorite(movies))
-                else
-                    dispatch(successTopRanked(movies))
-            })
-            .catch(error => dispatch(failure(error)))
+        dispatch({ type: GET_LIST_REQUEST });
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: PATHURL.concat(`?page=${numPage}`)
+            });
+            if (type === typeList.POPULAR)
+                dispatch({
+                    type: GET_POPULAR_MOVIE_SUCCESS,
+                    movies: response.data.results,
+                    numPage: response.data.count,
+                })
+            else
+                dispatch({
+                    type: GET_TOP_RANKED_SUCCESS,
+                    movies: response.data.results,
+                    numPage: response.data.count,
+                })
+        } catch (error) { (failure(error)) }
     }
-
-    function request() { return { type: GET_LIST_REQUEST } }
-    function successFavorite(movies) { return { type: GET_POPULAR_MOVIE_SUCCESS, movies } }
-    function successTopRanked(movies) { return { type: GET_TOP_RANKED_SUCCESS, movies } }
-
 }
 
 export function getGenres() {

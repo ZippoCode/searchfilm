@@ -1,6 +1,9 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
+// Importing history
+import { history } from '../../helpers/history';
+
 import {
     ActionConstants,
     ErrorsType
@@ -11,25 +14,10 @@ import * as URL from '../../helpers/matcher';
 export const AuthenticationActions = {
     login,
     logout,
+    changePassword,
     getInfoAccount,
     setMoviePreferite,
     voteMovie
-}
-
-function handleResponse(response) {
-    return response.text()
-        .then(text => {
-            const data = text && JSON.parse(text);
-            if (!response.ok) {
-                if (response.status === 401) {
-                    logout();
-                    window.location.reload(true);
-                }
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-            return data;
-        });
 }
 
 function failure(typeFailure, errorValue) {
@@ -41,7 +29,8 @@ function failure(typeFailure, errorValue) {
 }
 
 function login(username, password) {
-
+    let { from } = history.location.state || { from: { pathname: '/' } }
+    
     return async dispatch => {
 
         dispatch({ type: ActionConstants.LOGIN_REQUEST });
@@ -53,6 +42,7 @@ function login(username, password) {
             dispatch(success(response.data));
             //localStorage.setItem('user', JSON.stringify(response.data));
             localStorage.setItem('token', response.data.token);
+            history.replace(from);
         } catch (error) {
             dispatch(failure(ErrorsType.LOGIN_FAILURE, error));
         }
@@ -77,7 +67,8 @@ function logout(token) {
                 headers: { 'Authorization': 'Token '.concat(token) }
             })*/
             localStorage.removeItem('token');
-            dispatch({ type: ActionConstants.LOGOUT_SUCCESS })
+            dispatch({ type: ActionConstants.LOGOUT_SUCCESS });
+            history.push('/');
         } catch (error) {
             dispatch(failure(ErrorsType.LOGOUT_FAILURE, error));
         }
@@ -106,29 +97,29 @@ function getInfoAccount(token) {
 
 }
 
-export function changePassword(token, old_password, new_password) {
-    var headers = new Headers();
-    headers.append("Authorization", "Token ".concat(token));
+function changePassword(token, old_password, new_password) {
 
-    var formdata = new FormData();
-    formdata.append("old_password", old_password);
-    formdata.append("new_password", new_password);
+    return async dispatch => {
 
-    var requestOptions = {
-        method: 'PUT',
-        headers: headers,
-        body: formdata,
-    };
-
-    return dispatch => {
         dispatch({ type: ActionConstants.CHANGE_PASSWORD_REQUEST });
-        return fetch(URL.CHANGEPASSWORD, requestOptions)
-            .then(handleResponse)
-            .then(dispatch(success()))
-            .catch(error => dispatch(failure(error.toString())))
+        try {
+            await axios({
+                method: 'PUT',
+                url: URL.CHANGEPASSWORD,
+                headers: {
+                    'Authorization': "Bearer ".concat(token),
+                },
+                data: {
+                    'old_password': old_password,
+                    'new_password': new_password,
+                }
+            });
+            dispatch({ type: ActionConstants.CHANGE_PASSWORD_SUCCESS });
+            dispatch(logout());
+        } catch (error) {
+            dispatch(failure(ErrorsType.CHANGE_PASSWORD_FAILURE, error))
+        }
     }
-
-    function success() { return { type: AuthenticationActions.CHANGE_PASSWORD_SUCCESS } }
 }
 
 function setMoviePreferite(token, id_movie, typeRequest) {

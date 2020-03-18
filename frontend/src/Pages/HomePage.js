@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { movieAction } from '../redux/actions/main.action';
+import axios from 'axios';
 
 // Importing custom components
 import CarouselMovie from './components/CarouselMovie';
@@ -10,22 +8,24 @@ import SearchBarMovie from './components/SearchBarMovie';
 
 export function HomePage() {
 
-    const dispatch = useDispatch();
-    const loadedPopular = useSelector(state => state.main.loadedPopular) || false;
-    const popularMovies = useSelector(state => state.main.popularMovies) || [];
-    
+    const [popular, setPopular] = React.useState([]);
+
     useEffect(() => {
-        const loadPopularMovies = () => { dispatch(movieAction.getListMovies('popular')); }
-        if (!loadedPopular)
-            loadPopularMovies();
-  
-    }, [dispatch, loadedPopular]);
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/movie/api/topPopular/')
+                setPopular(response.data.results)
+            } catch (error) { console.log(error) }
+        }
+        if (popular.length === 0)
+            fetchData();
+    }, [popular, setPopular]);
 
     return (
         <div>
             <SearchMovie />
             <SearchBarMovie />
-            <CarouselMovie movies={popularMovies} />
+            <CarouselMovie movies={popular} />
         </div>
     );
 }

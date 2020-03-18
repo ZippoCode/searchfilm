@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'searchfilm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'searchfilm_db',
+        'NAME': 'searchmovie_db',
         'USER': 'zippo',
         'PASSWORD': 'oppiz',
         'HOST': 'localhost',
