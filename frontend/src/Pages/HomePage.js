@@ -6,6 +6,8 @@ import CarouselMovie from './components/CarouselMovie';
 import SearchMovie from './components/SearchMovie';
 import SearchBarMovie from './components/SearchBarMovie';
 
+import * as URL from '../helpers/matcher';
+
 export function HomePage() {
 
     const [popular, setPopular] = React.useState([]);
@@ -13,7 +15,7 @@ export function HomePage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/movie/api/topPopular/')
+                const response = await axios.get(URL.TOPPOPULAR)
                 setPopular(response.data.results)
             } catch (error) { console.log(error) }
         }

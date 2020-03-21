@@ -23,6 +23,7 @@ class GenreListAPI(generics.ListAPIView):
 
 # Search movie APIs
 class SearchFilmAPI(generics.ListCreateAPIView):
+    #search_fields = ['title', 'original_title', 'keywords__text']
     search_fields = ['title', 'original_title']
     filter_backends = (filters.SearchFilter,)
     queryset = Movie.objects.all()
@@ -45,7 +46,6 @@ class RecommendMovie(views.APIView):
         genre = self.request.data.get('genre')
         premiated = self.request.data.get('premiated')
         watched = self.request.data.get('watched')
-        print(mood, genre, premiated, watched)
         try:
             films = Movie.objects.filter(genres__name__iexact=genre)
             if len(films) == 0:
@@ -132,10 +132,12 @@ class GetTopRatedMovies(generics.ListCreateAPIView):
     queryset = Movie.objects.all().order_by('-vote_average')
     pagination_class = StandardResultsSetPagination
 
+
 class GetLastMovies(generics.ListCreateAPIView):
     serializer_class = MovieSimpleSerializer
     queryset = Movie.objects.all().order_by('-release_date')
     pagination_class = StandardResultsSetPagination
+
 
 # Return movies based of genre
 class GenreMovieAPI(views.APIView):

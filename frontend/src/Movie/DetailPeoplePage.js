@@ -13,6 +13,9 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
+// Import constants
+import * as URL from '../helpers/matcher';
+
 const styles = theme => ({
     root: {
         paddingTop: theme.spacing(5),
@@ -46,7 +49,7 @@ function DetailPeoplePage(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/person/api/get/${id}`);
+                const response = await axios.get(URL.GETINFOPERSON.concat(id, '/'));
                 setPerson(response.data);
             } catch (error) { }
         }
@@ -76,14 +79,14 @@ function DetailPeoplePage(props) {
                             </Typography>
                         }
                         <Typography paragraph>
-                            Luogo di nascita: {person.place_of_birth} <br/>
+                            Luogo di nascita: {person.place_of_birth} <br />
                             Nazionalità: {person.nationality}
                         </Typography>
                         <Typography paragraph>Sesso: {person.gender}</Typography>
                         <Typography paragraph>
                             Biografia: <br />{person.biography}
                         </Typography>
-                        <Divider/>
+                        <Divider />
                         <Link href={`https://www.imdb.com/name/${person.imdb_id}/`} target='_blank' color='inherit'> Link IMDb</Link>
                     </Grid>
                 </Grid>

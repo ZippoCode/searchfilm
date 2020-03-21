@@ -16,6 +16,9 @@ import Typography from '@material-ui/core/Typography';
 import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 
+// Import constants
+import * as URL from '../helpers/matcher';
+
 const styles = theme => ({
     root: {
         padding: theme.spacing(4, 8),
@@ -37,7 +40,7 @@ function ListMoviesLastPage(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/movie/api/last/?page=${page}`);
+                const response = await axios.get(URL.GETLASTMOVIE.concat(`page=${page}`));
                 setMovies(response.data.results);
                 setNumPage(Math.floor(response.data.count / 10));
             } catch (error) { console.log(error) }

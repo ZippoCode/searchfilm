@@ -36,7 +36,7 @@ function login(username, password) {
         dispatch({ type: ActionConstants.LOGIN_REQUEST });
         try {
             const response = await axios.post(URL.LOGIN, {
-                'username': username,
+                'username': username.toLowerCase(),
                 'password': password,
             });
             dispatch(success(response.data));

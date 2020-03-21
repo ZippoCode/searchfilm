@@ -10,6 +10,8 @@ import Chip from '@material-ui/core/Chip';
 
 import { history } from '../../helpers/history';
 
+import * as URL from '../../helpers/matcher';
+
 const styles = theme => ({
     root: {
         fontSize: 15,
@@ -34,7 +36,7 @@ function ChipTag(props) {
         }
         try {
             const response = await axios({
-                url: `http://127.0.0.1:8000/movie/api/keywords/${id}`,
+                url: URL.KEYWORDSMOVIE.concat(id),
                 method: clicked ? 'DELETE' : 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` },
                 data: { 'id': keyword.id, 'text': keyword.text }

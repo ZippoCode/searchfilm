@@ -26,7 +26,7 @@ class KeywordsSerializers(serializers.ModelSerializer):
 
 # Cast Serializers
 class CastSerializers(serializers.ModelSerializer):
-    id = serializers.CharField(source='person.id_person', read_only=True)
+    id = serializers.IntegerField(source='person.id_person', read_only=True)
     name = serializers.CharField(source='person.full_name', read_only=True)
     profile_img = serializers.CharField(source='person.profile_img', read_only=True)
 

@@ -49,7 +49,7 @@ function DialogViewTag(props) {
                 color="primary"
                 onClick={handleClickOpen}
                 style={{ margin: '16px', alignItems: 'center' }}>
-                Visualizza i tag
+                Modifica Keywords
             </Button>
             <Dialog
                 open={open}

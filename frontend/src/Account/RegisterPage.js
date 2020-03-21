@@ -24,6 +24,9 @@ const useStyles = makeStyles(theme => ({
             '&:hover fieldset': {
                 borderColor: theme.palette.primary.main,
             },
+        },
+        '& .MuiFormLabel-root': {
+            color: theme.palette.primary.main,
         }
     },
     submit: {

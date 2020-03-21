@@ -13,6 +13,9 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
+// Constants
+import * as URL from '../helpers/matcher';
+
 const styles = theme => ({
     container: {
         padding: theme.spacing(4, 12),
@@ -38,7 +41,7 @@ function EditAccountPage(props) {
         const fetchUser = async () => {
             const response = await axios({
                 method: 'GET',
-                url: 'http://127.0.0.1:8000/account/api/get',
+                url: URL.GETINFOACCOUNT,
                 headers: { 'Authorization': 'Bearer '.concat(token) }
             });
             setUser(response.data);

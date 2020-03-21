@@ -6,6 +6,8 @@ import Axios from 'axios';
 
 import MoviesButton from './components/MoviesButton';
 
+import * as URL from '../helpers/matcher';
+
 // Importing from Material-UI
 import { makeStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
@@ -34,7 +36,7 @@ export function AccountPage() {
         const fetchUser = async () => {
             const response = await Axios({
                 method: 'GET',
-                url: 'http://127.0.0.1:8000/account/api/get',
+                url: URL.GETINFOACCOUNT,
                 headers: { 'Authorization': 'Bearer '.concat(token) }
             });
             setUser(response.data);
