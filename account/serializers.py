@@ -7,20 +7,22 @@ from .models import Account, FavoriteMovie, VotedMovie
 
 # class favorite movies serializer
 class FavoriteMoviesSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='movie.id')
     title = serializers.ReadOnlyField(source='movie.title')
 
     class Meta:
         model = FavoriteMovie
-        fields = ['movie', 'title', 'date_add']
+        fields = ['id', 'title', 'date_add']
 
 
 # Class voted movie serializer
 class VotedMovieSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='movie.id')
     title = serializers.ReadOnlyField(source='movie.title')
 
     class Meta:
         model = VotedMovie
-        fields = ['movie', 'title', 'date_vote', 'value_vote']
+        fields = ['id', 'title', 'date_vote', 'value_vote']
 
 
 # class favorite movies serializer

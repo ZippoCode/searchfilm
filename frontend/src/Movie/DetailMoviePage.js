@@ -61,7 +61,7 @@ function MoviePage(props) {
     const dispatch = useDispatch();
     const token = useSelector(state => state.authentication.token) || undefined;
     const voted = useSelector(state => state.authentication.voted) || [];
-    const { value_vote } = voted.find(function (elem) { return elem.movie === parseInt(id) }) || { value_vote: '' }
+    const { value_vote } = voted.find(function (elem) { return elem.id === parseInt(id) }) || { value_vote: '' }
     const [value, setValue] = useState(value_vote);
     let isLoaded = useSelector(state => state.movie.loaded) || false;
     let movie = useSelector(state => state.movie['movie']) || undefined;

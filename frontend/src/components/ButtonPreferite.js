@@ -28,7 +28,7 @@ function ButtonPreferite({ idMovie, ...rest }) {
     const dispatch = useDispatch();
     const token = useSelector(state => state.authentication.token) || undefined;
     const favorite = useSelector(state => state.authentication.favorite) || []
-    const isFavorite = favorite.some(elem => elem.movie === idMovie)
+    const isFavorite = favorite.some(elem => elem.id === idMovie)
 
     const handleAdd = () => {
         if (token) {

@@ -64,7 +64,7 @@ def save_cast(id_film, film):
     for actor_data in data_credits['cast']:
         detail_actor_data = (requests.get(PATH_PERSON.format(actor_data['id'], APIKEY_TMDB))).json()
         actor = details_person(detail_actor_data, Person.TYPE_ACTOR)
-        cast = Cast(movie=film, person=actor)
+        cast, _ = Cast.objects.get_or_create(movie=film, person=actor)
         if actor_data['character'] is not None:
             cast.name_character = actor_data['character']
         cast.save()
@@ -91,13 +91,17 @@ def save_film(id_film):
     original_title = film_data['original_title'] if film_data['original_title'] is not None else None
     if not film_data['adult']:
         print('Elaborazione ... ' + original_title)
-        film, _= Movie.objects.get_or_create(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
+        film, _ = Movie.objects.get_or_create(title=film_data['title'], original_title=original_title, imdb_id=imdb_id)
         if film_data['release_date'] != '':
             film.release_date = datetime.datetime.strptime(film_data['release_date'], '%Y-%m-%d')
         if film_data['poster_path']:
             film.poster_path = film_data['poster_path']
         if film_data['overview']:
             film.description = film_data['overview']
+        if film_data['original_language'] != '':
+            film.original_language = film_data['original_language']
+        if film_data['runtime'] != None:
+            film.runtime = film_data['runtime']
         film.save()
         # Save Genres
         time.sleep(3)

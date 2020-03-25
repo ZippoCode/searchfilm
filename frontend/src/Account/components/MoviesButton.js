@@ -127,7 +127,7 @@ function MoviesButton(props) {
     return (
         <div className={classes.root}>
             {movies.map(movie => (
-                <MovieButton id={movie.movie} key={movie.movie} />
+                <MovieButton id={movie.id} key={movie.id} />
             ))}
         </div>
     );

@@ -29,7 +29,7 @@ function ListFullMoviePage(props) {
                         button
                         key={index}
                         component={Link}
-                        href={`/movie/${movie.movie}`}
+                        href={`/movie/${movie.id}`}
                         color='inherit'
                         style={{ fontSize: 18 }}
                     >

@@ -27,6 +27,9 @@ class Movie(models.Model):
     imdb_id = models.CharField(max_length=10, unique=True, null=True)
     description = models.TextField(blank=True)
     poster_path = models.CharField(max_length=50, blank=True)
+    runtime = models.IntegerField(blank=True, null=True)
+    original_language = models.CharField(max_length=25)
+
     release_date = models.DateField(null=True)
     vote_average = models.FloatField(default=0.0)
     vote_counter = models.IntegerField(default=0)

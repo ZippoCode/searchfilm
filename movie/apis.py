@@ -30,7 +30,7 @@ class SearchFilmAPI(generics.ListCreateAPIView):
     serializer_class = MovieSimpleSerializer
 
 
-class GetFilm(views.APIView):
+class GetMovieWithID(views.APIView):
     def get(self, request, film_id, format=None):
         try:
             film = Movie.objects.get(id=film_id)
