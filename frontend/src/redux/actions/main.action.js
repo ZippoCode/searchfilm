@@ -87,7 +87,7 @@ export function getListMoviesGenre(genre) {
 
         return fetch(URL.SEARCHMOVIEWITHGENRE.concat(genre))
             .then(handleErrors)
-            .then(movies => dispatch(success(movies)))
+            .then(movies => dispatch(success(movies.results)))
             .catch(error => dispatch(failure(error)))
     };
 

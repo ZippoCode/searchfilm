@@ -1,75 +1,85 @@
 import * as React from 'react';
-
-import { View, ScrollView, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
-
-// Importing from React-Native-Elements
-import { Text } from 'react-native-elements';
+import { View, Image, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 // Importing custom Hooks
 import { useStateMovie } from './CustomHooks';
 
+// Importing custom components
+import { SubTitle, Description } from './Text';
+
 
 function ImageMovie({ id }) {
     const movie = useStateMovie(id);
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
 
     return (
         <>
             {movie
-                ? <Image
-                    source={{ uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}` }}
-                    style={{
-                        width: windowWidth * 0.3,
-                        height: windowHeight * 0.2,
-                        resizeMode: 'cover',
-                    }}
-                />
-                : <></>
+                ?
+                <View style={{ flex: 1, marginRight: wp(1), width: wp(35), alignItems: 'center' }}>
+                    <Image
+                        source={{ uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}` }}
+                        style={{
+                            width: wp(35),
+                            height: hp(25),
+                            resizeMode: 'stretch',
+                        }}
+                    />
+                    <Description style={{ flex: 0.5 }} numberOfLines={2}>{movie.title}</Description>
+                </View>
+
+                : <ActivityIndicator />
             }
         </>
     )
 }
 
-export default function ScrollViewMovies({ title, movies, navigation }) {
+const styles = StyleSheet.create({
+    rootView: {
+        flex: 1,
+        marginVertical: hp(1),
+    },
+    titleView: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+    },
+    movieTouchableOpacity: {
+        paddingVertical: hp(1)
+    },
+})
 
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
+export default function ScrollViewMovies({ title, movies }) {
+    const navigation = useNavigation();
 
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', paddingRight: 16 }}>
-                <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 24, fontWeight: '700' }}>{title}</Text>
-                </View>
-                <View style={{ flex: 1, alignContent: 'flex-end' }}>
-                    <Text
-                        style={{ textAlign: 'right', fontWeight: '400', color: 'blue' }}
-                        onPress={() => {
-                            navigation.navigate('ListMovies', {
-                                listMovies: movies,
-                            })
-                        }}
-                    >
-                        Vedi tutto
-                    </Text>
-                </View>
+        <View style={styles.rootView} >
+            <View style={styles.titleView}>
+                <SubTitle>{title}</SubTitle>
+                <Description
+                    style={{ fontSize: wp(4), fontWeight: '400' }}
+                    onPress={() => {
+                        navigation.navigate('ListMovies', { listDefault: movies })
+                    }}
+                >
+                    Vedi tutto
+                </Description>
             </View>
-            <ScrollView horizontal>
-                {movies.map((movie) =>
+            <FlatList horizontal
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.movieTouchableOpacity}
+                data={movies}
+                renderItem={({ item }) => (
                     <TouchableOpacity
-                        key={movie.id}
-                        style={{ width: windowWidth * 0.31, height: windowHeight * 0.2 }}
                         onPress={() => {
-                            navigation.navigate('DetailsMovie', {
-                                movieID: movie.id,
-                            })
+                            navigation.navigate('DetailsMovie', { movieID: item.id, })
                         }}>
-                        <ImageMovie id={movie.id} />
-                        <Text numberOfLines={2}>{movie.title}</Text>
+                        <ImageMovie id={item.id} />
                     </TouchableOpacity>
                 )}
-            </ScrollView>
-        </View>
+            >
+            </FlatList>
+        </ View >
     )
 }

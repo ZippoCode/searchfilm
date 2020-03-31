@@ -1,32 +1,50 @@
-import 'react-native-gesture-handler';
 import * as React from 'react';
-import { View, Text, Button } from 'react-native';
+import { connect } from 'react-redux';
+import { View, Button, AsyncStorage } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
-
-import SignInNavigation from '../SignIn/signin.navigation';
+// Navigations
 import ListButtonsNavigation from '../ListButtons/listbuttons.navigator';
-import SearchScreen from '../SearchMovie/searchmovie.screen';
+import SearchNavigation from '../SearchMovie/navigation';
+import { SignInNavigation } from '../SignIn/signin.navigation';
 
-const Tab = createBottomTabNavigator();
+// Importing the Authentication's constants for restore token when the app has closed
+import { AuthenticationConstants } from '../SignIn/constants';
 
-function Home({ navigation }) {
+// Custom components
+import { Title} from '../../components/Text';
+
+function Home() {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Now. I'm very happy</Text>
+            <Title>Now. I'm very happy</Title>
             <Button title='Ricerca un film' />
         </View>
     )
 }
 
-export default function TabNavigation() {
+
+const Tab = createBottomTabNavigator();
+
+function TabNavigation({ dispatch }) {
+
+    React.useEffect(() => {
+        function restoreToken() {
+            AsyncStorage.getItem('userToken')
+                .then((token) => {
+                    dispatch({ type: AuthenticationConstants.LOGIN_SUCCESS, token });
+                });
+        }
+        restoreToken();
+    }, []);
+
     return (
         <Tab.Navigator
+            tabBarOptions={{ keyboardHidesTabBar: true }}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-
                     if (route.name === 'Home') {
                         iconName = focused
                             ? 'home'
@@ -53,8 +71,11 @@ export default function TabNavigation() {
         >
             <Tab.Screen name='Home' component={Home} />
             <Tab.Screen name='List' component={ListButtonsNavigation} />
-            <Tab.Screen name='Search' component={SearchScreen} />
+            <Tab.Screen name='Search' component={SearchNavigation} />
             <Tab.Screen name='Account' component={SignInNavigation} />
         </Tab.Navigator>
     )
 }
+
+const TabNavigationConnected = connect()(TabNavigation);
+export { TabNavigationConnected as TabNavigation }

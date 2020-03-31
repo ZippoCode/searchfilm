@@ -1,8 +1,12 @@
 import React from 'react';
-import { ScrollView, ActivityIndicator, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, ActivityIndicator, Image, View } from 'react-native';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
 
-import { Text, Divider } from 'react-native-elements';
+// Importing from React-Native-Elements
+import { Divider } from 'react-native-elements';
+
+// Importing custom Components
+import { Title, SubTitle, Description } from '../../components/Text';
 
 function fromDateToString(data_row) {
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -11,6 +15,7 @@ function fromDateToString(data_row) {
     var data = new Date(data_row);
     return data.getDate() + ' ' + monthNames[data.getMonth()] + ' ' + data.getFullYear();
 }
+
 
 export default function DetailsPerson({ route }) {
     const [isLoading, setIsLoading] = React.useState(true);
@@ -31,30 +36,33 @@ export default function DetailsPerson({ route }) {
     }, []);
 
     return (
-        <SafeAreaView>
+        <View>
             {!isLoading
                 ?
                 <ScrollView style={{ paddingHorizontal: 16 }}>
-                    <Text h1>{person.name}</Text>
-                    <Image
-                        source={{ uri: `https://image.tmdb.org/t/p/w500/${person.profile_img}` }}
-                        style={{ width: 300, height: 300 }} />
-                    <Text>{person.biography}</Text>
+                    <View style={{ marginVertical: heightPercentageToDP(1) }}>
+                        <Title>{person.name}</Title>
+                        <Image
+                            source={{ uri: `https://image.tmdb.org/t/p/w500/${person.profile_img}` }}
+                            style={{ width: 300, height: 300 }} />
+                        <Description>{person.biography}</Description>
+                    </View>
                     <Divider />
-                    <Text h4>Dettagli Personali</Text>
-                    <Text>Nato</Text>
-                    <Text>{fromDateToString(person.birth_date)}</Text>
-                    <Text>{person.place_of_birth.replace(/ - /g, ', ')}</Text>
-                    {person.death_date &&
-                        <>
-                            <Text></Text>
-                            <Text>Morto</Text>
-                            <Text>{fromDateToString(person.death_date)}</Text>
-                        </>
-                    }
+                    <View style={{ marginVertical: heightPercentageToDP(1) }}>
+                        <SubTitle>Dettagli Personali</SubTitle>
+                        <Description>Nato</Description>
+                        <Description>{person.birth_date && fromDateToString(person.birth_date)}</Description>
+                        <Description>{person.place_of_birth && person.place_of_birth.replace(/ - /g, ', ')}</Description>
+                        {person.death_date &&
+                            <>
+                                <Description>Morto</Description>
+                                <Description>{fromDateToString(person.death_date)}</Description>
+                            </>
+                        }
+                    </View>
                 </ScrollView>
                 : <ActivityIndicator />
             }
-        </SafeAreaView>
+        </View>
     )
 }

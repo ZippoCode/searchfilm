@@ -23,7 +23,7 @@ class GenreListAPI(generics.ListAPIView):
 
 # Search movie APIs
 class SearchFilmAPI(generics.ListCreateAPIView):
-    #search_fields = ['title', 'original_title', 'keywords__text']
+    # search_fields = ['title', 'original_title', 'keywords__text']
     search_fields = ['title', 'original_title']
     filter_backends = (filters.SearchFilter,)
     queryset = Movie.objects.all()
@@ -135,17 +135,17 @@ class GetTopRatedMovies(generics.ListCreateAPIView):
 
 class GetLastMovies(generics.ListCreateAPIView):
     serializer_class = MovieSimpleSerializer
-    queryset = Movie.objects.all().order_by('-release_date')
+    queryset = Movie.objects.exclude(release_date=None).filter(runtime__gte=60).order_by('-release_date')
     pagination_class = StandardResultsSetPagination
 
 
 # Return movies based of genre
-class GenreMovieAPI(views.APIView):
+class GenreMovieAPI(generics.ListCreateAPIView):
+    serializer_class = MovieSimpleSerializer
+    pagination_class = StandardResultsSetPagination
+    lookup_field_kwarg = 'genre'
 
-    def get(self, request, genre, *args, **kwargs):
-        try:
-            movies = Movie.objects.filter(genres__name__iexact=genre).order_by('-vote_counter')
-            serializers = MovieSimpleSerializer(movies, many=True)
-        except Movie.DoesNotExist:
-            return Response({'Error': 'Genre not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializers.data, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        genre = self.kwargs.get(self.lookup_field_kwarg)
+        movies = Movie.objects.filter(genres__name__iexact=genre).order_by('-vote_counter')
+        return movies

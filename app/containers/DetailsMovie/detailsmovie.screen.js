@@ -1,40 +1,22 @@
 import * as React from 'react';
 import {
-    StyleSheet, Text, View, ScrollView,
-    ActivityIndicator, Image, useWindowDimensions, PixelRatio, TouchableOpacity
+    StyleSheet, View, ScrollView,
+    ActivityIndicator, Image, TouchableOpacity
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-function fromDateToString(data_row) {
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    var data = new Date(data_row);
-    return data.getDate() + ' ' + monthNames[data.getMonth()] + ' ' + data.getFullYear();
-}
+// Parts of Screen
+import { Buttons } from './buttons.view';
+import Details from './details.view';
+import Genres from './genres.view';
 
-// Importing from React-Native-elements
-import { Button } from 'react-native-elements';
-import { Divider } from 'react-native-elements';
-import { Icon } from 'react-native-elements'
-
-var FONT_SIZE = {
-    TITLE: 34,
-    TITLE_SECTION: 28,
-    SUBTITLE_SECTION: 24,
-    DESCRIPTION: 18,
-}
-
-if (PixelRatio.get() <= 2) {
-    FONT_SIZE.TITLE = 32;
-    FONT_SIZE.TITLE_SECTION = 26;
-    FONT_SIZE.SUBTITLE_SECTION = 22;
-    FONT_SIZE.DESCRIPTION = 16;
-}
+// Import custom Components
+import { Title, SubTitle, Description } from '../../components/Text';
 
 const styles = StyleSheet.create({
     rootView: {
@@ -45,61 +27,18 @@ const styles = StyleSheet.create({
     scrollViewContainer: {
         flex: 1,
         width: wp(95),
-        marginTop: hp(1),
-    },
-    titleText: {
-        fontSize: wp(9),
-        fontWeight: 'bold',
-    },
-    subtitleView: {
-        flexDirection: 'row',
-        marginVertical: hp(1),
-    },
-    subtitleText: {
-        fontSize: wp(5),
-    },
-    genreButton: {
-        marginRight: wp(0.8),
     },
     posterImage: {
         height: hp(28),
         width: wp(39),
         resizeMode: 'cover',
     },
-    descriptionText: {
-        flex: 1,
-        paddingHorizontal: wp(2),
-        fontSize: wp(4),
-        flexWrap: 'nowrap',
-    },
-    infoText: {
-        paddingBottom: hp(0.5),
-        fontSize: wp(4)
-    }
 })
 
-function timeConvert(time) {
-    var hours = Math.floor(time / 60);
-    var minutes = Math.round(((time / 60) - hours) * 60);
-    if (minutes !== 0)
-        return hours + ' h ' + minutes + ' min';
-    return hours + ' h'
-}
-
-/*
-mport { mdiHeartOutline } from '@mdi/js'; (vuoto no preferiti)
-import { mdiHeart } from '@mdi/js'; (pieno per preferiti)
-import { mdiStarOutline } from '@mdi/js'; (per votare)
-import { mdiStar } from '@mdi/js'; (voto)
-import { mdiCogOutline } from '@mdi/js'; (ingranaggio)
-*/
-
-export default function DetailsMovie({ route, navigation }) {
+export default function DetailsMovie({ route }) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [movie, setMovie] = React.useState('');
-
-    const windowWidth = useWindowDimensions().width;
-    const windowHeight = useWindowDimensions().height;
+    const navigation = useNavigation();
 
     React.useEffect(() => {
         const fetchAsyncData = async () => {
@@ -120,73 +59,30 @@ export default function DetailsMovie({ route, navigation }) {
             {!isLoading
                 ? (
                     <ScrollView style={styles.scrollViewContainer}>
-                        <Text style={styles.titleText}>{movie.title}</Text>
-                        <Text style={styles.subtitleText}>{new Date(movie.release_date).getFullYear()}</Text>
-                        <View style={styles.subtitleView}>
-                            {movie.genres.map((genre) =>
-                                <Button
-                                    title={genre.name}
-                                    type="outline"
-                                    style={styles.genreButton}
-                                    onPress={() => { navigation.navigate('genre')}}
-                                />
-                            )}
-                        </View>
+                        <Title>{movie.title}</Title>
+                        <SubTitle>{new Date(movie.release_date).getFullYear()}</SubTitle>
+                        <Genres genres={movie.genres} />
                         <View style={{ flexDirection: 'row', paddingVertical: hp(1) }}>
                             <Image
                                 source={{ uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}` }}
                                 style={styles.posterImage} />
-                            <Text
-                                numberOfLines={9}
-                                style={styles.descriptionText}
-                            >
-                                {movie.description}
-                            </Text>
+                            <Description style={{ flex: 1, flexWrap: 'nowrap' }} numberOfLines={9} > {movie.description}</Description>
                         </View>
-                        <View style={{ paddingVertical: hp(1), flexDirection: 'row', justifyContent: 'space-around' }}>
-                            <View style={{ alignItems: 'center' }}>
-                                <Icon
-                                    name='star'
-                                    type='material-community'
-                                    color='#ffd600'
-                                    size={31}
-                                />
-                                <Text>{Math.round(movie.vote_average, 2)} / 10</Text>
-                                <Text>{movie.vote_counter}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <Icon
-                                    name='star-outline'
-                                    type='material-community'
-                                    size={31}
-                                />
-                                <Text>Vota</Text>
-                            </View>
-                            <View>
-                                <Icon
-                                    name='heart-outline'
-                                    type='material-community'
-                                    size={31}
-                                />
-                                <Text>Preferiti</Text>
-                            </View>
-                        </View>
+                        <Buttons movie={movie} />
                         <View>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', paddingRight: 16 }}>
-                                <Text style={{ fontSize: FONT_SIZE.TITLE_SECTION, }}>Cast</Text>
-                                <View style={{ flex: 1 }}>
-                                    <Text
-                                        style={{ textAlign: 'right' }}
-                                        onPress={() => navigation.navigate('FullCast', {
-                                            actors: movie.actors,
-                                        })}>
-                                        Visualizza tutti
-                                        </Text>
-                                </View>
+                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                                <SubTitle>Cast</SubTitle>
+                                <Description
+                                    style={{ textAlign: 'right' }}
+                                    onPress={() => navigation.navigate('FullCast', { actors: movie.actors })}
+                                >
+                                    Visualizza tutti
+                                </Description>
                             </View>
                             <ScrollView horizontal>
                                 {movie.actors.map((item) =>
                                     <TouchableOpacity
+                                        key={item.id}
                                         style={{ width: wp(25), marginHorizontal: wp(1), height: hp(27) }}
                                         onPress={() => {
                                             navigation.navigate('DetailsPerson', { personID: item.id, })
@@ -202,39 +98,16 @@ export default function DetailsMovie({ route, navigation }) {
                                                 height: hp(20),
                                                 resizeMode: 'cover',
                                             }} />
-                                        <Text numberOfLines={2} style={{ fontSize: wp(4) }}>{item.name}</Text>
+                                        <Description numberOfLines={2}>{item.name}</Description>
                                     </TouchableOpacity>
                                 )}
                             </ScrollView>
-                            <Text style={{ fontSize: FONT_SIZE.TITLE_SECTION }}>Regista</Text>
-                            {movie.directors.map((director) =>
-                                <Text
-                                    style={{ fontSize: wp(4) }}
-                                    onPress={() => {
-                                        navigation.navigate('DetailsPerson', {
-                                            personID: director.id,
-                                        })
-                                    }}>
-                                    {director.name}
-                                </Text>
-                            )}
                         </View>
-                        <View style={{ paddingVertical: hp(2) }}>
-                            <Text style={{ fontSize: FONT_SIZE.TITLE_SECTION }}>Descrizione</Text>
-                            <Text style={{ fontSize: FONT_SIZE.DESCRIPTION }}>{movie.description}</Text>
-                        </View>
-                        <View>
-                            <Text style={{ fontSize: FONT_SIZE.TITLE_SECTION }}>Dettagli</Text>
-                            <Text style={styles.infoText}>Data di rilascio: {fromDateToString(movie.release_date)}</Text>
-                            <Text style={styles.infoText}>Titolo originale: {movie.original_title}</Text>
-                            <Text style={styles.infoText}>Lingua originale: {movie.original_language}</Text>
-                            <Text style={styles.infoText}>Durata: {timeConvert(movie.runtime)}</Text>
-                        </View>
+                        <Details movie={movie} />
                     </ScrollView>
                 )
                 : (<ActivityIndicator />)
             }
-        </View>
+        </View >
     );
-
 }

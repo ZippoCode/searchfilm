@@ -1,57 +1,54 @@
-import 'react-native-gesture-handler';
 import * as React from 'react';
-import { View, Button } from 'react-native';
+import { connect } from 'react-redux';
+import { ScrollView, Button } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 // Importing from React-Native-Elements
 import { Text } from 'react-native-elements';
 
-// Importing from Navigation
-import { AuthContext } from './signin.navigation';
-
 // Importing components
 import ScrollViewMovies from '../../components/ScrollViewMovies';
 
-export default function ProfileScreen({ route, navigation }) {
+// Importing actions
+import { logout } from './authentication.action';
 
-    const { userToken } = route.params;
-    const { signOut } = React.useContext(AuthContext);
-
+export default function ProfileScreen({ authentication, dispatch }) {
     const [user, setUser] = React.useState();
 
     React.useEffect(() => {
-        const fetchAsyncData = async () => {
+        const fetchDataUser = async () => {
             fetch(`http://192.168.1.13:8000/account/api/get/`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${userToken}`
+                    'Authorization': `Bearer ${authentication.token}`
                 }
             })
                 .then((response) => response.json())
-                .then((json) => setUser(json))
-                .catch((error) => console.log(error))
+                .then((responseJson) => { setUser(responseJson) })
         };
-        fetchAsyncData();
-    }, [userToken]);
-
+        fetchDataUser();
+    }, []);
 
     return (
-        <View style={{ flex: 1, paddingTop: 24, paddingLeft: 16 }}>
+        <ScrollView style={{ paddingHorizontal: wp(4) }}>
             {user &&
                 <>
-                    <Text h3>{user.first_name} {user.last_name}</Text>
+                    <Text h3>Benvenuto, {user.first_name}!</Text>
                     <ScrollViewMovies
                         title='Film preferiti'
                         movies={user.favorites}
-                        navigation={navigation}
                     />
                     <ScrollViewMovies
                         title='Film votati'
                         movies={user.voted}
-                        navigation={navigation}
                     />
-                    <Button title='Sign Out' onPress={signOut} />
+                    <Button title='Logout' onPress={() => dispatch(logout())} />
                 </>
             }
-        </View>
+        </ScrollView>
     )
 }
+
+
+const ProfileConnected = connect(state => ({ authentication: state.authentication }))(ProfileScreen);
+export { ProfileConnected as ProfileScreen };

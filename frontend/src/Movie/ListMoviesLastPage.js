@@ -40,7 +40,7 @@ function ListMoviesLastPage(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(URL.GETLASTMOVIE.concat(`page=${page}`));
+                const response = await axios.get(URL.GETLASTMOVIE.concat(`?page=${page}`));
                 setMovies(response.data.results);
                 setNumPage(Math.floor(response.data.count / 10));
             } catch (error) { console.log(error) }

@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -10,8 +9,7 @@ import FullCastScreen from '../FullCast/fullcast.screen';
 import ListMovieScreen from '../ListMovies/listmovies.screen';
 import ListGenresScreen from './listgenres.screen';
 
-
-const ButtonsStack = new createStackNavigator();
+const ButtonsStack = new createStackNavigator;
 
 export default function ListButtonsNavigation() {
 
