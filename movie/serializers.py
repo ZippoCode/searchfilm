@@ -54,4 +54,4 @@ class MovieSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title', 'original_title', 'imdb_id', 'description', 'release_date', 'vote_average',
-                  'vote_counter', 'poster_path', 'genres', 'vote_counter', 'vote_average']
+                  'vote_counter', 'poster_path', 'genres']

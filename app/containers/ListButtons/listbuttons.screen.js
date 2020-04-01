@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -9,6 +9,10 @@ import { Button } from 'react-native-elements';
 
 // Importing custom components
 import { SubTitle, Description } from '../../components/Text';
+import { ImageGenre } from './imageGenre.view';
+
+// Import Urls
+import { GET_GENRES } from '../../components/Matcher';
 
 const styles = StyleSheet.create({
     rootView: {
@@ -18,43 +22,26 @@ const styles = StyleSheet.create({
         marginHorizontal: wp(7),
     },
     buttonStyle: {
-        borderRadius: 15,
-        marginVertical: hp(3),
-    },
-    buttonGenre: {
-        flex: 1,
-        width: wp(20),
-        height: hp(10),
-        marginHorizontal: wp(0.5),
-        marginVertical: hp(0.5),
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderColor: 'black',
-        borderRadius: 6,
-        borderWidth: wp(0.2),
-        backgroundColor: 'transparent',
-    },
-    genreImage: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    genreText: {
-        textAlign: 'center',
-        color: 'white',
-        textTransform: 'uppercase'
+        borderRadius: 32,
+        marginVertical: hp(2),
+        backgroundColor: '#70587C',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
     }
 })
 
 export default function ButtonScreen() {
-    const navigation = useNavigation();
     const [isLoading, setIsLoading] = React.useState(true);
     const [genres, setGenres] = React.useState([]);
 
     React.useEffect(() => {
         const fetchAsyncGenres = async () => {
-            fetch('http://192.168.1.13:8000/movie/api/genres/')
+            fetch(GET_GENRES)
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setGenres(responseJson);
@@ -69,23 +56,11 @@ export default function ButtonScreen() {
         <View style={styles.rootView}>
             {!isLoading &&
                 <FlatList
+                keyExtractor={(item, index) => index.toString()}
                     ListHeaderComponent={<HeaderFlatList genres={genres} />}
                     data={genres.slice(0, 8)}
                     numColumns={2}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.buttonGenre}
-                            onPress={() => navigation.navigate('genre',
-                                { type: `topPopular/${item.name}`, title: item.name })
-                            }
-                        >
-                            <Image
-                                source={ImageGenre(item.name)}
-                                style={styles.genreImage}
-                            />
-                            <Description style={styles.genreText}>{item.name}</Description>
-                        </TouchableOpacity>
-                    )}
+                    renderItem={({ item }) => (<ImageGenre item={item} />)}
                 />
             }
         </View>
@@ -96,26 +71,30 @@ function HeaderFlatList(props) {
     const { genres } = props;
     const navigation = useNavigation();
 
+    React.useEffect(() => {
+
+    });
+
     return (
         <View>
             <View style={styles.buttonsView}>
                 <Button
-                    title='I più popolari'
+                    title='Film più popolari'
                     onPress={() => navigation.navigate('topPopular', { type: 'topPopular' })}
-                    titleStyle={{ fontSize: 30 }}
                     buttonStyle={styles.buttonStyle}
+                    titleStyle={{ marginVertical: wp(2) }}
                 />
                 <Button
-                    title='I più votati'
+                    title='Film più votati'
                     onPress={() => navigation.navigate('topRanking', { type: 'topRanking' })}
-                    titleStyle={{ fontSize: 30 }}
                     buttonStyle={styles.buttonStyle}
+                    titleStyle={{ marginVertical: wp(2) }}
                 />
                 <Button
-                    title='I più recenti'
+                    title='Film più recenti'
                     onPress={() => navigation.navigate('last', { type: 'last' })}
-                    titleStyle={{ fontSize: 30 }}
                     buttonStyle={styles.buttonStyle}
+                    titleStyle={{ marginVertical: wp(2) }}
                 />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', marginVertical: hp(1) }}>
@@ -124,32 +103,9 @@ function HeaderFlatList(props) {
                     style={{ textAlign: 'right' }}
                     onPress={() => { navigation.navigate('Generi', { genres: genres }) }}
                 >
-                    Visualizzali tutti
+                    Vedi tutto
                     </Description>
             </View>
         </View>
     )
-}
-
-function ImageGenre(genreName) {
-    switch (genreName) {
-        case 'Action':
-            return require('../../assets/img/Action.jpg')
-        case 'Adventure':
-            return require('../../assets/img/Adventure.jpg')
-        case 'Comedy':
-            return require('../../assets/img/Comedy.jpg')
-        case 'Crime':
-            return require('../../assets/img/Crime.jpg')
-        case 'Drama':
-            return require('../../assets/img/Drama.jpg')
-        case 'Horror':
-            return require('../../assets/img/Horror.jpg')
-        case 'Mystery':
-            return require('../../assets/img/Mystery.jpg')
-        case 'Thriller':
-            return require('../../assets/img/Thriller.jpg')
-        default:
-            return require('../../assets/img/Crime.jpg')
-    }
 }

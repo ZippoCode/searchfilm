@@ -1,6 +1,3 @@
-export const PATH_FAVORITE = 'http://192.168.1.13:8000/account/api/favorite';
-export const PATH_VOTED = 'http://192.168.1.13:8000/account/api/voted';
-
 export const FavoriteConstants = {
     FAVORITE_LIST_REQUEST: 'GET_LIST_FAVORITE',
     FAVORITE_LIST_SUCCESS: 'GET_LIST_FAVORITE_SUCCESS',

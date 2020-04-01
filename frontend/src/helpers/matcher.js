@@ -1,4 +1,4 @@
-export const LOCALHOSTIP = 'http://192.168.1.13:8000';
+export const LOCALHOSTIP = 'http://192.168.43.239:8000';
 
 //export const LOGIN = `${LOCALHOSTIP}/account/api/auth/login`;
 export const LOGIN = `${LOCALHOSTIP}/api/token/`;

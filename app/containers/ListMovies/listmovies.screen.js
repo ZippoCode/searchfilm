@@ -1,17 +1,18 @@
 import * as React from 'react';
 import {
     ActivityIndicator, FlatList, View,
-    TouchableOpacity, Image, StyleSheet
+    TouchableOpacity, StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
+// Custom Components
 import { useStateMovie } from '../../components/CustomHooks';
-
 import { SubTitle, Description } from '../../components/Text';
+import { ImagePosterMovie } from '../../components/Image';
+
+// Import Urls
+import { GET_LIST } from '../../components/Matcher';
 
 const styles = StyleSheet.create({
     container: {
@@ -49,13 +50,10 @@ export function DetailsItem({ idMovie }) {
             style={styles.itemContainer}
             onPress={() => { navigation.navigate('DetailsMovie', { movieID: movie.id, }) }}
         >
-            <Image
-                source={{
-                    uri: movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                        : 'https://cdn0.iconfinder.com/data/icons/video-editing/100/5-512.png'
-                }}
-                style={styles.posterImage} />
+            <ImagePosterMovie
+                path={movie.poster_path}
+                style={styles.posterImage}
+            />
             <View style={styles.textView}>
                 <SubTitle>{movie.title}</SubTitle>
                 <Description numberOfLines={3}>{movie.description}</Description>
@@ -75,7 +73,7 @@ export default function ListMovieScreen({ route }) {
 
     React.useEffect(() => {
         if (type)
-            fetch(`http://192.168.1.13:8000/movie/api/${type}/`)
+            fetch(GET_LIST.concat(type).concat('/'))
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setListMovies(responseJson.results);
@@ -85,7 +83,7 @@ export default function ListMovieScreen({ route }) {
 
     function onLoadMore() {
         if (type)
-            fetch(`http://192.168.1.13:8000/movie/api/${type}/?page=${numPage}`)
+            fetch(GET_LIST.concat(type).concat('/?page='.concat(numPage)))
                 .then((response) => response.json())
                 .then((responseJson) => {
                     if (responseJson.results) {

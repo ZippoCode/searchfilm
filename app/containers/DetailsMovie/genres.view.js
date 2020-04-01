@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -13,13 +13,12 @@ import { Button } from 'react-native-elements';
 const styles = StyleSheet.create({
     rootView: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        paddingHorizontal: wp(3),
     },
     containerGenre: {
-        paddingHorizontal: wp(1),
-        paddingVertical: hp(0.5),
+        borderColor: '#502F4C',
+        borderRadius: 4,
+        paddingHorizontal: wp(1.5),
+        paddingVertical: hp(0.3),
     },
     genreButton: {
         marginRight: wp(0.8),
@@ -31,16 +30,22 @@ export default function Genres({ genres }) {
 
     return (
         <View style={styles.rootView}>
-            {genres.map((genre) =>
-                <Button
-                    key={genre.id}
-                    title={genre.name}
-                    type="outline"
-                    style={styles.genreButton}
-                    buttonStyle={styles.containerGenre}
-                    onPress={() => navigation.navigate('genre', { type: `topPopular/${genre.name}`, title: genre.name })}
-                />
-            )}
+            <FlatList
+                horizontal
+                keyExtractor={(item, index) => index.toString()}
+                data={genres}
+                renderItem={({ item }) => (
+                    <Button
+                        title={item.name}
+                        type="outline"
+                        style={styles.genreButton}
+                        buttonStyle={styles.containerGenre}
+                        titleStyle={{ color: '#502F4C' }}
+                        onPress={() => navigation.navigate('genre', { type: `topPopular/${item.name}`, title: item.name })}
+                    />
+                )}
+            />
+
         </View>
     )
 }

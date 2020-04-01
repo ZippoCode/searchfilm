@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { GET_MOVIE } from './Matcher';
 
 export function useStateMovie(id) {
     const [movie, setMovie] = React.useState('');
 
     React.useEffect(() => {
         const fetchAsyncDataMovie = async () => {
-            fetch(`http://192.168.1.13:8000/movie/api/get/${id}/`)
+            fetch(GET_MOVIE.concat(id).concat('/'))
                 .then((response) => response.json())
                 .then((json) => setMovie(json))
                 .catch((error) => console.log(error))

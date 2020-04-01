@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Modal, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View, } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useNavigation } from '@react-navigation/native';
 
 // Importing from React-Native-Elements
 import { Icon, Rating } from 'react-native-elements';
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(5),
         backgroundColor: "white",
         borderRadius: 20,
-        alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     openButton: {
+        width: wp(30),
         borderRadius: 20,
         padding: 10,
         elevation: 2,
@@ -59,12 +60,12 @@ const styles = StyleSheet.create({
 });
 
 export default function Buttons({ movie, token, favorites, voted, dispatch }) {
-
+    const navigation = useNavigation();
     const [modalVisible, setModalVisible] = React.useState(false);
     const isFavorite = favorites.some(elem => elem.id === movie.id);
     const isVoted = voted.voted.some(elem => elem.id === movie.id);
-    const { value_vote } = voted.voted.find((elem) => { return elem.id === movie.id }) || { value_vote: null }
-    const [valueVote, setValueVote] = React.useState();
+    const { value_vote } = voted.voted.find((elem) => { return elem.id === movie.id }) || { value_vote: 0 }
+    const [valueVote, setValueVote] = React.useState(value_vote);
     const typeRequest = isFavorite ? 'DELETE' : 'PUT';
 
     React.useEffect(() => {
@@ -78,15 +79,19 @@ export default function Buttons({ movie, token, favorites, voted, dispatch }) {
     }, []);
 
     const ratingComplete = (rating) => { setValueVote(rating); }
-    
+
     const handleFavorite = React.useCallback(() => {
         if (token)
             dispatch(manageFavorite(token, typeRequest, movie.id))
+        else
+            navigation.navigate('Account')
     });
 
     const handleVoted = React.useCallback(() => {
         if (token)
             dispatch(manageVoted(token, 'PUT', movie.id, valueVote))
+        else
+            navigation.navigate('Account')
         setModalVisible(!modalVisible);
     })
     return (
@@ -110,13 +115,21 @@ export default function Buttons({ movie, token, favorites, voted, dispatch }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Rating showRating ratingCount={10} imageSize={wp(7)} onFinishRating={ratingComplete} />
-                        <TouchableHighlight
-                            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                            onPress={handleVoted}
-                        >
-                            <Text style={styles.textStyle}>Vota</Text>
-                        </TouchableHighlight>
+                        <Rating showRating ratingCount={10} imageSize={wp(7)} startingValue={valueVote} onFinishRating={ratingComplete} />
+                        <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-evenly' }}>
+                            <TouchableHighlight
+                                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                onPress={handleVoted}
+                            >
+                                <Text style={styles.textStyle}>Vota</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                style={{ ...styles.openButton, backgroundColor: "#2055C3" }}
+                                onPress={() => { setModalVisible(false), setValueVote(value_vote) }}
+                            >
+                                <Text style={styles.textStyle}>Cancella</Text>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -125,7 +138,7 @@ export default function Buttons({ movie, token, favorites, voted, dispatch }) {
                     name={isVoted ? 'star' : 'star-outline'}
                     type='material-community'
                 />
-                {value_vote && <Description>{value_vote}</Description>}
+                {isVoted && <Description>{value_vote}</Description>}
                 <Description>Vota</Description>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleFavorite}>
@@ -136,7 +149,7 @@ export default function Buttons({ movie, token, favorites, voted, dispatch }) {
                 />
                 <Description>Preferiti</Description>
             </TouchableOpacity>
-        </View>
+        </View >
     )
 }
 

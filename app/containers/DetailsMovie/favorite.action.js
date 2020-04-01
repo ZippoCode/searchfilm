@@ -1,4 +1,5 @@
-import { FavoriteConstants, PATH_FAVORITE } from './constants';
+import { FavoriteConstants } from './constants';
+import { PATH_FAVORITE } from '../../components/Matcher';
 
 export function fetchAsyncFavorites(token) {
     return dispatch => {

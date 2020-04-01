@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 
 import { Title, SubTitle, Description } from '../../components/Text';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     rootView: {
@@ -15,17 +17,21 @@ const styles = StyleSheet.create({
     titleView: {
         marginVertical: hp(1),
     }
-})
-export function SettingsScreen() {
+});
+
+function SettingsScreen({ authentication }) {
+    const navigation = useNavigation();
 
     return (
         <ScrollView style={styles.rootView}>
-            <View style={styles.sectionContainerView}>
-                <Title>Account</Title>
-                <TouchableOpacity style={styles.titleView}>
-                    <SubTitle>Modifica account</SubTitle>
-                </TouchableOpacity>
-            </View>
+            {authentication.token &&
+                <View style={styles.sectionContainerView}>
+                    <Title>Account</Title>
+                    <TouchableOpacity style={styles.titleView} onPress={() => { navigation.navigate('ChangePassword') }}>
+                        <SubTitle>Modifica account</SubTitle>
+                    </TouchableOpacity>
+                </View>
+            }
             <View style={styles.sectionContainerView}>
                 <Title>Notifiche</Title>
             </View>
@@ -56,3 +62,6 @@ export function SettingsScreen() {
         </ScrollView>
     )
 }
+
+const SettingsConnected = connect(state => ({ authentication: state.authentication }))(SettingsScreen);
+export { SettingsConnected as SettingsScreen };

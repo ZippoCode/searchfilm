@@ -24,8 +24,9 @@ class GenreListAPI(generics.ListAPIView):
 # Search movie APIs
 class SearchFilmAPI(generics.ListCreateAPIView):
     # search_fields = ['title', 'original_title', 'keywords__text']
-    search_fields = ['title', 'original_title']
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ['@title', '^original_title']
+    ordering = ['title']
     queryset = Movie.objects.all()
     serializer_class = MovieSimpleSerializer
 
@@ -47,9 +48,9 @@ class RecommendMovie(views.APIView):
         premiated = self.request.data.get('premiated')
         watched = self.request.data.get('watched')
         try:
-            films = Movie.objects.filter(genres__name__iexact=genre)
-            if len(films) == 0:
-                films = Movie.objects.all()
+            # films = Movie.objects.filter(genres__name__iexact=genre)
+            # if len(films) == 0:
+            films = Movie.objects.exclude(release_date=None).filter(runtime__gte=60).all()
             index = random.randint(0, len(films))
             film = films[index]
         except Movie.DoesNotExist:

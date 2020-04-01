@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { StyleSheet, View, AsyncStorage, Image, FlatList } from 'react-native';
+import { StyleSheet, View, AsyncStorage,  FlatList, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 // Importing from React-Native-Elements
 import { Icon } from 'react-native-elements';
 import { SearchBar } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+// 
 import { SubTitle, Description } from '../../components/Text';
 
+// Import Urls
+import { SEARCH_MOVIE } from '../../components/Matcher';
+import { ImagePosterMovie } from '../../components/Image';
 
 const styles = StyleSheet.create({
     titleView: {
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         alignItems: 'baseline',
         justifyContent: 'space-between',
         marginHorizontal: wp(3),
+        marginBottom: hp(3),
     },
     suggestedItemView: {
         flexDirection: 'row',
@@ -36,10 +37,10 @@ const styles = StyleSheet.create({
 })
 
 export default function SearchScreen() {
+    const navigation = useNavigation();
     const [query, setQuery] = React.useState('');
     const [suggestedMovie, setSuggestedMovie] = React.useState([]);
     const [searchedMovies, setSearchedMovies] = React.useState([]);
-    const navigation = useNavigation();
 
     function handleClick(movie) {
         AsyncStorage.getItem('searched_movie')
@@ -63,7 +64,7 @@ export default function SearchScreen() {
                 movies ? setSearchedMovies(JSON.parse(movies)) : setSearchedMovies([]);
             })
             .catch((error) => console.log('Reading Store Error: ', error));
-    }, [query]);
+    }, []);
 
     async function clearHistory() {
         try {
@@ -75,7 +76,7 @@ export default function SearchScreen() {
 
     React.useEffect(() => {
         if (query.length !== 0)
-            fetch(`http://192.168.1.13:8000/movie/api/title/?search=${query}`)
+            fetch(SEARCH_MOVIE.concat(query))
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setSuggestedMovie(responseJson)
@@ -84,7 +85,7 @@ export default function SearchScreen() {
     }, [query])
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
             <SearchBar
                 placeholder='Search a movie ...'
                 value={query}
@@ -124,12 +125,8 @@ function Movie({ movie, onSelect }) {
             style={styles.suggestedItemView}
             onPress={() => onSelect(movie)}
         >
-            <Image
-                source={{
-                    uri: movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                        : 'https://lh3.googleusercontent.com/proxy/z5td1LFiFC6B86IGymPWY2ZvSZm7A14O7-GVYjqX_xyPh56MJACKJ0oMiNyVfOSOxLL82G2_AY9AqecZSIktc1pU1xmGh5Ha8jfblsTrLnMljPBiL5stJYzpMtbbU3nP8siN4hhMIHd1'
-                }}
+            <ImagePosterMovie
+                path={movie.poster_path}
                 style={styles.imagePoster}
             />
             <View style={{ flex: 1, alignItems: 'baseline', marginHorizontal: wp(2) }}>

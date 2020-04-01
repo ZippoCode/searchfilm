@@ -1,12 +1,16 @@
 import React from 'react';
-import { ScrollView, ActivityIndicator, Image, View } from 'react-native';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
+import { ScrollView, ActivityIndicator, View } from 'react-native';
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 
 // Importing from React-Native-Elements
 import { Divider } from 'react-native-elements';
 
 // Importing custom Components
 import { Title, SubTitle, Description } from '../../components/Text';
+
+// import URLs
+import { GET_DETAILS_PERSON } from '../../components/Matcher';
+import { ImagePerson } from '../../components/Image';
 
 function fromDateToString(data_row) {
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -24,7 +28,7 @@ export default function DetailsPerson({ route }) {
     React.useEffect(() => {
         const params = route.params;
         const fetchAsyncData = async () => {
-            fetch(`http://192.168.1.13:8000/person/api/get/${params.personID}/`)
+            fetch(GET_DETAILS_PERSON.concat(JSON.stringify(params.personID)))
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setPerson(responseJson);
@@ -42,13 +46,13 @@ export default function DetailsPerson({ route }) {
                 <ScrollView style={{ paddingHorizontal: 16 }}>
                     <View style={{ marginVertical: heightPercentageToDP(1) }}>
                         <Title>{person.name}</Title>
-                        <Image
-                            source={{ uri: `https://image.tmdb.org/t/p/w500/${person.profile_img}` }}
-                            style={{ width: 300, height: 300 }} />
+                        <ImagePerson
+                            path={person.profile_img}
+                            style={{ width: widthPercentageToDP(80), height: heightPercentageToDP(50), resizeMode: 'cover' }} />
                         <Description>{person.biography}</Description>
                     </View>
                     <Divider />
-                    <View style={{ marginVertical: heightPercentageToDP(1) }}>
+                    <View style={{ marginVertical: heightPercentageToDP(3) }}>
                         <SubTitle>Dettagli Personali</SubTitle>
                         <Description>Nato</Description>
                         <Description>{person.birth_date && fromDateToString(person.birth_date)}</Description>

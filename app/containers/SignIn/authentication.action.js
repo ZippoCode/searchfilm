@@ -1,10 +1,20 @@
 import { AuthenticationConstants } from './constants';
 import { AsyncStorage } from 'react-native';
 
+// Import Urls
+import { GET_TOKEN } from '../../components/Matcher';
+
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response.json();
+}
+
 export function login(username, password) {
     return dispatch => {
         dispatch({ type: AuthenticationConstants.LOGIN_REQUEST });
-        fetch('http://192.168.1.13:8000/api/token/', {
+        fetch(GET_TOKEN, {
             method: 'POST',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -12,7 +22,7 @@ export function login(username, password) {
                 password: password,
             })
         })
-            .then((response) => response.json())
+            .then(handleErrors)
             .then((responseJson) => {
                 async () => {
                     try {
@@ -21,7 +31,9 @@ export function login(username, password) {
                 }
                 dispatch({ type: AuthenticationConstants.LOGIN_SUCCESS, token: responseJson.token })
             })
-            .catch((error) => dispatch({ type: AuthenticationConstants.LOGIN_FAILURE }))
+            .catch((error) => {
+                dispatch({ type: AuthenticationConstants.LOGIN_FAILURE, error: error })
+            })
     }
 }
 

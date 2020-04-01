@@ -1,28 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { View, Button, AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 // Navigations
+import { HomeNavigation } from '../Home/home.navigation';
 import ListButtonsNavigation from '../ListButtons/listbuttons.navigator';
 import SearchNavigation from '../SearchMovie/navigation';
 import { SignInNavigation } from '../SignIn/signin.navigation';
 
 // Importing the Authentication's constants for restore token when the app has closed
 import { AuthenticationConstants } from '../SignIn/constants';
-
-// Custom components
-import { Title} from '../../components/Text';
-
-function Home() {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Title>Now. I'm very happy</Title>
-            <Button title='Ricerca un film' />
-        </View>
-    )
-}
 
 
 const Tab = createBottomTabNavigator();
@@ -69,7 +58,7 @@ function TabNavigation({ dispatch }) {
                 }
             })}
         >
-            <Tab.Screen name='Home' component={Home} />
+            <Tab.Screen name='Home' component={HomeNavigation}/>
             <Tab.Screen name='List' component={ListButtonsNavigation} />
             <Tab.Screen name='Search' component={SearchNavigation} />
             <Tab.Screen name='Account' component={SignInNavigation} />

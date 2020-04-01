@@ -1,4 +1,5 @@
-import { VotedConstants, PATH_VOTED } from './constants';
+import { VotedConstants } from './constants';
+import { PATH_VOTED } from '../../components/Matcher';
 
 export function fetchAsyncVoted(token) {
     return dispatch => {

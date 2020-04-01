@@ -8,8 +8,11 @@ import { Icon } from 'react-native-elements'
 
 // Importing Screen 
 import { LoginScreen } from './signin.screen';
+import { ChangePasswordScreen } from '../Settings/changePassword.screen';
 import { ProfileScreen } from './profile.screen';
 import { SettingsScreen } from '../Settings/settings.screen';
+
+
 import DetailsMovie from '../DetailsMovie/detailsmovie.screen';
 import ListMoviesScreen from '../ListMovies/listmovies.screen';
 import DetailsPerson from '../DetailsPerson/detailsperson.screen';
@@ -39,7 +42,7 @@ function SignInNavigation({ authentication }) {
                     name='Profile'
                     component={ProfileScreen}
                     options={{
-                        title: 'Informazioni',
+                        title: 'Profilo',
                         headerRight: () => <IconsOptions />,
                     }}
                 />
@@ -52,6 +55,7 @@ function SignInNavigation({ authentication }) {
                 />
             }
             <Stack.Screen name='Settings' component={SettingsScreen} />
+            <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
             <Stack.Screen name='DetailsMovie' component={DetailsMovie} />
             <Stack.Screen name='ListMovies' component={ListMoviesScreen} />
             <Stack.Screen name='DetailsPerson' component={DetailsPerson} />

@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, Button } from 'react-native';
+import { ScrollView, Button, RefreshControl } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-// Importing from React-Native-Elements
-import { Text } from 'react-native-elements';
 
 // Importing components
 import ScrollViewMovies from '../../components/ScrollViewMovies';
@@ -12,12 +9,31 @@ import ScrollViewMovies from '../../components/ScrollViewMovies';
 // Importing actions
 import { logout } from './authentication.action';
 
+// Import URLs
+import { GET_INFO_USER } from '../../components/Matcher';
+
+import { Title } from '../../components/Text';
+
 export default function ProfileScreen({ authentication, dispatch }) {
     const [user, setUser] = React.useState();
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetch(GET_INFO_USER, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authentication.token}`
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => { setUser(responseJson), setRefreshing(false) })
+    }, [refreshing]);
+
 
     React.useEffect(() => {
         const fetchDataUser = async () => {
-            fetch(`http://192.168.1.13:8000/account/api/get/`, {
+            fetch(GET_INFO_USER, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authentication.token}`
@@ -30,10 +46,12 @@ export default function ProfileScreen({ authentication, dispatch }) {
     }, []);
 
     return (
-        <ScrollView style={{ paddingHorizontal: wp(4) }}>
+        <ScrollView style={{ paddingHorizontal: wp(4) }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
             {user &&
                 <>
-                    <Text h3>Benvenuto, {user.first_name}!</Text>
+                    <Title style={{ marginVertical: wp(5) }}>Benvenuto, {user.first_name}!</Title>
                     <ScrollViewMovies
                         title='Film preferiti'
                         movies={user.favorites}
